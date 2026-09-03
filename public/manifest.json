@@ -3,20 +3,27 @@
   "short_name": "GRC",
   "description": "African gravel OS — route intelligence, club rides, and adventure for Kenyan roads.",
   "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "browser"],
   "orientation": "portrait",
   "background_color": "#F3EFE8",
   "theme_color": "#E07A2F",
+  "lang": "en-KE",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
@@ -29,13 +36,21 @@
   "shortcuts": [
     {
       "name": "Discover",
+      "short_name": "Discover",
       "url": "/discover",
       "description": "Gravel near you"
     },
     {
       "name": "Club",
+      "short_name": "Club",
       "url": "/club",
       "description": "Clubhouses & pace groups"
+    },
+    {
+      "name": "Wrench",
+      "short_name": "Wrench",
+      "url": "/wrench",
+      "description": "Doorstep bike repair"
     }
   ]
 }
