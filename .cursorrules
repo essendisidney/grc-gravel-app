@@ -1,0 +1,88 @@
+# GRC Gravel App — Cursor AI Rules
+# Victor Dawa · Gravel Riders Club Kenya · gravelriders.club
+
+## Project
+Full-stack PWA for Gravel Riders Club Kenya. Members join rides, register for races,
+book bike repairs, track achievements, and connect via a social feed.
+
+## Stack
+- Next.js 14 App Router + TypeScript
+- Supabase (auth, database, realtime)
+- Tailwind CSS (dark theme)
+- M-Pesa Daraja (STK Push payments)
+- Vercel deployment
+
+## Design System
+- Background: #0D0F14 (pages), #1A1E2A (cards), #252B3B (inputs/accents)
+- Primary accent: #F5C518 (GRC yellow)
+- Text: #F0F2F5 (primary), #8892A4 (muted)
+- Borders: #1E2436
+- Danger: #EF4444 | Success: #22C55E | Info: #60A5FA
+- Headings: 'Barlow Condensed' font (fontFamily: "'Barlow Condensed', sans-serif")
+- Body: 'Space Grotesk' font
+- Mobile-first: max-width 430px centered
+
+## Architecture Rules
+- Use SERVER components by default (no 'use client' unless needed for interactivity/hooks)
+- Supabase: import from @/lib/supabase/server for server components, @/lib/supabase/client for client
+- All data fetching in page.tsx (server), pass as props to *Client.tsx (client)
+- Server actions live in actions.ts files, API routes in /app/api/
+- Types in @/lib/types/database.ts — always import from there
+- Utilities in @/lib/utils.ts (formatKES, formatRideDate, getInitials, etc.)
+
+## Patterns
+- Cards: background #1A1E2A, borderRadius 16px, border '1px solid #1E2436'
+- Buttons: use .btn-primary (yellow) or .btn-secondary (dark) CSS classes from globals.css
+- Inputs: use .grc-input CSS class from globals.css
+- All amounts are KES — use formatKES() from @/lib/utils
+- Dates: use formatRideDate(), formatFullDate(), formatTime() from @/lib/utils
+- Member initials: use getInitials() from @/lib/utils
+- Tier colors: use getTierColor() from @/lib/utils
+
+## Database Tables (Supabase)
+- profiles — member data, stats, tier, role
+- rides — club ride events
+- ride_registrations — who's registered for which ride
+- race_events — Full Gas Criterium series
+- race_registrations — race entries with M-Pesa payment
+- repair_bookings — Wrench doorstep repair bookings
+- mechanics — mechanic profiles
+- posts — social feed posts
+- post_likes — feed engagement
+- member_badges — earned achievements
+- badge_definitions — badge catalog
+- mpesa_transactions — payment audit trail
+- notifications — user notifications
+
+## M-Pesa
+- STK Push via /api/mpesa/stkpush — POST {phone, amount, accountReference, transactionDesc, referenceType, referenceId}
+- Callback at /api/mpesa/callback — Safaricom posts here on payment result
+- Status polling at /api/mpesa/status?checkoutRequestId=xxx
+- Phone normalization: 07XXXXXXXX → 2547XXXXXXXX (use normalizePhone() from utils)
+- All amounts in KES integers
+
+## Admin
+- Only users with role 'admin' or 'super_admin' can access /admin
+- Victor Dawa is super_admin — set this in Supabase after first signup
+- Admin layout handles role check and redirects unauthorized users
+
+## Naming Conventions
+- Page data-fetching: page.tsx (server component)
+- Client interactivity: *Client.tsx (with 'use client')
+- Server actions: actions.ts (with 'use server')
+- API routes: route.ts
+- Reusable components: PascalCase in /components/[module]/
+
+## Never Do
+- Never use localStorage (use Supabase for persistence)
+- Never hardcode Supabase URLs or keys in components (use env vars)
+- Never skip TypeScript types — import from @/lib/types/database.ts
+- Never use Inter, Arial, or system fonts — always Barlow Condensed or Space Grotesk
+- Never use white/light backgrounds — this is a dark theme app
+- Never expose SUPABASE_SERVICE_ROLE_KEY to the client
+
+## Commands
+- Dev: npm run dev (http://localhost:3000)
+- Type check: npx tsc --noEmit
+- Build: npm run build
+- Deploy: vercel --prod
