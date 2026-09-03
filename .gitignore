@@ -43,3 +43,5 @@ next-env.d.ts
 
 # raw GRC site scrapes (keep curated /public/brand aliases only)
 /public/brand/grc/
+
+.vercel

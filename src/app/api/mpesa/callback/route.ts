@@ -1,13 +1,17 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createClient as createDemoClient } from '@/lib/supabase/server'
 
-const supabase = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) return createDemoClient()
+  return createSupabaseClient(url, key)
+}
 
 export async function POST(request: Request) {
   try {
+    const supabase = getSupabase()
     const body = await request.json()
     const callback = body?.Body?.stkCallback
     if (!callback) return NextResponse.json({ ResultCode: 0, ResultDesc: 'OK' })
@@ -22,7 +26,6 @@ export async function POST(request: Request) {
       const amount = get('Amount')
       const phone = String(get('PhoneNumber') || '')
 
-      // Update transaction
       const { data: txn } = await supabase
         .from('mpesa_transactions')
         .update({ status: 'success', mpesa_receipt_number: receipt, result_code: ResultCode, result_desc: ResultDesc, transaction_date: new Date().toISOString() })
@@ -31,7 +34,6 @@ export async function POST(request: Request) {
         .single()
 
       if (txn) {
-        // Update linked reference
         if (txn.reference_type === 'race_registration') {
           await supabase
             .from('race_registrations')
@@ -46,7 +48,6 @@ export async function POST(request: Request) {
             .eq('id', txn.reference_id)
         }
 
-        // Notify user
         if (txn.reference_type) {
           const { data: profile } = await supabase
             .from('profiles')
