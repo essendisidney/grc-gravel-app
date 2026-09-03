@@ -79,6 +79,9 @@ export default function ClubPage() {
         </div>
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>Membership</div>
+        <Link href="/join" className="btn-primary" style={{ textDecoration: 'none', marginBottom: 12, display: 'flex' }}>
+          Join with M-Pesa
+        </Link>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
           {DEMO_CLUB.membership.map(m => (
             <div key={m.name} className="surface" style={{ padding: 14 }}>

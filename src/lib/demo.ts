@@ -31,7 +31,7 @@ export type DemoRide = Ride & RouteIntel & {
   interested_count?: number
   route_label?: string
   cover_image?: string
-  pace_groups?: { id: string; name: string; avg_kph: number; count: number }[]
+  pace_groups?: { id: string; name: string; avg_kph: number; count: number; captain?: string }[]
 }
 
 export const DEMO_WEEK_STATS = {
@@ -104,9 +104,9 @@ export const DEMO_RIDES: DemoRide[] = [
     road_condition: 'Good',
     est_hours: '3h 56m',
     pace_groups: [
-      { id: 'fast', name: 'Fast', avg_kph: 27, count: 9 },
-      { id: 'cruiser', name: 'Cruiser', avg_kph: 21, count: 15 },
-      { id: 'social', name: 'Social', avg_kph: 17, count: 8 },
+      { id: 'fast', name: 'Fast', avg_kph: 27, count: 9, captain: 'Victor Dawa' },
+      { id: 'cruiser', name: 'Cruiser', avg_kph: 21, count: 15, captain: 'Amina Otieno' },
+      { id: 'social', name: 'Social', avg_kph: 17, count: 8, captain: 'James Njoroge' },
     ],
   },
   {
@@ -141,9 +141,9 @@ export const DEMO_RIDES: DemoRide[] = [
     signal: 'Good',
     road_condition: 'Good',
     pace_groups: [
-      { id: 'fast', name: 'Fast', avg_kph: 26, count: 6 },
-      { id: 'cruiser', name: 'Cruiser', avg_kph: 21, count: 10 },
-      { id: 'social', name: 'Social', avg_kph: 17, count: 5 },
+      { id: 'fast', name: 'Fast', avg_kph: 26, count: 6, captain: 'Victor Dawa' },
+      { id: 'cruiser', name: 'Cruiser', avg_kph: 21, count: 10, captain: 'Amina Otieno' },
+      { id: 'social', name: 'Social', avg_kph: 17, count: 5, captain: 'James Njoroge' },
     ],
   },
   {
@@ -406,6 +406,8 @@ export const DEMO_NOTIFICATIONS = [
   { id: 'n1', type: 'ride_reminder', title: 'Ngong → Magadi', body: 'Roll-out 06:15. 32 going. Pick your pace group.', is_read: false, created_at: new Date(Date.now() - 1000 * 60 * 40).toISOString(), link: '/rides/ngong-magadi' },
   { id: 'n2', type: 'race_open', title: 'Full Gas at Kasarani', body: 'Round 4 registration open. Juniors, women, elite.', is_read: false, created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), link: '/race/full-gas-1' },
   { id: 'n3', type: 'general', title: 'Discover Magadi', body: 'New route intel: Magadi Loop — gravel 78%, signal patchy.', is_read: true, created_at: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(), link: '/discover/magadi' },
+  { id: 'n4', type: 'membership', title: 'Membership renews soon', body: 'Regular membership — KES 1,200/year. Pay with M-Pesa in the app.', is_read: false, created_at: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(), link: '/join' },
+  { id: 'n5', type: 'captain', title: 'Captain ping — Cruiser', body: 'Amina: regroup at Kona Baridi. Lights on if Magadi dust kicks.', is_read: false, created_at: new Date(Date.now() - 1000 * 60 * 95).toISOString(), link: '/rides/ngong-magadi' },
 ]
 
 export const DEMO_NOTICE = {

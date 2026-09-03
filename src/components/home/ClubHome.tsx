@@ -1,13 +1,15 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowUpRight, Check } from 'lucide-react'
+import { ArrowUpRight, Check, X } from 'lucide-react'
 import { formatRideDate, formatTime } from '@/lib/utils'
 import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
+import { getRsvp, setRsvp } from '@/lib/localStore'
+import NotifBell from '@/components/layout/NotifBell'
 
 function greeting() {
   const h = new Date().getHours()
@@ -21,21 +23,52 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
     () => rides.find(r => r.id === 'ngong-magadi') || rides[0],
     [rides],
   )
-  const [joined, setJoined] = useState(!!adventure?.user_registration)
+  const [joined, setJoined] = useState(false)
+  const [paceName, setPaceName] = useState('')
+  const [sheet, setSheet] = useState(false)
+  const [paceId, setPaceId] = useState(adventure?.pace_groups?.[1]?.id || adventure?.pace_groups?.[0]?.id || '')
   const firstName = (DEMO_PROFILE.full_name || 'Rider').split(' ')[0].toUpperCase()
+
+  useEffect(() => {
+    if (!adventure) return
+    const r = getRsvp(adventure.id)
+    if (r) {
+      setJoined(true)
+      setPaceName(r.paceGroupName)
+      setPaceId(r.paceGroupId)
+    }
+  }, [adventure])
 
   if (!adventure) return null
 
   const cover = adventure.cover_image || '/brand/hero-adventure.jpg'
   const going = adventure.registration_count || 0
+  const groups = adventure.pace_groups || []
+
+  function confirmJoin() {
+    const group = groups.find(g => g.id === paceId)
+    setRsvp({
+      rideId: adventure.id,
+      paceGroupId: paceId || 'cruiser',
+      paceGroupName: group?.name || 'Cruiser',
+      status: 'registered',
+      joinedAt: new Date().toISOString(),
+    })
+    setJoined(true)
+    setPaceName(group?.name || 'Cruiser')
+    setSheet(false)
+  }
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 12 }}>
       <div className="stagger" style={{ padding: '14px 20px 10px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
           <GrcLogo size={36} rounded={11} />
-          <div className="eyebrow" style={{ color: 'var(--accent)', margin: 0 }}>
-            {greeting()}, {firstName}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div className="eyebrow" style={{ color: 'var(--accent)', margin: 0 }}>
+              {greeting()}, {firstName}
+            </div>
+            <NotifBell />
           </div>
         </div>
 
@@ -135,12 +168,12 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         <button
           type="button"
           className={`btn-primary ${joined ? 'joined' : ''}`}
-          onClick={() => setJoined(true)}
+          onClick={() => (joined ? undefined : setSheet(true))}
           disabled={joined}
         >
           {joined ? (
             <>
-              <Check size={18} strokeWidth={2.6} /> YOU’RE IN
+              <Check size={18} strokeWidth={2.6} /> YOU’RE IN{paceName ? ` · ${paceName.toUpperCase()}` : ''}
             </>
           ) : (
             <>
@@ -196,6 +229,88 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
           </div>
         </div>
       </div>
+
+      {sheet && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 80,
+            background: 'rgba(14,12,10,0.55)',
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+          }}
+          onClick={() => setSheet(false)}
+        >
+          <div
+            className="animate-fade-in"
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: 430,
+              background: 'var(--bg)',
+              borderRadius: '22px 22px 0 0',
+              padding: '18px 16px calc(18px + env(safe-area-inset-bottom))',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 4 }}>Join ride</div>
+                <div style={{ fontSize: 18, fontWeight: 800 }}>{adventure.route_label || adventure.title}</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSheet(false)}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  border: '1px solid var(--line)',
+                  background: 'var(--surface)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="section-label" style={{ marginBottom: 10 }}>Pace group</div>
+            {groups.map(g => {
+              const on = paceId === g.id
+              return (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => setPaceId(g.id)}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    marginBottom: 8,
+                    padding: 12,
+                    borderRadius: 12,
+                    border: `1px solid ${on ? 'rgba(224,122,47,0.5)' : 'var(--line)'}`,
+                    background: on ? 'var(--accent-soft)' : 'var(--surface)',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font)',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  <div style={{ fontWeight: 800 }}>{g.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
+                    ~{g.avg_kph} km/h · Capt {g.captain?.split(' ')[0] || 'TBD'} · {g.count} going
+                  </div>
+                </button>
+              )
+            })}
+            <button type="button" className="btn-primary" style={{ marginTop: 8 }} onClick={confirmJoin}>
+              Confirm — Niko in
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

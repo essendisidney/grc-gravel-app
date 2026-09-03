@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Bell, ArrowLeft, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import GrcLogo from '@/components/brand/GrcLogo'
+import NotifBell from '@/components/layout/NotifBell'
 
 interface TopBarProps {
   title?: string
@@ -77,20 +78,7 @@ export default function TopBar({
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {rightElement}
-        {showNotifications && (
-          <Link
-            href="/notifications"
-            style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'var(--surface)', border: '1px solid var(--line)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'var(--muted)', textDecoration: 'none', position: 'relative',
-            }}
-          >
-            <Bell size={16} />
-            <span style={{ position: 'absolute', top: 8, right: 8, width: 7, height: 7, background: 'var(--accent)', borderRadius: '50%', border: '1.5px solid #fff' }} />
-          </Link>
-        )}
+        {showNotifications && <NotifBell />}
       </div>
     </div>
   )

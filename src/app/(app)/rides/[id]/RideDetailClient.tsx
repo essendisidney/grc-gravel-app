@@ -1,93 +1,139 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Loader2, CheckCircle2, Clock } from 'lucide-react'
-import { registerForRide, cancelRideRegistration } from '../actions'
-import type { RideRegistration } from '@/lib/types/database'
+import { useEffect, useState } from 'react'
+import { CheckCircle2, Clock, Loader2 } from 'lucide-react'
+import { clearRsvp, getRsvp, setRsvp, type LocalRsvp } from '@/lib/localStore'
 
-interface RideDetailClientProps {
-  rideId: string
-  userRegistration: RideRegistration | null
-  spotsLeft: number | null
-}
+type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
 
 export default function RideDetailClient({
   rideId,
-  userRegistration,
   spotsLeft,
-}: RideDetailClientProps) {
-  const router = useRouter()
+  paceGroups = [],
+}: {
+  rideId: string
+  spotsLeft: number | null
+  paceGroups?: PaceGroup[]
+}) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [registration, setRegistration] = useState(userRegistration)
+  const [rsvp, setLocal] = useState<LocalRsvp | null>(null)
+  const [paceId, setPaceId] = useState(paceGroups[1]?.id || paceGroups[0]?.id || '')
+
+  useEffect(() => {
+    const existing = getRsvp(rideId)
+    setLocal(existing)
+    if (existing) setPaceId(existing.paceGroupId)
+  }, [rideId])
 
   async function handleRegister() {
+    if (paceGroups.length && !paceId) {
+      setMessage('Pick a pace group first')
+      return
+    }
     setLoading(true)
     setMessage('')
-    const result = await registerForRide(rideId)
-    if (result.success) {
-      setRegistration({ status: result.status } as any)
-      setMessage(
-        result.status === 'registered'
-          ? "Niko in. See you at the gate — don't be late."
-          : "You're on the waitlist. We'll ping you if a spot opens."
-      )
-    } else {
-      setMessage(result.error || 'Something went wrong')
+    await new Promise(r => setTimeout(r, 450))
+    const group = paceGroups.find(g => g.id === paceId)
+    const status = spotsLeft !== null && spotsLeft <= 0 ? 'waitlisted' : 'registered'
+    const next: LocalRsvp = {
+      rideId,
+      paceGroupId: paceId || 'open',
+      paceGroupName: group?.name || 'Open',
+      status,
+      joinedAt: new Date().toISOString(),
     }
+    setRsvp(next)
+    setLocal(next)
+    setMessage(
+      status === 'registered'
+        ? `Niko in — ${next.paceGroupName} group. See you at the gate.`
+        : "You're on the waitlist. We'll ping you if a spot opens.",
+    )
     setLoading(false)
-    router.refresh()
   }
 
   async function handleCancel() {
     if (!confirm('Cancel your registration for this ride?')) return
     setLoading(true)
-    const result = await cancelRideRegistration(rideId)
-    if (result.success) {
-      setRegistration(null)
-      setMessage('Registration cancelled')
-    } else {
-      setMessage(result.error || 'Something went wrong')
-    }
+    clearRsvp(rideId)
+    setLocal(null)
+    setMessage('Registration cancelled')
     setLoading(false)
-    router.refresh()
   }
 
-  const isRegistered = registration?.status === 'registered'
-  const isWaitlisted = registration?.status === 'waitlisted'
+  const isRegistered = rsvp?.status === 'registered'
+  const isWaitlisted = rsvp?.status === 'waitlisted'
   const isFull = spotsLeft !== null && spotsLeft <= 0 && !isRegistered && !isWaitlisted
 
   return (
     <div>
-      {/* Status message */}
       {message && (
         <div
           style={{
             padding: '12px 16px',
             borderRadius: 12,
             marginBottom: 14,
-            background: message.includes('wrong') || message.includes('error')
-              ? 'rgba(239,68,68,0.1)'
-              : 'rgba(34,197,94,0.1)',
-            border: `1px solid ${message.includes('wrong') || message.includes('error')
-              ? 'rgba(239,68,68,0.3)'
-              : 'rgba(34,197,94,0.3)'}`,
+            background: message.toLowerCase().includes('cancel') || message.includes('wrong')
+              ? 'rgba(179,58,58,0.08)'
+              : 'rgba(47,125,75,0.1)',
+            border: `1px solid ${message.toLowerCase().includes('cancel') ? 'rgba(179,58,58,0.25)' : 'rgba(47,125,75,0.25)'}`,
             fontSize: 13,
-            color: message.includes('wrong') || message.includes('error') ? '#EF4444' : '#22C55E',
+            color: message.toLowerCase().includes('cancel') ? 'var(--bad)' : 'var(--good)',
+            fontWeight: 600,
           }}
         >
           {message}
         </div>
       )}
 
-      {/* Currently registered */}
+      {!isRegistered && !isWaitlisted && paceGroups.length > 0 && (
+        <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
+          <div className="section-label" style={{ marginBottom: 10 }}>Choose pace group</div>
+          {paceGroups.map(g => {
+            const on = paceId === g.id
+            return (
+              <button
+                key={g.id}
+                type="button"
+                onClick={() => setPaceId(g.id)}
+                className="pressable"
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '12px 12px',
+                  marginBottom: 8,
+                  borderRadius: 12,
+                  border: `1px solid ${on ? 'rgba(224,122,47,0.5)' : 'var(--line)'}`,
+                  background: on ? 'var(--accent-soft)' : 'var(--bg)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font)',
+                  color: 'var(--ink)',
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 14 }}>{g.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
+                    ~{g.avg_kph} km/h{g.captain ? ` · Capt ${g.captain.split(' ')[0]}` : ''}
+                  </div>
+                </div>
+                <span className="chip accent">{g.count}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {isRegistered && (
         <div style={{ marginBottom: 12 }}>
           <div
             style={{
-              background: 'rgba(245,197,24,0.1)',
-              border: '1px solid rgba(245,197,24,0.3)',
+              background: 'var(--accent-soft)',
+              border: '1px solid rgba(224,122,47,0.35)',
               borderRadius: 14,
               padding: 16,
               display: 'flex',
@@ -96,77 +142,65 @@ export default function RideDetailClient({
               marginBottom: 10,
             }}
           >
-            <CheckCircle2 size={20} color="#F5C518" />
+            <CheckCircle2 size={20} color="var(--accent)" />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#F5C518' }}>
-                Niko in
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#9A4A12' }}>
+                Niko in · {rsvp?.paceGroupName}
               </div>
-              <div style={{ fontSize: 12, color: '#8892A4' }}>
-                Lights on. We don't wait past roll-out.
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={handleCancel}
-            disabled={loading}
-            className="btn-danger"
-          >
-            {loading ? <Loader2 size={14} /> : 'Cancel Registration'}
-          </button>
-        </div>
-      )}
-
-      {/* Waitlisted */}
-      {isWaitlisted && (
-        <div style={{ marginBottom: 12 }}>
-          <div
-            style={{
-              background: 'rgba(249,115,22,0.1)',
-              border: '1px solid rgba(249,115,22,0.3)',
-              borderRadius: 14,
-              padding: 16,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              marginBottom: 10,
-            }}
-          >
-            <Clock size={20} color="#FB923C" />
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#FB923C' }}>
-                You're on the waitlist
-              </div>
-              <div style={{ fontSize: 12, color: '#8892A4' }}>
-                We'll notify you if a spot opens up
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>
+                Lights on. We don’t wait past roll-out.
               </div>
             </div>
           </div>
           <button onClick={handleCancel} disabled={loading} className="btn-danger">
-            Leave Waitlist
+            {loading ? <Loader2 size={14} /> : 'Cancel registration'}
           </button>
         </div>
       )}
 
-      {/* Register button */}
+      {isWaitlisted && (
+        <div style={{ marginBottom: 12 }}>
+          <div
+            style={{
+              background: 'rgba(196,122,18,0.1)',
+              border: '1px solid rgba(196,122,18,0.3)',
+              borderRadius: 14,
+              padding: 16,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Clock size={20} color="var(--warn)" />
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--warn)' }}>On the waitlist</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>
+                Preferred: {rsvp?.paceGroupName}. We’ll notify you if a spot opens.
+              </div>
+            </div>
+          </div>
+          <button onClick={handleCancel} disabled={loading} className="btn-danger">
+            Leave waitlist
+          </button>
+        </div>
+      )}
+
       {!isRegistered && !isWaitlisted && (
         <button onClick={handleRegister} disabled={loading} className="btn-primary">
-          {loading && <Loader2 size={16} className="animate-spin" />}
-          {isFull
-            ? 'Join Waitlist'
-            : loading
-            ? 'Registering...'
-            : "I'm in"}
+          {loading && <Loader2 size={16} />}
+          {isFull ? 'Join waitlist' : loading ? 'Registering…' : 'Niko in'}
         </button>
       )}
 
-      {/* Capacity note */}
       {spotsLeft !== null && !isRegistered && !isWaitlisted && (
         <div
           style={{
             textAlign: 'center',
             marginTop: 10,
             fontSize: 12,
-            color: spotsLeft <= 5 ? '#EF4444' : '#8892A4',
+            color: spotsLeft <= 5 ? 'var(--bad)' : 'var(--muted)',
+            fontWeight: 600,
           }}
         >
           {spotsLeft <= 0 ? 'Ride is full — join the waitlist' : `${spotsLeft} spots remaining`}
