@@ -17,12 +17,12 @@ async function makeIcon(size, out) {
 }
 
 ;(async () => {
-  const dir = path.join(__dirname, 'public', 'icons')
+  const dir = path.join(__dirname, '..', 'public', 'icons')
   fs.mkdirSync(dir, { recursive: true })
   await makeIcon(192, path.join(dir, 'icon-192.png'))
   await makeIcon(512, path.join(dir, 'icon-512.png'))
   await makeIcon(180, path.join(dir, 'apple-touch-icon.png'))
-  console.log('icons-ok')
+  console.log('icons-ok', dir)
 })().catch((e) => {
   console.error(e)
   process.exit(1)
