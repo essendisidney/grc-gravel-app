@@ -74,7 +74,7 @@ export default function DiscoverClient() {
         {featured.map(route => (
           <Link
             key={route.id}
-            href={`/discover/${route.region_id}`}
+            href={`/discover/route/${route.id}`}
             className="pressable"
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
@@ -102,6 +102,7 @@ export default function DiscoverClient() {
                 <span className="chip">Signal {route.signal}</span>
                 <span className="chip">{route.water_points} water</span>
                 <span className="chip">{route.best_months}</span>
+                <span className="chip">GPX</span>
               </div>
             </div>
           </Link>

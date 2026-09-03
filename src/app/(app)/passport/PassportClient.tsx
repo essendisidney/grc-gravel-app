@@ -1,19 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getInitials, formatKm } from '@/lib/utils'
 import { Settings, LogOut, Mountain } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { DEMO_BADGES, DEMO_CLUB } from '@/lib/demo'
+import { DEMO_BADGES, DEMO_CLUB, DEMO_PROFILE } from '@/lib/demo'
+import { clearSession, getSession, type LocalSession } from '@/lib/localStore'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
 }) {
   const router = useRouter()
   const [showQR, setShowQR] = useState(false)
-  const initials = getInitials(profile?.full_name || 'GRC Member')
+  const [session, setLocal] = useState<LocalSession | null>(null)
+
+  useEffect(() => {
+    setLocal(getSession())
+  }, [])
+
+  const name = session?.fullName || profile?.full_name || DEMO_PROFILE.full_name
+  const title = session?.title || profile?.title || 'Club Member'
+  const initials = getInitials(name)
   const expedition = badges?.length ? badges : DEMO_BADGES
+
+  function signOut() {
+    clearSession()
+    router.push('/login')
+    router.refresh()
+  }
 
   return (
     <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
@@ -27,11 +42,11 @@ export default function PassportClient({ profile, badges, recentRides }: {
             {initials}
           </div>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 800 }}>{profile?.full_name}</div>
+            <div style={{ fontSize: 18, fontWeight: 800 }}>{name}</div>
             <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 6 }}>
-              {profile?.title || (profile?.is_elite_team ? 'Elite Team' : 'Club Member')} · {profile?.home_location_name || 'Nairobi'}
+              {title} · {session?.phone || profile?.home_location_name || 'Nairobi'}
             </div>
-            <span className="chip accent">{profile?.membership_number}</span>
+            <span className="chip accent">{session?.isCaptain ? 'CAPTAIN' : profile?.membership_number || 'MEMBER'}</span>
           </div>
         </div>
 
@@ -62,15 +77,21 @@ export default function PassportClient({ profile, badges, recentRides }: {
         )}
       </div>
 
+      {session?.isCaptain && (
+        <Link href="/captain" className="btn-primary" style={{ textDecoration: 'none', display: 'flex', marginBottom: 14 }}>
+          Open captain tools
+        </Link>
+      )}
+
       <div style={{ marginBottom: 18 }}>
         <div className="eyebrow" style={{ marginBottom: 10 }}>Expedition badges</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {expedition.map((b: any) => {
-            const name = b.name || b.badge_definitions?.name || 'Badge'
+            const badgeName = b.name || b.badge_definitions?.name || 'Badge'
             const earned = b.earned !== false
             return (
               <div
-                key={b.id || name}
+                key={b.id || badgeName}
                 className="surface"
                 style={{
                   padding: 14,
@@ -94,7 +115,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
                 >
                   <Mountain size={16} color={earned ? 'var(--accent)' : 'var(--muted)'} />
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.3 }}>{name}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.3 }}>{badgeName}</div>
               </div>
             )
           })}
@@ -131,7 +152,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
             <Settings size={15} /> Edit
           </button>
         </Link>
-        <button onClick={() => router.push('/login')} className="btn-danger" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <button onClick={signOut} className="btn-danger" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           <LogOut size={15} /> Sign out
         </button>
       </div>

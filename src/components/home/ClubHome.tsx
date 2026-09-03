@@ -8,7 +8,7 @@ import { formatRideDate, formatTime } from '@/lib/utils'
 import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
-import { getRsvp, setRsvp } from '@/lib/localStore'
+import { getRsvp, getSession, setRsvp } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 
 function greeting() {
@@ -27,9 +27,11 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
   const [paceName, setPaceName] = useState('')
   const [sheet, setSheet] = useState(false)
   const [paceId, setPaceId] = useState(adventure?.pace_groups?.[1]?.id || adventure?.pace_groups?.[0]?.id || '')
-  const firstName = (DEMO_PROFILE.full_name || 'Rider').split(' ')[0].toUpperCase()
+  const [firstName, setFirstName] = useState((DEMO_PROFILE.full_name || 'Rider').split(' ')[0].toUpperCase())
 
   useEffect(() => {
+    const s = getSession()
+    if (s?.fullName) setFirstName(s.fullName.split(' ')[0].toUpperCase())
     if (!adventure) return
     const r = getRsvp(adventure.id)
     if (r) {

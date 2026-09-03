@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Bell, ArrowLeft, ChevronDown, SlidersHorizontal } from 'lucide-react'
+import { ArrowLeft, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import GrcLogo from '@/components/brand/GrcLogo'
 import NotifBell from '@/components/layout/NotifBell'
 

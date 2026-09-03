@@ -44,7 +44,8 @@ export default async function RegionPage({
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {routes.map(route => (
-            <div key={route.id} className="surface" style={{ overflow: 'hidden' }}>
+            <Link key={route.id} href={`/discover/route/${route.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="surface pressable" style={{ overflow: 'hidden' }}>
               <div style={{ position: 'relative', height: 160, background: 'var(--charcoal)' }}>
                 {route.image && (
                   <Image src={route.image} alt={route.name} fill sizes="400px" style={{ objectFit: 'cover' }} />
@@ -72,9 +73,10 @@ export default async function RegionPage({
                   <Intel label="Signal" value={route.signal} />
                   <Intel label="Water pts" value={`${route.water_points}`} />
                 </div>
-                <div className="chip accent">Best: {route.best_months}</div>
+                <div className="chip accent">Best: {route.best_months} · Open GPX →</div>
               </div>
             </div>
+            </Link>
           ))}
           {routes.length === 0 && (
             <div className="surface" style={{ padding: 24, textAlign: 'center', color: 'var(--muted)' }}>
