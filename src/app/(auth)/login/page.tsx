@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import GrcLogo from '@/components/brand/GrcLogo'
 
 function LoginInner() {
   const router = useRouter()
@@ -11,12 +12,8 @@ function LoginInner() {
   return (
     <div className="animate-fade-in" style={{ width: '100%' }}>
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
-        <div style={{
-          width: 64, height: 64, borderRadius: 16, background: 'var(--club)',
-          color: 'var(--club-ink)', fontWeight: 800, fontSize: 20,
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14,
-        }}>
-          GRC
+        <div style={{ display: 'inline-block', marginBottom: 14 }}>
+          <GrcLogo size={72} rounded={18} />
         </div>
         <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>Gravel Riders Club</h1>
         <p style={{ margin: 0, fontSize: 14, color: 'var(--muted)', lineHeight: 1.5 }}>

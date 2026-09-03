@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Bell, ArrowLeft, ChevronDown, SlidersHorizontal } from 'lucide-react'
+import GrcLogo from '@/components/brand/GrcLogo'
 
 interface TopBarProps {
   title?: string
@@ -62,13 +63,7 @@ export default function TopBar({
               cursor: 'pointer', fontFamily: 'var(--font)',
             }}
           >
-            <span style={{
-              width: 28, height: 28, borderRadius: 8, background: 'var(--accent)',
-              color: '#fff', fontWeight: 800, fontSize: 11,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              GRC
-            </span>
+            <GrcLogo size={28} rounded={8} />
             <span style={{ textAlign: 'left' }}>
               <span style={{ display: 'block', fontSize: 13, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.1 }}>Gravel Riders Club</span>
               <span style={{ display: 'block', fontSize: 11, color: 'var(--muted)' }}>Kenya · Tena & Utawala</span>

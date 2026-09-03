@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { LayoutDashboard, Map, Flag, Users, Wrench, LogOut } from 'lucide-react'
+import GrcLogo from '@/components/brand/GrcLogo'
 
 const NAV = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -18,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ width: 28, height: 28, borderRadius: 8, background: 'var(--club)', color: 'var(--club-ink)', fontWeight: 800, fontSize: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>GRC</span>
+          <GrcLogo size={28} rounded={8} />
           <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', background: '#FEE2E2', color: 'var(--red)', borderRadius: 6 }}>Admin</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

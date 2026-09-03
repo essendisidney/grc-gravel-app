@@ -2,17 +2,16 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import GrcLogo from '@/components/brand/GrcLogo'
 
 export default function SignupPage() {
   const router = useRouter()
   return (
     <div>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <div style={{
-          width: 56, height: 56, borderRadius: 14, background: 'var(--club)',
-          color: 'var(--club-ink)', fontWeight: 800, fontSize: 18,
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12,
-        }}>GRC</div>
+        <div style={{ display: 'inline-block', marginBottom: 12 }}>
+          <GrcLogo size={56} rounded={14} />
+        </div>
         <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 8px' }}>Join the club</h1>
         <p style={{ margin: 0, fontSize: 14, color: 'var(--muted)', lineHeight: 1.5 }}>
           Regular from KES 1,200 / year. Phone + M-Pesa next.

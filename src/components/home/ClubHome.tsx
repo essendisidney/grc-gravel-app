@@ -7,6 +7,7 @@ import { ArrowUpRight, Check } from 'lucide-react'
 import { formatRideDate, formatTime } from '@/lib/utils'
 import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
+import GrcLogo from '@/components/brand/GrcLogo'
 
 function greeting() {
   const h = new Date().getHours()
@@ -32,23 +33,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
     <div className="animate-fade-in" style={{ paddingBottom: 12 }}>
       <div className="stagger" style={{ padding: '14px 20px 10px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 11,
-              background: 'var(--charcoal)',
-              color: '#fff',
-              fontWeight: 800,
-              fontSize: 11,
-              letterSpacing: '0.04em',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            GRC
-          </div>
+          <GrcLogo size={36} rounded={11} />
           <div className="eyebrow" style={{ color: 'var(--accent)', margin: 0 }}>
             {greeting()}, {firstName}
           </div>

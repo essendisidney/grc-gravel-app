@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronRight, MapPinned } from 'lucide-react'
 import { DEMO_REGIONS, DEMO_ROUTES } from '@/lib/demo'
+import GrcLogo from '@/components/brand/GrcLogo'
 
 export default function DiscoverClient() {
   const featured = DEMO_ROUTES.slice(0, 3)
@@ -31,22 +32,7 @@ export default function DiscoverClient() {
           color: '#fff',
         }}
       >
-        <div
-          style={{
-            width: 42,
-            height: 42,
-            borderRadius: 13,
-            background: 'var(--accent)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            fontWeight: 800,
-            fontSize: 11,
-          }}
-        >
-          GRC
-        </div>
+        <GrcLogo size={42} rounded={13} />
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700 }}>Nairobi · Rift corridor</div>
           <div style={{ fontSize: 12, opacity: 0.7, marginTop: 2 }}>

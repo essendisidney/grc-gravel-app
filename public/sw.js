@@ -1,5 +1,5 @@
 /* GRC service worker — app-shell cache for installable PWA */
-const CACHE = 'grc-shell-v1'
+const CACHE = 'grc-shell-v2'
 const PRECACHE = [
   '/',
   '/manifest.json',
