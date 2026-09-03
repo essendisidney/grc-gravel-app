@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense, useState } from 'react'
+import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import GrcLogo from '@/components/brand/GrcLogo'
 import { setSession } from '@/lib/localStore'
@@ -31,18 +32,43 @@ function LoginInner() {
   }
 
   return (
-    <div className="animate-fade-in" style={{ width: '100%' }}>
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <div style={{ display: 'inline-block', marginBottom: 14 }}>
-          <GrcLogo size={72} rounded={18} />
+    <div className="animate-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'relative', height: '42dvh', minHeight: 240, margin: '0 14px', borderRadius: 22, overflow: 'hidden' }}>
+        <Image
+          src="/brand/hero-adventure.jpg"
+          alt="GRC riders"
+          fill
+          priority
+          sizes="430px"
+          style={{ objectFit: 'cover', objectPosition: 'center 35%' }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(14,12,10,0.15) 20%, rgba(14,12,10,0.88) 100%)',
+          }}
+        />
+        <div style={{ position: 'absolute', left: 16, right: 16, bottom: 18, color: '#fff' }}>
+          <GrcLogo size={44} rounded={12} />
+          <div className="eyebrow" style={{ color: 'rgba(255,255,255,0.7)', marginTop: 14, marginBottom: 6 }}>
+            Gravel Riders Club
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+            Ride beyond the tarmac
+          </div>
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px' }}>Gravel Riders Club</h1>
-        <p style={{ margin: 0, fontSize: 14, color: 'var(--muted)', lineHeight: 1.5 }}>
-          Sign in with your name + phone. Demo session stays on this device — M-Pesa comes last.
-        </p>
       </div>
 
-      <div className="surface" style={{ padding: 20 }}>
+      <div style={{ padding: '20px 20px 0', flex: 1 }}>
+        <div className="eyebrow" style={{ marginBottom: 8 }}>Welcome back</div>
+        <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em' }}>
+          Sign in to ride
+        </h1>
+        <p style={{ margin: '0 0 18px', fontSize: 13, color: 'var(--muted)', lineHeight: 1.45 }}>
+          Name + phone for this device. Demo auth — no password yet.
+        </p>
+
         <div className="section-label" style={{ marginBottom: 6 }}>Full name</div>
         <input
           className="grc-input"
@@ -60,6 +86,7 @@ function LoginInner() {
           inputMode="tel"
           style={{ marginBottom: 14 }}
         />
+
         <label
           style={{
             display: 'flex',
@@ -78,10 +105,11 @@ function LoginInner() {
             onChange={e => setAsCaptain(e.target.checked)}
             style={{ width: 16, height: 16, accentColor: 'var(--accent)' }}
           />
-          I’m a ride captain (unlock captain tools)
+          I’m a ride captain
         </label>
+
         <button className="btn-primary" onClick={enter} disabled={loading}>
-          {loading ? 'Signing in…' : 'Enter the club'}
+          {loading ? 'Opening…' : 'Enter the club'}
         </button>
       </div>
     </div>
