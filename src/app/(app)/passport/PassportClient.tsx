@@ -50,7 +50,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
   }
 
   return (
-    <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+    <div className="page animate-fade-in">
       <div className="surface" style={{ padding: 18, marginBottom: 16, background: 'linear-gradient(165deg, #FFF8F1 0%, #FFFCFA 55%)' }}>
         <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 16 }}>
           <div style={{

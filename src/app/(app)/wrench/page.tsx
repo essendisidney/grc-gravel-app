@@ -13,7 +13,7 @@ export default function WrenchPage() {
   return (
     <div>
       <TopBar title="Wrench" showNotifications />
-      <p style={{ padding: '0 16px 8px', fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
+      <p style={{ padding: '0 var(--page-x) 8px', fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
         Doorstep bike repair — GRC mechanics, priced in KES.
       </p>
       <WrenchClient services={SERVICES} activeBookings={[]} pastBookings={[]} />

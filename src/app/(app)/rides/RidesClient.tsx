@@ -40,10 +40,10 @@ export default function RidesClient({ rides }: { rides: Ride[] }) {
 
   return (
     <div>
-      <p style={{ padding: '0 16px 10px', fontSize: 13, color: 'var(--muted)', lineHeight: 1.45 }}>
+      <p style={{ padding: '0 var(--page-x) 10px', fontSize: 13, color: 'var(--muted)', lineHeight: 1.45 }}>
         Clear ride list — save rides for later, filter by type like a club calendar.
       </p>
-      <div style={{ display: 'flex', gap: 8, padding: '0 16px 14px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+      <div style={{ display: 'flex', gap: 8, padding: '0 var(--page-x) 14px', overflowX: 'auto', scrollbarWidth: 'none' }}>
         {TYPE_TABS.map(t => (
           <button
             key={t.id}
@@ -57,7 +57,7 @@ export default function RidesClient({ rides }: { rides: Ride[] }) {
           </button>
         ))}
       </div>
-      <div style={{ padding: '0 16px 24px' }}>
+      <div style={{ padding: '0 var(--page-x) 24px' }}>
         {groups.length === 0 && (
           <div className="surface" style={{ padding: 16, color: 'var(--muted)', fontSize: 13 }}>
             {type === 'saved' ? 'No saved rides yet — open a ride and tap Save.' : 'Hakuna rides for that filter.'}

@@ -40,7 +40,7 @@ export default function SearchPage() {
   return (
     <div>
       <TopBar showBack title="Search" backHref="/" showNotifications={false} />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 12</div>
         <h1 style={{ margin: '0 0 12px', fontSize: 26, fontWeight: 800 }}>Find it</h1>
 

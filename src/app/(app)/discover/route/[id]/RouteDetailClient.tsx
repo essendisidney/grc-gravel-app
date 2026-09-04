@@ -69,7 +69,7 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
   return (
     <div>
       <TopBar showBack title="Route intel" showNotifications={false} backHref={`/discover/${route.region_id}`} />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <Link
           href={`/discover/${route.region_id}`}
           style={{

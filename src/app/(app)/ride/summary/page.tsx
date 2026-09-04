@@ -104,7 +104,7 @@ function SummaryInner() {
   }
 
   return (
-    <div className="animate-fade-in" style={{ padding: '16px 16px 28px' }}>
+    <div className="page animate-fade-in page-top">
       <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 26 · Post-ride</div>
       <h1 style={{ margin: '0 0 6px', fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em' }}>
         Ride logged

@@ -55,7 +55,7 @@ export default function RaceDayClient({ raceId }: { raceId: string }) {
   return (
     <div>
       <TopBar showBack title="Race day" showNotifications={false} backHref={`/race/${raceId}`} />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 7 · Full Gas</div>
         <h1 style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {race.title}

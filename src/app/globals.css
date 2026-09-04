@@ -26,6 +26,8 @@
   /* Android 3-button / gesture bar: never less than 28px even if inset reports 0 */
   --nav-safe-bottom: max(28px, env(safe-area-inset-bottom, 0px));
   --nav-h: calc(var(--nav-content-h) + var(--nav-safe-bottom) + 10px);
+  --page-x: 16px;
+  --page-bottom: 28px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -89,6 +91,19 @@ button, a, input, textarea, select { touch-action: manipulation; }
   touch-action: pan-y;
 }
 .scroll-content::-webkit-scrollbar { display: none; }
+
+/* Shared content gutter — keep TopBar / page / home columns aligned */
+.page {
+  padding: 0 var(--page-x) var(--page-bottom);
+  width: 100%;
+}
+.page-x {
+  padding-left: var(--page-x);
+  padding-right: var(--page-x);
+}
+.page-top {
+  padding-top: 12px;
+}
 
 @media (min-width: 480px) {
   html, body {

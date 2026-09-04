@@ -17,7 +17,7 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
   return (
     <div>
       <TopBar showBack title="Race details" showNotifications={false} />
-      <div style={{ padding: '0 16px 28px' }}>
+      <div className="page">
         <div className="section-label" style={{ marginBottom: 6 }}>{race.series_name} · #{race.edition_number}</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.15, margin: '0 0 16px' }}>{race.title}</h1>
 

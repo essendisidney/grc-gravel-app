@@ -16,7 +16,7 @@ export default async function RegionPage({
   return (
     <div>
       <TopBar title={region.name} showNotifications={false} />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <Link
           href="/discover"
           style={{

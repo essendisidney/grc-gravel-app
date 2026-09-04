@@ -50,7 +50,7 @@ export default function FeedClient({ posts: initialPosts, currentUserId }: {
   }
 
   return (
-    <div style={{ padding: '0 16px 24px' }}>
+    <div className="page" style={{ paddingBottom: 24 }}>
       <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 10 }}>Wave 16</div>
       <KudosBoard />
 

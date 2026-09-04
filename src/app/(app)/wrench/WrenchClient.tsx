@@ -101,7 +101,7 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
 
   if (view === 'book') {
     return (
-      <div className="animate-fade-in" style={{ padding: '0 16px 24px' }}>
+      <div className="page animate-fade-in" style={{ paddingBottom: 24 }}>
         <button
           onClick={() => setView('home')}
           style={{
@@ -242,7 +242,7 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
   }
 
   return (
-    <div className="animate-fade-in" style={{ padding: '0 16px 24px' }}>
+    <div className="page animate-fade-in" style={{ paddingBottom: 24 }}>
       <div
         style={{
           background: 'linear-gradient(145deg, #1C1916 0%, #2E2924 100%)',

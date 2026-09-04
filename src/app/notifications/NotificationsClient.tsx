@@ -27,7 +27,7 @@ export default function NotificationsClient({ notifications: initial }: { notifi
   }
 
   return (
-    <div style={{ padding: '0 16px 24px' }}>
+    <div className="page" style={{ paddingBottom: 24 }}>
       {unread > 0 && (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="chip accent">{unread} new</div>

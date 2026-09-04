@@ -32,6 +32,8 @@ import PhoneChargeReminder from '@/components/home/PhoneChargeReminder'
 import WeekRsvpSummary from '@/components/home/WeekRsvpSummary'
 import LeaveHomeCue from '@/components/home/LeaveHomeCue'
 import CashFloatCheck from '@/components/home/CashFloatCheck'
+import UvSunscreenTip from '@/components/home/UvSunscreenTip'
+import ReturnTrafficTip from '@/components/home/ReturnTrafficTip'
 import SpotsPulse from '@/components/rides/SpotsPulse'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
@@ -100,7 +102,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 12 }}>
-      <div className="stagger" style={{ padding: '14px 20px 10px' }}>
+      <div className="stagger page-x" style={{ paddingTop: 14, paddingBottom: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
           <GrcLogo size={36} rounded={11} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -205,7 +207,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         </div>
       </div>
 
-      <div style={{ padding: '14px 14px 0' }}>
+      <div className="page-x" style={{ paddingTop: 14 }}>
         {rideStatus === 'cancelled' || rideStatus === 'postponed' ? (
           <button type="button" className="btn-primary" disabled style={{ opacity: 0.85 }}>
             {rideStatus === 'cancelled' ? 'Ride cancelled' : 'Ride postponed'}
@@ -269,7 +271,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
 
       <AnnouncementsStrip />
 
-      <div style={{ padding: '14px 14px 0' }}>
+      <div className="page-x" style={{ paddingTop: 14 }}>
         <SeasonChallenge />
         <SaturdayStreak />
         <WeeklyGoal />
@@ -283,7 +285,9 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         {joined && <PhoneChargeReminder rideId={adventure.id} />}
         {joined && <CashFloatCheck rideId={adventure.id} />}
         <LeaveHomeCue startTime={adventure.start_time} />
+        <ReturnTrafficTip startTime={adventure.start_time} />
         <SunriseWindow startTime={adventure.start_time} />
+        <UvSunscreenTip startTime={adventure.start_time} />
         <DustMaskTip />
         <NewRiderTip />
         <WeekRsvpSummary rides={rides} />
@@ -294,7 +298,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         <GravelTips />
       </div>
 
-      <div style={{ padding: '22px 14px 8px' }}>
+      <div className="page-x" style={{ paddingTop: 14 }}>
         <WeatherBriefing />
         {joined && (
           <ReminderCard

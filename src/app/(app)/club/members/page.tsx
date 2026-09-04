@@ -31,7 +31,7 @@ export default function MembersClient() {
   return (
     <div>
       <TopBar showBack title="Members" backHref="/club" showNotifications={false} />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 8</div>
         <h1 style={{ margin: '0 0 12px', fontSize: 24, fontWeight: 800 }}>Directory</h1>
 

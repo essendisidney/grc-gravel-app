@@ -15,7 +15,7 @@ export default function ClubPage() {
   return (
     <div>
       <TopBar title="Club" showNotifications />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <div className="hero-media" style={{ height: 200, marginBottom: 16, borderRadius: 22 }}>
           <Image src="/brand/clubhouse.jpg" alt="GRC clubhouse" fill sizes="400px" style={{ objectFit: 'cover' }} priority />
           <div

@@ -62,7 +62,7 @@ export default function SettingsPage() {
   return (
     <div>
       <TopBar showBack title="Settings" backHref="/passport" showNotifications={false} />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 23</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800 }}>Club prefs</h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>

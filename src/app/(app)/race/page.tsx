@@ -8,7 +8,7 @@ export default function RacePage() {
   return (
     <div>
       <TopBar title="Race" showNotifications />
-      <div style={{ padding: '0 16px 24px' }}>
+      <div className="page" style={{ paddingBottom: 24 }}>
         <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16, lineHeight: 1.5 }}>
           Full Gas criterium — categories, race-day start list. M-Pesa entry later.
         </p>

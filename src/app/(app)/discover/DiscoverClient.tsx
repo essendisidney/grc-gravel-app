@@ -41,7 +41,7 @@ export default function DiscoverClient() {
   }
 
   return (
-    <div className="animate-fade-in" style={{ padding: '0 16px 24px' }}>
+    <div className="page animate-fade-in" style={{ paddingBottom: 24 }}>
       <div className="stagger" style={{ padding: '4px 4px 18px' }}>
         <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 8 }}>Wave 8 · Gravel near you</div>
         <h1 className="display-title" style={{ fontSize: 30 }}>Route intelligence</h1>

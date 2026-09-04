@@ -855,6 +855,8 @@ export function clearDemoCaches() {
     'grc-phone-charged',
     'grc-finish-checks',
     'grc-cash-float',
+    'grc-spare-tube',
+    'grc-buddy-check',
   ]
   keys.forEach(k => {
     try {
@@ -1953,4 +1955,56 @@ export function getDustRinseTip(distanceKm = 60) {
     title: 'Wipe-down',
     body: 'Short loop — still wipe the chain and check for grit in the jockey wheels.',
   }
+}
+
+export function getUvSunscreenTip(startTime = '06:15:00') {
+  const [hh] = startTime.split(':').map(Number)
+  if ((hh || 6) < 7) {
+    return {
+      title: 'SPF before the ridge',
+      body: 'Early start still burns on Magadi — ears, neck, and the backs of calves. Reapply at the first regroup.',
+    }
+  }
+  return {
+    title: 'High-UV corridor',
+    body: 'Mid-morning Magadi is harsh. SPF 50 + sunglasses — shade is scarce past Kona Baridi.',
+  }
+}
+
+export function getReturnTrafficTip(startTime = '06:15:00') {
+  const [hh, mm] = startTime.split(':').map(Number)
+  const startMin = (hh || 6) * 60 + (mm || 15)
+  const backMin = startMin + 4 * 60 + 30
+  const bh = Math.floor((backMin % (24 * 60)) / 60)
+  const bm = backMin % 60
+  const backLabel = `${String(bh).padStart(2, '0')}:${String(bm).padStart(2, '0')}`
+  return {
+    backAround: backLabel,
+    tip: `Expect Ngong Road clog ~${backLabel} if the pack rolls on schedule. Fuel up at the gate before the drive home.`,
+  }
+}
+
+const SPARE_TUBE_KEY = 'grc-spare-tube'
+const BUDDY_CHECK_KEY = 'grc-buddy-check'
+
+export function getSpareTubePacked(rideId: string) {
+  return readJson<Record<string, boolean>>(SPARE_TUBE_KEY, {})[rideId] === true
+}
+
+export function setSpareTubePacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(SPARE_TUBE_KEY, {})
+  all[rideId] = on
+  writeJson(SPARE_TUBE_KEY, all)
+  return on
+}
+
+export function getBuddyChecked(rideId: string) {
+  return readJson<Record<string, boolean>>(BUDDY_CHECK_KEY, {})[rideId] === true
+}
+
+export function setBuddyChecked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(BUDDY_CHECK_KEY, {})
+  all[rideId] = on
+  writeJson(BUDDY_CHECK_KEY, all)
+  return on
 }

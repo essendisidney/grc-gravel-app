@@ -9,7 +9,7 @@ export default function JoinPage() {
   return (
     <div>
       <TopBar showBack title="Join GRC" showNotifications={false} backHref="/club" />
-      <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
+      <div className="page animate-fade-in">
         <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 8 }}>Membership</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
           Ride. Connect. Compete. Belong.
