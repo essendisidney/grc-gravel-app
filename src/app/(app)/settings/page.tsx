@@ -40,6 +40,16 @@ export default function SettingsPage() {
     window.setTimeout(() => router.refresh(), 400)
   }
 
+  function replayOnboarding() {
+    try {
+      localStorage.removeItem('grc-onboarded')
+    } catch {
+      /* ignore */
+    }
+    setMsg('Reloading onboarding…')
+    window.setTimeout(() => window.location.reload(), 400)
+  }
+
   function wipeDemo() {
     if (!confirm('Clear local demo data (RSVPs, packs, notes)? You stay signed in.')) return
     clearDemoCaches()
@@ -109,6 +119,9 @@ export default function SettingsPage() {
         <div className="eyebrow" style={{ margin: '18px 0 10px' }}>Device</div>
         <button type="button" className="btn-secondary" onClick={replaySplash} style={{ marginBottom: 8 }}>
           Replay brand splash
+        </button>
+        <button type="button" className="btn-secondary" onClick={replayOnboarding} style={{ marginBottom: 8 }}>
+          Replay onboarding
         </button>
         <button type="button" className="btn-secondary" onClick={wipeDemo} style={{ marginBottom: 8 }}>
           Clear demo data

@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { CheckCircle2, Clock, Loader2 } from 'lucide-react'
+import { CheckCircle2, Clock, Loader2, Bookmark } from 'lucide-react'
 import KitChecklist from '@/components/rides/KitChecklist'
 import CarpoolBoard from '@/components/rides/CarpoolBoard'
 import PaceBuddies from '@/components/rides/PaceBuddies'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
-import { clearRsvp, getRollCall, getRsvp, markSaturdayRidden, setRsvp, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
+import { clearRsvp, getRollCall, getRsvp, isRideSaved, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
 
 type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
@@ -26,12 +26,14 @@ export default function RideDetailClient({
   const [rsvp, setLocal] = useState<LocalRsvp | null>(null)
   const [paceId, setPaceId] = useState(paceGroups[1]?.id || paceGroups[0]?.id || '')
   const [roster, setRoster] = useState<RollCallRider[]>([])
+  const [bookmarked, setBookmarked] = useState(false)
 
   useEffect(() => {
     const existing = getRsvp(rideId)
     setLocal(existing)
     if (existing) setPaceId(existing.paceGroupId)
     setRoster(getRollCall(rideId))
+    setBookmarked(isRideSaved(rideId))
   }, [rideId])
 
   async function handleRegister() {
@@ -93,6 +95,15 @@ export default function RideDetailClient({
 
   return (
     <div>
+      <button
+        type="button"
+        className={bookmarked ? 'btn-primary' : 'btn-secondary'}
+        style={{ marginBottom: 12 }}
+        onClick={() => setBookmarked(toggleSavedRide(rideId).includes(rideId))}
+      >
+        <Bookmark size={16} /> {bookmarked ? 'Saved for later' : 'Save this ride'}
+      </button>
+
       {message && (
         <div
           style={{

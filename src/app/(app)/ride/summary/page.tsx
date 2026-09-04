@@ -10,6 +10,8 @@ import {
   getActivities,
   getSession,
   markSaturdayRidden,
+  setActivityFeel,
+  type RideFeel,
 } from '@/lib/localStore'
 import RouteMap from '@/components/maps/RouteMap'
 import ShareRideCard from '@/components/ride/ShareRideCard'
@@ -32,6 +34,8 @@ function SummaryInner() {
   const [saved, setSaved] = useState(false)
   const [shared, setShared] = useState(false)
   const [riderName, setRiderName] = useState('GRC rider')
+  const [activityId, setActivityId] = useState<string | null>(null)
+  const [feel, setFeel] = useState<RideFeel | null>(null)
 
   const distanceKm = Math.min(
     ride?.distance_km || 86,
@@ -49,15 +53,18 @@ function SummaryInner() {
 
   useEffect(() => {
     if (saved || elapsed < 5) return
-    const already = getActivities().some(
+    const already = getActivities().find(
       a => a.rideId === rideId && Math.abs(new Date(a.endedAt).getTime() - Date.now()) < 15000,
     )
     if (already) {
       setSaved(true)
+      setActivityId(already.id)
+      if (already.feel) setFeel(already.feel)
       return
     }
+    const id = `act_${Date.now()}`
     addActivity({
-      id: `act_${Date.now()}`,
+      id,
       rideId,
       title,
       paceGroupName: pace,
@@ -67,8 +74,14 @@ function SummaryInner() {
       endedAt: new Date().toISOString(),
     })
     markSaturdayRidden()
+    setActivityId(id)
     setSaved(true)
   }, [saved, elapsed, rideId, pace, title, distanceKm, elevationM])
+
+  function rate(v: RideFeel) {
+    setFeel(v)
+    if (activityId) setActivityFeel(activityId, v)
+  }
 
   function shareToClub() {
     const session = getSession()
@@ -85,7 +98,7 @@ function SummaryInner() {
 
   return (
     <div className="animate-fade-in" style={{ padding: '16px 16px 28px' }}>
-      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 10 · Post-ride</div>
+      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 15 · Post-ride</div>
       <h1 style={{ margin: '0 0 6px', fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em' }}>
         Ride logged
       </h1>
@@ -108,6 +121,26 @@ function SummaryInner() {
         <Stat label="Time" value={formatElapsed(elapsed)} />
         <Stat label="Distance" value={`${distanceKm} km`} />
         <Stat label="Climb" value={`${elevationM || '—'} m`} />
+      </div>
+
+      <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
+        <div style={{ fontWeight: 800, marginBottom: 8 }}>How did it feel?</div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {([1, 2, 3, 4, 5] as RideFeel[]).map(v => (
+            <button
+              key={v}
+              type="button"
+              className={feel === v ? 'chip accent' : 'chip'}
+              style={{ border: 'none', cursor: 'pointer', flex: 1, justifyContent: 'center' }}
+              onClick={() => rate(v)}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 8 }}>
+          1 = cooked · 5 = flying
+        </div>
       </div>
 
       <div className="surface" style={{ padding: 14, marginBottom: 14 }}>

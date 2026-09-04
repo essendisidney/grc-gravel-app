@@ -14,6 +14,7 @@ import {
   type BikeService,
   type GarageBike,
 } from '@/lib/localStore'
+import TirePsiGuide from '@/components/passport/TirePsiGuide'
 
 const TYPES: GarageBike['type'][] = ['gravel', 'road', 'mtb', 'hybrid']
 const SERVICE_KINDS: BikeService['kind'][] = ['tune', 'tires', 'chain', 'brake', 'other']
@@ -70,11 +71,13 @@ export default function GaragePage() {
     <div>
       <TopBar showBack title="Bike garage" backHref="/passport" showNotifications={false} />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 12</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 15</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800 }}>Your fleet</h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>
-          Primary bike + service log — before you book The Gravel wrench.
+          Primary bike, service log, and PSI starting points for gravel.
         </p>
+
+        <TirePsiGuide tireMm={bikes.find(b => b.isPrimary)?.tireMm || 40} />
 
         {bikes.map(b => {
           const logs = services.filter(s => s.bikeId === b.id).slice(0, 2)

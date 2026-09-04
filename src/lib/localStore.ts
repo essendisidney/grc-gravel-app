@@ -261,6 +261,7 @@ export type RideActivity = {
   elevationM: number
   endedAt: string
   note?: string
+  feel?: 1 | 2 | 3 | 4 | 5
 }
 
 const ACTIVITY_KEY = 'grc-activities'
@@ -830,6 +831,7 @@ export function clearDemoCaches() {
     'grc-activities',
     'grc-club-stories',
     'grc-offline-packs',
+    'grc-saved-rides',
   ]
   keys.forEach(k => {
     try {
@@ -838,4 +840,48 @@ export function clearDemoCaches() {
       /* ignore */
     }
   })
+}
+
+const ONBOARD_KEY = 'grc-onboarded'
+const SAVED_RIDES_KEY = 'grc-saved-rides'
+
+export function hasCompletedOnboarding() {
+  return readJson<boolean>(ONBOARD_KEY, false)
+}
+
+export function completeOnboarding() {
+  writeJson(ONBOARD_KEY, true)
+}
+
+export function getSavedRideIds(): string[] {
+  return readJson<string[]>(SAVED_RIDES_KEY, [])
+}
+
+export function isRideSaved(rideId: string) {
+  return getSavedRideIds().includes(rideId)
+}
+
+export function toggleSavedRide(rideId: string) {
+  const set = new Set(getSavedRideIds())
+  if (set.has(rideId)) set.delete(rideId)
+  else set.add(rideId)
+  const next = [...set]
+  writeJson(SAVED_RIDES_KEY, next)
+  return next
+}
+
+export type RideFeel = 1 | 2 | 3 | 4 | 5
+
+export function setActivityFeel(id: string, feel: RideFeel) {
+  const next = getActivities().map(a => (a.id === id ? { ...a, feel } : a))
+  writeJson(ACTIVITY_KEY, next)
+  return next
+}
+
+/** Suggest PSI range from tire width (demo heuristic for gravel). */
+export function suggestPsi(tireMm = 40, riderKg = 75) {
+  const base = Math.round(riderKg * 0.42 - (tireMm - 35) * 0.55)
+  const front = Math.max(28, Math.min(55, base - 2))
+  const rear = Math.max(30, Math.min(58, base + 1))
+  return { front, rear, note: `${tireMm} mm · ~${riderKg} kg rider · start soft on Magadi dust` }
 }
