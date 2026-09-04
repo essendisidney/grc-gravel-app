@@ -433,3 +433,30 @@ export const DEMO_NOTICE = {
   title: 'Ngong → Magadi this Saturday',
   body: '06:15 roll-out. Fast / Cruiser / Social groups. Lights on.',
 }
+
+export const DEMO_CLUB_EVENTS = [
+  {
+    id: 'ev1',
+    title: 'Bike fit clinic',
+    when: dayOffset(3),
+    time: '17:30',
+    place: 'The Gravel — Tena',
+    kind: 'Workshop',
+  },
+  {
+    id: 'ev2',
+    title: 'Coffee + hang',
+    when: dayOffset(4),
+    time: '09:00',
+    place: 'Utawala clubhouse',
+    kind: 'Social',
+  },
+  {
+    id: 'ev3',
+    title: 'Full Gas kit pickup',
+    when: dayOffset(8),
+    time: '16:00',
+    place: 'Utawala',
+    kind: 'Race',
+  },
+]

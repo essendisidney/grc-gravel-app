@@ -3,6 +3,7 @@ import Link from 'next/link'
 import TopBar from '@/components/layout/TopBar'
 import InviteFriend from '@/components/club/InviteFriend'
 import GearBorrowBoard from '@/components/club/GearBorrowBoard'
+import ClubEventsStrip from '@/components/home/ClubEventsStrip'
 import { DEMO_CLUB, DEMO_RIDES } from '@/lib/demo'
 import { formatRideDate, formatTime } from '@/lib/utils'
 
@@ -87,6 +88,9 @@ export default function ClubPage() {
             </div>
           ))}
         </div>
+
+        <div className="eyebrow" style={{ marginBottom: 10 }}>Club calendar</div>
+        <ClubEventsStrip showMoreLink={false} />
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>People</div>
         <InviteFriend />

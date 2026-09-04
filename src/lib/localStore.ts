@@ -836,6 +836,9 @@ export function clearDemoCaches() {
     'grc-kudos',
     'grc-late-pings',
     'grc-gear-board',
+    'grc-incidents',
+    'grc-rollout-checks',
+    'grc-gate-self',
   ]
   keys.forEach(k => {
     try {
@@ -1131,4 +1134,74 @@ export function attendanceCsv(rideId: string, title = 'Club ride') {
   const roster = getRollCall(rideId)
   const lines = ['name,pace,status', ...roster.map(r => `"${r.name}","${r.paceGroup}",${r.present ? 'present' : 'absent'}`)]
   return `# ${title}\n# exported ${new Date().toISOString()}\n${lines.join('\n')}`
+}
+
+const INCIDENT_KEY = 'grc-incidents'
+const ROLLOUT_KEY = 'grc-rollout-checks'
+const GATE_SELF_KEY = 'grc-gate-self'
+
+export type RideIncident = {
+  id: string
+  rideId: string
+  type: 'puncture' | 'mechanical' | 'medical' | 'other'
+  note: string
+  kmEst: number
+  createdAt: string
+  name: string
+}
+
+export function getIncidents(rideId: string): RideIncident[] {
+  return readJson<RideIncident[]>(INCIDENT_KEY, []).filter(i => i.rideId === rideId)
+}
+
+export function addIncident(incident: RideIncident) {
+  const next = [incident, ...readJson<RideIncident[]>(INCIDENT_KEY, [])].slice(0, 40)
+  writeJson(INCIDENT_KEY, next)
+  return next.filter(i => i.rideId === incident.rideId)
+}
+
+export type RolloutChecks = {
+  lights: boolean
+  helmet: boolean
+  bottles: boolean
+}
+
+export function getRolloutChecks(rideId: string): RolloutChecks {
+  const all = readJson<Record<string, RolloutChecks>>(ROLLOUT_KEY, {})
+  return all[rideId] || { lights: false, helmet: false, bottles: false }
+}
+
+export function setRolloutCheck(rideId: string, key: keyof RolloutChecks, value: boolean) {
+  const all = readJson<Record<string, RolloutChecks>>(ROLLOUT_KEY, {})
+  const cur = all[rideId] || { lights: false, helmet: false, bottles: false }
+  all[rideId] = { ...cur, [key]: value }
+  writeJson(ROLLOUT_KEY, all)
+  return all[rideId]
+}
+
+export function isRolloutReady(rideId: string) {
+  const c = getRolloutChecks(rideId)
+  return c.lights && c.helmet && c.bottles
+}
+
+export function hasGateSelfCheckIn(rideId: string) {
+  return readJson<Record<string, string>>(GATE_SELF_KEY, {})[rideId] != null
+}
+
+/** Member taps “I’m at the gate” — marks self present on roll call. */
+export function gateSelfCheckIn(rideId: string, name: string, paceGroup: string) {
+  const all = readJson<Record<string, RollCallRider[]>>(ROLLCALL_KEY, {})
+  let list = all[rideId]?.length ? [...all[rideId]] : [...getRollCall(rideId)]
+  const idx = list.findIndex(r => r.name.toLowerCase() === name.toLowerCase())
+  if (idx >= 0) {
+    list[idx] = { ...list[idx], present: true, paceGroup: paceGroup || list[idx].paceGroup }
+  } else {
+    list = [...list, { id: `self_${Date.now()}`, name, paceGroup, present: true }]
+  }
+  all[rideId] = list
+  writeJson(ROLLCALL_KEY, all)
+  const map = readJson<Record<string, string>>(GATE_SELF_KEY, {})
+  map[rideId] = new Date().toISOString()
+  writeJson(GATE_SELF_KEY, map)
+  return list
 }

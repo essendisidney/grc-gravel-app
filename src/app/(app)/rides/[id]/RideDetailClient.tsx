@@ -8,8 +8,10 @@ import CarpoolBoard from '@/components/rides/CarpoolBoard'
 import PaceBuddies from '@/components/rides/PaceBuddies'
 import MeetupPins from '@/components/rides/MeetupPins'
 import RunningLate from '@/components/rides/RunningLate'
+import GateSelfCheckIn from '@/components/rides/GateSelfCheckIn'
+import RolloutChecklist from '@/components/rides/RolloutChecklist'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
-import { clearRsvp, getRollCall, getRsvp, isRideSaved, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
+import { clearRsvp, getRollCall, getRsvp, isRideSaved, isRolloutReady, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
 
 type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
@@ -29,6 +31,7 @@ export default function RideDetailClient({
   const [paceId, setPaceId] = useState(paceGroups[1]?.id || paceGroups[0]?.id || '')
   const [roster, setRoster] = useState<RollCallRider[]>([])
   const [bookmarked, setBookmarked] = useState(false)
+  const [rolloutOk, setRolloutOk] = useState(false)
 
   useEffect(() => {
     const existing = getRsvp(rideId)
@@ -36,6 +39,7 @@ export default function RideDetailClient({
     if (existing) setPaceId(existing.paceGroupId)
     setRoster(getRollCall(rideId))
     setBookmarked(isRideSaved(rideId))
+    setRolloutOk(isRolloutReady(rideId))
   }, [rideId])
 
   async function handleRegister() {
@@ -238,6 +242,13 @@ export default function RideDetailClient({
 
       {(isRegistered || isWaitlisted) && <RunningLate rideId={rideId} />}
 
+      {isRegistered && (
+        <>
+          <GateSelfCheckIn rideId={rideId} onChecked={() => setRoster(getRollCall(rideId))} />
+          <RolloutChecklist rideId={rideId} onChange={setRolloutOk} />
+        </>
+      )}
+
       {ride && (
         <div style={{ marginBottom: 14 }}>
           <AddToCalendarButton ride={ride} />
@@ -271,11 +282,22 @@ export default function RideDetailClient({
             </div>
           </div>
           <Link
-            href={`/ride/live?ride=${rideId}`}
+            href={rolloutOk ? `/ride/live?ride=${rideId}` : `#`}
             className="btn-primary"
-            style={{ textDecoration: 'none', display: 'flex', marginBottom: 10 }}
+            onClick={e => {
+              if (!rolloutOk) {
+                e.preventDefault()
+                setMessage('Complete pre-roll check (lights, helmet, bottles) first.')
+              }
+            }}
+            style={{
+              textDecoration: 'none',
+              display: 'flex',
+              marginBottom: 10,
+              opacity: rolloutOk ? 1 : 0.65,
+            }}
           >
-            Start ride
+            {rolloutOk ? 'Start ride' : 'Finish pre-roll to start'}
           </Link>
           <button onClick={handleCancel} disabled={loading} className="btn-danger">
             {loading ? <Loader2 size={14} /> : 'Cancel registration'}

@@ -15,6 +15,7 @@ import {
   getSession,
   startLiveRide,
 } from '@/lib/localStore'
+import IncidentLog from '@/components/ride/IncidentLog'
 
 const CHECKPOINTS = [
   { atMin: 0, label: 'Ngong Town', note: 'Roll-out · lights check' },
@@ -191,6 +192,8 @@ export default function LiveRideClient() {
           </div>
         </div>
       )}
+
+      <IncidentLog rideId={rideId} kmEst={estKm} />
 
       {sos ? (
         <div

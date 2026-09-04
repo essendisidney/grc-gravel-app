@@ -43,3 +43,11 @@ assert.match(csv, /present/)
 assert.match(csv, /absent/)
 
 console.log('verify-helpers: OK (dust, psi, attendance csv)')
+
+// Rollout ready requires all three
+function isRolloutReady(c) {
+  return c.lights && c.helmet && c.bottles
+}
+assert.equal(isRolloutReady({ lights: true, helmet: true, bottles: true }), true)
+assert.equal(isRolloutReady({ lights: true, helmet: true, bottles: false }), false)
+console.log('verify-helpers: OK (rollout checks)')
