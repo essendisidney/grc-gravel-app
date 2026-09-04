@@ -839,6 +839,7 @@ export function clearDemoCaches() {
     'grc-incidents',
     'grc-rollout-checks',
     'grc-gate-self',
+    'grc-chai-kitty',
   ]
   keys.forEach(k => {
     try {
@@ -1204,4 +1205,79 @@ export function gateSelfCheckIn(rideId: string, name: string, paceGroup: string)
   map[rideId] = new Date().toISOString()
   writeJson(GATE_SELF_KEY, map)
   return list
+}
+
+const CHAI_KEY = 'grc-chai-kitty'
+
+export type ChaiKitty = {
+  rideId: string
+  goalKes: number
+  contributions: { id: string; name: string; amountKes: number; at: string }[]
+}
+
+export function getChaiKitty(rideId: string): ChaiKitty {
+  const all = readJson<Record<string, ChaiKitty>>(CHAI_KEY, {})
+  if (all[rideId]) return all[rideId]
+  return {
+    rideId,
+    goalKes: 2000,
+    contributions: [
+      { id: 'c_seed', name: 'Amina Otieno', amountKes: 200, at: new Date(Date.now() - 3600000).toISOString() },
+      { id: 'c_seed2', name: 'Sam Kariuki', amountKes: 100, at: new Date(Date.now() - 1800000).toISOString() },
+    ],
+  }
+}
+
+export function addChaiContribution(rideId: string, name: string, amountKes: number) {
+  const all = readJson<Record<string, ChaiKitty>>(CHAI_KEY, {})
+  const cur = all[rideId] || getChaiKitty(rideId)
+  const next: ChaiKitty = {
+    ...cur,
+    contributions: [
+      { id: `chai_${Date.now()}`, name, amountKes, at: new Date().toISOString() },
+      ...cur.contributions,
+    ].slice(0, 40),
+  }
+  all[rideId] = next
+  writeJson(CHAI_KEY, all)
+  return next
+}
+
+export function chaiTotal(kitty: ChaiKitty) {
+  return kitty.contributions.reduce((s, c) => s + c.amountKes, 0)
+}
+
+/** Build WhatsApp-friendly start list from roll call. */
+export function startListText(rideId: string, title: string) {
+  const roster = getRollCall(rideId)
+  const present = roster.filter(r => r.present)
+  const lines = [
+    `GRC · ${title}`,
+    `Start list · ${present.length}/${roster.length} present`,
+    '',
+    ...roster.map(r => `${r.present ? '✓' : '○'} ${r.name} · ${r.paceGroup}`),
+    '',
+    'Lights on. See you at the gate.',
+  ]
+  return lines.join('\n')
+}
+
+export function recoveryTip(feel: number | null | undefined) {
+  if (feel == null) return null
+  if (feel <= 2) {
+    return {
+      title: 'Recovery day',
+      body: 'Legs cooked — easy spin or rest tomorrow. Salt, water, early sleep.',
+    }
+  }
+  if (feel === 3) {
+    return {
+      title: 'Active recovery',
+      body: 'Steady coffee ride or yoga. Skip intervals until mid-week.',
+    }
+  }
+  return {
+    title: 'Bank the fitness',
+    body: 'You felt strong — keep hydration high and note the corridor PR.',
+  }
 }

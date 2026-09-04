@@ -10,6 +10,7 @@ import MeetupPins from '@/components/rides/MeetupPins'
 import RunningLate from '@/components/rides/RunningLate'
 import GateSelfCheckIn from '@/components/rides/GateSelfCheckIn'
 import RolloutChecklist from '@/components/rides/RolloutChecklist'
+import ChaiKittyBoard from '@/components/rides/ChaiKittyBoard'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, isRideSaved, isRolloutReady, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -256,6 +257,8 @@ export default function RideDetailClient({
       )}
 
       <CarpoolBoard rideId={rideId} />
+
+      <ChaiKittyBoard rideId={rideId} />
 
       {isRegistered && (
         <div style={{ marginBottom: 12 }}>

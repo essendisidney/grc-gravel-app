@@ -51,3 +51,14 @@ function isRolloutReady(c) {
 assert.equal(isRolloutReady({ lights: true, helmet: true, bottles: true }), true)
 assert.equal(isRolloutReady({ lights: true, helmet: true, bottles: false }), false)
 console.log('verify-helpers: OK (rollout checks)')
+
+function recoveryTip(feel) {
+  if (feel == null) return null
+  if (feel <= 2) return 'Recovery day'
+  if (feel === 3) return 'Active recovery'
+  return 'Bank the fitness'
+}
+assert.equal(recoveryTip(1), 'Recovery day')
+assert.equal(recoveryTip(5), 'Bank the fitness')
+assert.equal(recoveryTip(null), null)
+console.log('verify-helpers: OK (recovery tips)')
