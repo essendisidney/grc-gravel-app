@@ -314,10 +314,15 @@ button, a, input, textarea, select { touch-action: manipulation; }
   width: 100%;
   max-width: none;
   z-index: 50;
-  /* Solid dock so icons never sit under the system bar */
-  background: #141210;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 10px var(--nav-safe-bottom);
+  /* Soft fade into content — bar itself is the glass pill */
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(247, 244, 236, 0.35) 35%,
+    rgba(247, 244, 236, 0.55) 100%
+  );
+  border-top: none;
+  padding: 10px 12px var(--nav-safe-bottom);
   pointer-events: none;
   box-sizing: border-box;
 }
@@ -329,11 +334,22 @@ button, a, input, textarea, select { touch-action: manipulation; }
   min-height: var(--nav-content-h);
   height: var(--nav-content-h);
   padding: 4px 4px 6px;
-  border-radius: 18px;
-  background: rgba(34, 30, 26, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  border-radius: 20px;
+  background: rgba(28, 25, 22, 0.55);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   box-sizing: border-box;
+}
+
+/* Fallback when backdrop-filter isn't available */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav-bar {
+    background: rgba(28, 25, 22, 0.92);
+  }
 }
 
 .stagger > * {
