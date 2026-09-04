@@ -7,11 +7,14 @@ import TopBar from '@/components/layout/TopBar'
 import {
   addCaptainPing,
   getCaptainPings,
+  getRollCall,
   getSession,
   getWaitlist,
   promoteWaitlist,
+  toggleRollCall,
   type CaptainPing,
   type LocalSession,
+  type RollCallRider,
   type WaitlistRider,
 } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -21,6 +24,7 @@ const RIDE_ID = 'ngong-magadi'
 export default function CaptainPage() {
   const [session, setLocalSession] = useState<LocalSession | null>(null)
   const [waitlist, setWaitlist] = useState<WaitlistRider[]>([])
+  const [rollCall, setRollCall] = useState<RollCallRider[]>([])
   const [pings, setPings] = useState<CaptainPing[]>([])
   const [message, setMessage] = useState('Regroup at Kona Baridi. Lights on — Magadi dust kicking.')
   const [recurring, setRecurring] = useState(true)
@@ -29,6 +33,7 @@ export default function CaptainPage() {
   useEffect(() => {
     setLocalSession(getSession())
     setWaitlist(getWaitlist(RIDE_ID))
+    setRollCall(getRollCall(RIDE_ID))
     setPings(getCaptainPings())
   }, [])
 
@@ -69,12 +74,12 @@ export default function CaptainPage() {
     <div>
       <TopBar showBack title="Captain tools" showNotifications backHref="/club" />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 3</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 4</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {ride?.route_label || 'Club ride'}
         </h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>
-          Waitlist, recurring flag, and group pings — demo ops for captains.
+          Gate roll call, waitlist, recurring flag, group pings.
         </p>
 
         <div className="surface" style={{ padding: 14, marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -92,7 +97,42 @@ export default function CaptainPage() {
           </button>
         </div>
 
-        <div className="eyebrow" style={{ marginBottom: 10 }}>Waitlist</div>
+        <div className="eyebrow" style={{ marginBottom: 10 }}>
+          Gate roll call · {rollCall.filter(r => r.present).length}/{rollCall.length} present
+        </div>
+        {rollCall.map(r => (
+          <button
+            key={r.id}
+            type="button"
+            onClick={() => setRollCall(toggleRollCall(RIDE_ID, r.id))}
+            className="surface"
+            style={{
+              width: '100%',
+              padding: 12,
+              marginBottom: 8,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: 10,
+              cursor: 'pointer',
+              border: r.present ? '1px solid rgba(47,125,75,0.35)' : '1px solid var(--line)',
+              background: r.present ? 'rgba(47,125,75,0.08)' : 'var(--surface)',
+              fontFamily: 'var(--font)',
+              color: 'var(--ink)',
+              textAlign: 'left',
+            }}
+          >
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 14 }}>{r.name}</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{r.paceGroup}</div>
+            </div>
+            <span className={r.present ? 'chip accent' : 'chip'} style={{ border: 'none' }}>
+              {r.present ? 'HERE' : 'OUT'}
+            </span>
+          </button>
+        ))}
+
+        <div className="eyebrow" style={{ margin: '18px 0 10px' }}>Waitlist</div>
         {waitlist.length === 0 ? (
           <div className="surface" style={{ padding: 16, marginBottom: 16, color: 'var(--muted)', fontSize: 13 }}>
             Waitlist clear. All spots filled from the queue.

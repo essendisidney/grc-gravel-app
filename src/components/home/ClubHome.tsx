@@ -8,7 +8,7 @@ import { formatRideDate, formatTime } from '@/lib/utils'
 import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
-import { getRsvp, getSession, setRsvp } from '@/lib/localStore'
+import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 
 function greeting() {
@@ -28,6 +28,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
   const [sheet, setSheet] = useState(false)
   const [paceId, setPaceId] = useState(adventure?.pace_groups?.[1]?.id || adventure?.pace_groups?.[0]?.id || '')
   const [firstName, setFirstName] = useState((DEMO_PROFILE.full_name || 'Rider').split(' ')[0].toUpperCase())
+  const [waiver, setWaiverOn] = useState(false)
 
   useEffect(() => {
     const s = getSession()
@@ -39,6 +40,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
       setPaceName(r.paceGroupName)
       setPaceId(r.paceGroupId)
     }
+    if (hasWaiver(adventure.id)) setWaiverOn(true)
   }, [adventure])
 
   if (!adventure) return null
@@ -48,7 +50,9 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
   const groups = adventure.pace_groups || []
 
   function confirmJoin() {
+    if (!waiver) return
     const group = groups.find(g => g.id === paceId)
+    setWaiver(adventure.id)
     setRsvp({
       rideId: adventure.id,
       paceGroupId: paceId || 'cruiser',
@@ -167,22 +171,35 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
       </div>
 
       <div style={{ padding: '14px 14px 0' }}>
-        <button
-          type="button"
-          className={`btn-primary ${joined ? 'joined' : ''}`}
-          onClick={() => (joined ? undefined : setSheet(true))}
-          disabled={joined}
-        >
-          {joined ? (
-            <>
-              <Check size={18} strokeWidth={2.6} /> YOU’RE IN{paceName ? ` · ${paceName.toUpperCase()}` : ''}
-            </>
-          ) : (
-            <>
-              JOIN RIDE <ArrowUpRight size={18} strokeWidth={2.4} />
-            </>
-          )}
-        </button>
+        {joined ? (
+          <>
+            <Link
+              href={`/ride/live?ride=${adventure.id}`}
+              className="btn-primary"
+              style={{ textDecoration: 'none', display: 'flex' }}
+            >
+              START RIDE <ArrowUpRight size={18} strokeWidth={2.4} />
+            </Link>
+            <div
+              style={{
+                textAlign: 'center',
+                marginTop: 10,
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--good)',
+              }}
+            >
+              <Check size={12} style={{ display: 'inline', verticalAlign: -1 }} /> You’re in
+              {paceName ? ` · ${paceName}` : ''}
+            </div>
+          </>
+        ) : (
+          <button type="button" className="btn-primary" onClick={() => setSheet(true)}>
+            JOIN RIDE <ArrowUpRight size={18} strokeWidth={2.4} />
+          </button>
+        )}
         <Link
           href={`/rides/${adventure.id}`}
           className="pressable"
@@ -306,7 +323,29 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
                 </button>
               )
             })}
-            <button type="button" className="btn-primary" style={{ marginTop: 8 }} onClick={confirmJoin}>
+            <label
+              style={{
+                display: 'flex',
+                gap: 10,
+                alignItems: 'flex-start',
+                margin: '12px 0 14px',
+                fontSize: 12,
+                lineHeight: 1.45,
+                color: 'var(--muted)',
+                cursor: 'pointer',
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={waiver}
+                onChange={e => setWaiverOn(e.target.checked)}
+                style={{ marginTop: 2, width: 18, height: 18, accentColor: 'var(--accent)', flexShrink: 0 }}
+              />
+              <span>
+                I accept the GRC ride waiver — I ride at my own risk on public & gravel roads, carry ID, and follow captain instructions.
+              </span>
+            </label>
+            <button type="button" className="btn-primary" disabled={!waiver} onClick={confirmJoin}>
               Confirm — Niko in
             </button>
           </div>

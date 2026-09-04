@@ -151,3 +151,102 @@ export function addCaptainPing(ping: CaptainPing) {
   writeJson(PINGS_KEY, next)
   return next
 }
+
+export type OfflinePack = {
+  routeId: string
+  name: string
+  regionId: string
+  distanceKm: number
+  elevationM: number
+  gravelPct: number
+  signal: string
+  waterPoints: number
+  savedAt: string
+  gpx: string
+}
+
+export type RollCallRider = {
+  id: string
+  name: string
+  paceGroup: string
+  present: boolean
+}
+
+export type LiveRide = {
+  rideId: string
+  paceGroupName: string
+  startedAt: string
+}
+
+const OFFLINE_KEY = 'grc-offline-packs'
+const WAIVER_KEY = 'grc-waivers'
+const ROLLCALL_KEY = 'grc-rollcall'
+const LIVE_KEY = 'grc-live-ride'
+
+export function getOfflinePacks(): OfflinePack[] {
+  return readJson<OfflinePack[]>(OFFLINE_KEY, [])
+}
+
+export function isRouteSaved(routeId: string) {
+  return getOfflinePacks().some(p => p.routeId === routeId)
+}
+
+export function saveOfflinePack(pack: OfflinePack) {
+  const next = [pack, ...getOfflinePacks().filter(p => p.routeId !== pack.routeId)].slice(0, 12)
+  writeJson(OFFLINE_KEY, next)
+  return next
+}
+
+export function removeOfflinePack(routeId: string) {
+  const next = getOfflinePacks().filter(p => p.routeId !== routeId)
+  writeJson(OFFLINE_KEY, next)
+  return next
+}
+
+export function hasWaiver(rideId: string) {
+  return readJson<string[]>(WAIVER_KEY, []).includes(rideId)
+}
+
+export function setWaiver(rideId: string) {
+  const set = new Set([...readJson<string[]>(WAIVER_KEY, []), rideId])
+  writeJson(WAIVER_KEY, [...set])
+}
+
+export function getRollCall(rideId = 'ngong-magadi'): RollCallRider[] {
+  const all = readJson<Record<string, RollCallRider[]>>(ROLLCALL_KEY, {})
+  if (all[rideId]?.length) return all[rideId]
+  const seed: RollCallRider[] = [
+    { id: 'rc1', name: 'Amina Otieno', paceGroup: 'Cruiser', present: false },
+    { id: 'rc2', name: 'Victor Dawa', paceGroup: 'Fast', present: true },
+    { id: 'rc3', name: 'James Njoroge', paceGroup: 'Social', present: false },
+    { id: 'rc4', name: 'Mercy Njeri', paceGroup: 'Cruiser', present: false },
+    { id: 'rc5', name: 'Sam Kariuki', paceGroup: 'Fast', present: false },
+    { id: 'rc6', name: 'Brian Kamau', paceGroup: 'Cruiser', present: false },
+  ]
+  all[rideId] = seed
+  writeJson(ROLLCALL_KEY, all)
+  return seed
+}
+
+export function toggleRollCall(rideId: string, riderId: string) {
+  const all = readJson<Record<string, RollCallRider[]>>(ROLLCALL_KEY, {})
+  const list = (all[rideId] || getRollCall(rideId)).map(r =>
+    r.id === riderId ? { ...r, present: !r.present } : r,
+  )
+  all[rideId] = list
+  writeJson(ROLLCALL_KEY, all)
+  return list
+}
+
+export function getLiveRide(): LiveRide | null {
+  return readJson<LiveRide | null>(LIVE_KEY, null)
+}
+
+export function startLiveRide(ride: LiveRide) {
+  writeJson(LIVE_KEY, ride)
+}
+
+export function endLiveRide() {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(LIVE_KEY)
+}

@@ -1,14 +1,20 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Download, MapPinned } from 'lucide-react'
+import { ArrowLeft, Download, HardDriveDownload, MapPinned } from 'lucide-react'
 import TopBar from '@/components/layout/TopBar'
 import { buildGpx, getRegionName, getRouteById } from '@/lib/gpx'
+import { isRouteSaved, removeOfflinePack, saveOfflinePack } from '@/lib/localStore'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    if (route) setSaved(isRouteSaved(route.id))
+  }, [route])
 
   if (!route) {
     return (
@@ -28,6 +34,27 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
     a.download = `${route!.id}.gpx`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  function toggleOffline() {
+    if (saved) {
+      removeOfflinePack(route!.id)
+      setSaved(false)
+      return
+    }
+    saveOfflinePack({
+      routeId: route!.id,
+      name: route!.name,
+      regionId: route!.region_id,
+      distanceKm: route!.distance_km,
+      elevationM: route!.elevation_m,
+      gravelPct: route!.gravel_pct,
+      signal: route!.signal,
+      waterPoints: route!.water_points,
+      savedAt: new Date().toISOString(),
+      gpx: buildGpx(route!.id, route!.name),
+    })
+    setSaved(true)
   }
 
   return (
@@ -83,14 +110,22 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
             <div>
               <div style={{ fontWeight: 800, fontSize: 14 }}>Season window</div>
               <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4, lineHeight: 1.45 }}>
-                Best {route.best_months}. Demo GPX is corridor-accurate enough for planning — not race-legal survey data.
+                Best {route.best_months}. Offline pack stores GPX + intel on this device for patchy signal.
               </div>
             </div>
           </div>
         </div>
 
-        <button type="button" className="btn-primary" onClick={downloadGpx}>
+        <button type="button" className="btn-primary" onClick={downloadGpx} style={{ marginBottom: 10 }}>
           <Download size={16} /> Download GPX
+        </button>
+        <button
+          type="button"
+          className={saved ? 'btn-secondary' : 'btn-primary'}
+          onClick={toggleOffline}
+          style={saved ? undefined : { background: 'var(--charcoal)', boxShadow: 'none' }}
+        >
+          <HardDriveDownload size={16} /> {saved ? 'Saved offline · tap to remove' : 'Save offline pack'}
         </button>
         <Link
           href="/rides/ngong-magadi"

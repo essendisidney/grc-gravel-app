@@ -6,7 +6,7 @@ import { getInitials, formatKm } from '@/lib/utils'
 import { Settings, LogOut, Mountain } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DEMO_BADGES, DEMO_CLUB, DEMO_PROFILE } from '@/lib/demo'
-import { clearSession, getSession, type LocalSession } from '@/lib/localStore'
+import { clearSession, getOfflinePacks, getSession, type LocalSession, type OfflinePack } from '@/lib/localStore'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -14,9 +14,11 @@ export default function PassportClient({ profile, badges, recentRides }: {
   const router = useRouter()
   const [showQR, setShowQR] = useState(false)
   const [session, setLocal] = useState<LocalSession | null>(null)
+  const [packs, setPacks] = useState<OfflinePack[]>([])
 
   useEffect(() => {
     setLocal(getSession())
+    setPacks(getOfflinePacks())
   }, [])
 
   const name = session?.fullName || profile?.full_name || DEMO_PROFILE.full_name
@@ -81,6 +83,39 @@ export default function PassportClient({ profile, badges, recentRides }: {
         <Link href="/captain" className="btn-primary" style={{ textDecoration: 'none', display: 'flex', marginBottom: 14 }}>
           Open captain tools
         </Link>
+      )}
+
+      <Link
+        href="/ride/live?ride=ngong-magadi"
+        className="btn-secondary"
+        style={{ textDecoration: 'none', display: 'flex', marginBottom: 14 }}
+      >
+        Open on-ride companion
+      </Link>
+
+      {packs.length > 0 && (
+        <div style={{ marginBottom: 18 }}>
+          <div className="eyebrow" style={{ marginBottom: 10 }}>Offline packs · {packs.length}</div>
+          {packs.map(p => (
+            <Link
+              key={p.routeId}
+              href={`/discover/route/${p.routeId}`}
+              className="surface"
+              style={{
+                display: 'block',
+                padding: 12,
+                marginBottom: 8,
+                textDecoration: 'none',
+                color: 'var(--ink)',
+              }}
+            >
+              <div style={{ fontSize: 14, fontWeight: 800 }}>{p.name}</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 3 }}>
+                {p.distanceKm} km · {p.gravelPct}% gravel · {p.signal} signal · GPX on device
+              </div>
+            </Link>
+          ))}
+        </div>
       )}
 
       <div style={{ marginBottom: 18 }}>
