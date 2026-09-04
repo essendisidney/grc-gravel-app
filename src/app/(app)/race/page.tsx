@@ -10,7 +10,7 @@ export default function RacePage() {
       <TopBar title="Race" showNotifications />
       <div style={{ padding: '0 16px 24px' }}>
         <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16, lineHeight: 1.5 }}>
-          Full Gas criterium — categories, start lists, M-Pesa entry when live.
+          Full Gas criterium — categories, race-day start list. M-Pesa entry later.
         </p>
         {DEMO_RACES.map((race: any) => (
           <Link key={race.id} href={`/race/${race.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', marginBottom: 12 }}>

@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import TopBar from '@/components/layout/TopBar'
 import RaceRegistrationClient from './RaceRegistrationClient'
 import { formatFullDate, formatKES } from '@/lib/utils'
@@ -63,6 +64,13 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
             regCounts={regCounts}
           />
         </div>
+        <Link
+          href={`/race/${race.id}/day`}
+          className="btn-secondary"
+          style={{ textDecoration: 'none', display: 'flex', marginTop: 12 }}
+        >
+          Race day · start list
+        </Link>
       </div>
     </div>
   )

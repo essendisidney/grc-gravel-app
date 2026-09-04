@@ -80,6 +80,31 @@ export function waypointsToSvgPath(routeOrRideId: string, pad = 8) {
   return { d, start, end, projected }
 }
 
+/** Synthetic elevation samples along the corridor for profile charts */
+export function elevationProfile(routeOrRideId: string, samples = 48) {
+  const pts = getWaypoints(routeOrRideId)
+  const values: number[] = []
+  for (let i = 0; i < samples; i++) {
+    const t = i / (samples - 1)
+    const idx = t * (pts.length - 1)
+    const base = 1600 + Math.sin(idx / 2) * 80
+    const climb = Math.sin(t * Math.PI * 2.2) * 120 + Math.cos(t * Math.PI * 0.8) * 60
+    values.push(Math.round(base + climb + t * 40))
+  }
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const span = Math.max(max - min, 40)
+  const d = values
+    .map((v, i) => {
+      const x = (i / (samples - 1)) * 100
+      const y = 100 - ((v - min) / span) * 78 - 10
+      return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`
+    })
+    .join(' ')
+  const area = `${d} L100 100 L0 100 Z`
+  return { d, area, min, max, gain: max - min }
+}
+
 export function getRouteById(id: string) {
   return DEMO_ROUTES.find(r => r.id === id) || null
 }

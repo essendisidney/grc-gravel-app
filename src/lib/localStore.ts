@@ -333,3 +333,49 @@ export function addWrenchBooking(booking: LocalWrenchBooking) {
   writeJson(WRENCH_KEY, next)
   return next
 }
+
+export type RaceEntry = {
+  raceId: string
+  categoryId: string
+  categoryName: string
+  bib: number
+  phone: string
+  registeredAt: string
+}
+
+export type RaceCheckIn = {
+  raceId: string
+  bib: number
+  name: string
+  checkedInAt: string
+}
+
+const RACE_ENTRY_KEY = 'grc-race-entry'
+const RACE_CHECKIN_KEY = 'grc-race-checkin'
+
+export function getRaceEntry(raceId: string): RaceEntry | null {
+  const all = readJson<Record<string, RaceEntry>>(RACE_ENTRY_KEY, {})
+  return all[raceId] || null
+}
+
+export function setRaceEntry(entry: RaceEntry) {
+  const all = readJson<Record<string, RaceEntry>>(RACE_ENTRY_KEY, {})
+  all[entry.raceId] = entry
+  writeJson(RACE_ENTRY_KEY, all)
+}
+
+export function getRaceCheckIns(raceId: string): RaceCheckIn[] {
+  const all = readJson<Record<string, RaceCheckIn[]>>(RACE_CHECKIN_KEY, {})
+  return all[raceId] || []
+}
+
+export function toggleRaceCheckIn(raceId: string, bib: number, name: string) {
+  const all = readJson<Record<string, RaceCheckIn[]>>(RACE_CHECKIN_KEY, {})
+  const list = all[raceId] || []
+  const exists = list.find(c => c.bib === bib)
+  all[raceId] = exists
+    ? list.filter(c => c.bib !== bib)
+    : [{ raceId, bib, name, checkedInAt: new Date().toISOString() }, ...list]
+  writeJson(RACE_CHECKIN_KEY, all)
+  return all[raceId]
+}

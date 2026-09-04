@@ -8,6 +8,7 @@ import TopBar from '@/components/layout/TopBar'
 import { buildGpx, getRegionName, getRouteById } from '@/lib/gpx'
 import { isRouteSaved, removeOfflinePack, saveOfflinePack } from '@/lib/localStore'
 import RouteMap from '@/components/maps/RouteMap'
+import ElevationProfile from '@/components/maps/ElevationProfile'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
@@ -107,6 +108,9 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
 
         <div style={{ marginBottom: 14 }}>
           <RouteMap routeId={route.id} height={170} />
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <ElevationProfile routeId={route.id} />
         </div>
 
         <div className="surface" style={{ padding: 14, marginBottom: 14 }}>

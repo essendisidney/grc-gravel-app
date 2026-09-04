@@ -9,6 +9,7 @@ import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
 import WeatherBriefing from '@/components/home/WeatherBriefing'
+import WeekSchedule from '@/components/home/WeekSchedule'
 import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 
@@ -222,7 +223,14 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
 
       <div style={{ padding: '22px 14px 8px' }}>
         <WeatherBriefing />
-        <div className="eyebrow" style={{ marginBottom: 12 }}>This week</div>
+        {joined && (
+          <ReminderCard
+            title={adventure.route_label || adventure.title}
+            startTime={adventure.start_time}
+          />
+        )}
+        <WeekSchedule rides={rides} />
+        <div className="eyebrow" style={{ margin: '18px 0 12px' }}>This week · stats</div>
         <div className="week-strip">
           <div className="week-cell">
             <div className="eyebrow" style={{ fontSize: 9, marginBottom: 8 }}>Km</div>
@@ -352,6 +360,55 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
             </button>
           </div>
         </div>
+      )}
+    </div>
+  )
+}
+
+function ReminderCard({ title, startTime }: { title: string; startTime?: string }) {
+  const [status, setStatus] = useState<'idle' | 'on' | 'blocked'>('idle')
+
+  async function enable() {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setStatus('blocked')
+      return
+    }
+    const perm = await Notification.requestPermission()
+    if (perm !== 'granted') {
+      setStatus('blocked')
+      return
+    }
+    // Demo: fire a sample reminder now so the rider sees it works
+    new Notification('GRC ride reminder', {
+      body: `${title} · roll-out ${(startTime || '06:15').slice(0, 5)}. Lights on.`,
+      icon: '/icons/icon-192.png',
+      tag: 'grc-ride-reminder',
+    })
+    localStorage.setItem('grc-remind-enabled', '1')
+    setStatus('on')
+  }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (localStorage.getItem('grc-remind-enabled') === '1') setStatus('on')
+  }, [])
+
+  return (
+    <div className="surface" style={{ padding: 12, marginBottom: 12, display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center' }}>
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 800 }}>Ride reminder</div>
+        <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
+          {status === 'on'
+            ? 'Notifications on for this device'
+            : status === 'blocked'
+              ? 'Permission blocked in browser settings'
+              : 'Ping before roll-out (demo)'}
+        </div>
+      </div>
+      {status !== 'on' && (
+        <button type="button" className="chip accent" style={{ border: 'none', cursor: 'pointer' }} onClick={enable}>
+          Enable
+        </button>
       )}
     </div>
   )
