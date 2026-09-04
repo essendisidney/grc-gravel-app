@@ -9,6 +9,7 @@ import RouteMap from '@/components/maps/RouteMap'
 import {
   endLiveRide,
   getCaptainPings,
+  getEmergencyContact,
   getLiveRide,
   getRsvp,
   getSession,
@@ -42,6 +43,7 @@ export default function LiveRideClient() {
   const [ping, setPing] = useState<string | null>(null)
   const [sos, setSos] = useState(false)
   const [ready, setReady] = useState(false)
+  const [emergency, setEmergency] = useState<{ name: string; phone: string } | null>(null)
 
   useEffect(() => {
     const rsvp = getRsvp(rideId)
@@ -66,6 +68,7 @@ export default function LiveRideClient() {
 
     const pings = getCaptainPings().filter(p => p.rideId === rideId)
     if (pings[0]) setPing(pings[0].message)
+    setEmergency(getEmergencyContact())
 
     setReady(true)
     void session
@@ -201,22 +204,58 @@ export default function LiveRideClient() {
         >
           <div style={{ fontWeight: 800, marginBottom: 6 }}>SOS demo armed</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.45, marginBottom: 10 }}>
-            In production this pings your emergency contact + nearest captain. Demo only — no live call.
+            {emergency
+              ? `Ready to ping ${emergency.name}. Demo only — opens dialer, no auto-SMS yet.`
+              : 'No emergency contact saved. Add one in Edit profile, or call the club line.'}
           </div>
-          <a
-            href="tel:+254780222216"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              color: '#fff',
-              fontWeight: 700,
-              textDecoration: 'none',
-              fontSize: 13,
-            }}
-          >
-            <Phone size={14} /> Club line · 0780 222 216
-          </a>
+          {emergency?.phone ? (
+            <a
+              href={`tel:${emergency.phone.replace(/\s/g, '')}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                color: '#fff',
+                fontWeight: 700,
+                textDecoration: 'none',
+                fontSize: 13,
+                marginBottom: 8,
+              }}
+            >
+              <Phone size={14} /> Call {emergency.name}
+            </a>
+          ) : null}
+          <div>
+            <a
+              href="tel:+254780222216"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                color: 'rgba(255,255,255,0.7)',
+                fontWeight: 700,
+                textDecoration: 'none',
+                fontSize: 12,
+              }}
+            >
+              <Phone size={14} /> Club line · 0780 222 216
+            </a>
+          </div>
+          {!emergency && (
+            <Link
+              href="/profile/edit"
+              style={{
+                display: 'block',
+                marginTop: 10,
+                fontSize: 12,
+                fontWeight: 700,
+                color: '#E07A2F',
+                textDecoration: 'none',
+              }}
+            >
+              Add emergency contact →
+            </Link>
+          )}
         </div>
       ) : null}
 

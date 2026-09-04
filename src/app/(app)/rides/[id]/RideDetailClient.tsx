@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { CheckCircle2, Clock, Loader2 } from 'lucide-react'
-import { clearRsvp, getRsvp, setRsvp, type LocalRsvp } from '@/lib/localStore'
+import { clearRsvp, getRollCall, getRsvp, setRsvp, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 
 type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
 
@@ -19,11 +20,13 @@ export default function RideDetailClient({
   const [message, setMessage] = useState('')
   const [rsvp, setLocal] = useState<LocalRsvp | null>(null)
   const [paceId, setPaceId] = useState(paceGroups[1]?.id || paceGroups[0]?.id || '')
+  const [roster, setRoster] = useState<RollCallRider[]>([])
 
   useEffect(() => {
     const existing = getRsvp(rideId)
     setLocal(existing)
     if (existing) setPaceId(existing.paceGroupId)
+    setRoster(getRollCall(rideId))
   }, [rideId])
 
   async function handleRegister() {
@@ -65,6 +68,7 @@ export default function RideDetailClient({
   const isRegistered = rsvp?.status === 'registered'
   const isWaitlisted = rsvp?.status === 'waitlisted'
   const isFull = spotsLeft !== null && spotsLeft <= 0 && !isRegistered && !isWaitlisted
+  const presentCount = roster.filter(r => r.present).length
 
   return (
     <div>
@@ -74,7 +78,7 @@ export default function RideDetailClient({
             padding: '12px 16px',
             borderRadius: 12,
             marginBottom: 14,
-            background: message.toLowerCase().includes('cancel') || message.includes('wrong')
+            background: message.toLowerCase().includes('cancel')
               ? 'rgba(179,58,58,0.08)'
               : 'rgba(47,125,75,0.1)',
             border: `1px solid ${message.toLowerCase().includes('cancel') ? 'rgba(179,58,58,0.25)' : 'rgba(47,125,75,0.25)'}`,
@@ -128,6 +132,48 @@ export default function RideDetailClient({
         </div>
       )}
 
+      <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <div className="section-label" style={{ margin: 0 }}>Who’s going · gate</div>
+          <span className="chip accent" style={{ border: 'none' }}>
+            {presentCount}/{roster.length} here
+          </span>
+        </div>
+        {roster.slice(0, 8).map(r => (
+          <div
+            key={r.id}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '8px 0',
+              borderTop: '1px solid var(--line)',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700 }}>{r.name}</div>
+              <div style={{ fontSize: 11, color: 'var(--muted)' }}>{r.paceGroup}</div>
+            </div>
+            <span className={r.present ? 'chip accent' : 'chip'} style={{ border: 'none' }}>
+              {r.present ? 'HERE' : 'OUT'}
+            </span>
+          </div>
+        ))}
+        <Link
+          href="/captain"
+          style={{
+            display: 'block',
+            marginTop: 10,
+            fontSize: 12,
+            fontWeight: 700,
+            color: 'var(--accent)',
+            textDecoration: 'none',
+          }}
+        >
+          Captain roll call →
+        </Link>
+      </div>
+
       {isRegistered && (
         <div style={{ marginBottom: 12 }}>
           <div
@@ -152,6 +198,13 @@ export default function RideDetailClient({
               </div>
             </div>
           </div>
+          <Link
+            href={`/ride/live?ride=${rideId}`}
+            className="btn-primary"
+            style={{ textDecoration: 'none', display: 'flex', marginBottom: 10 }}
+          >
+            Start ride
+          </Link>
           <button onClick={handleCancel} disabled={loading} className="btn-danger">
             {loading ? <Loader2 size={14} /> : 'Cancel registration'}
           </button>

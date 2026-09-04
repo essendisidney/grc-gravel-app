@@ -273,3 +273,63 @@ export function addActivity(activity: RideActivity) {
   writeJson(ACTIVITY_KEY, next)
   return next
 }
+
+export type EmergencyContact = {
+  name: string
+  phone: string
+}
+
+export type ClubStory = {
+  id: string
+  content: string
+  rideTitle?: string
+  distanceKm?: number
+  createdAt: string
+  authorName: string
+}
+
+export type LocalWrenchBooking = {
+  id: string
+  serviceName: string
+  serviceId: string
+  date: string
+  timeSlot: string
+  location: string
+  bikeInfo?: string
+  notes?: string
+  priceKes: number
+  status: 'pending' | 'accepted' | 'mechanic_en_route' | 'in_progress' | 'completed'
+  createdAt: string
+}
+
+const EMERGENCY_KEY = 'grc-emergency'
+const STORIES_KEY = 'grc-club-stories'
+const WRENCH_KEY = 'grc-wrench-bookings'
+
+export function getEmergencyContact(): EmergencyContact | null {
+  return readJson<EmergencyContact | null>(EMERGENCY_KEY, null)
+}
+
+export function setEmergencyContact(contact: EmergencyContact) {
+  writeJson(EMERGENCY_KEY, contact)
+}
+
+export function getClubStories(): ClubStory[] {
+  return readJson<ClubStory[]>(STORIES_KEY, [])
+}
+
+export function addClubStory(story: ClubStory) {
+  const next = [story, ...getClubStories()].slice(0, 40)
+  writeJson(STORIES_KEY, next)
+  return next
+}
+
+export function getWrenchBookings(): LocalWrenchBooking[] {
+  return readJson<LocalWrenchBooking[]>(WRENCH_KEY, [])
+}
+
+export function addWrenchBooking(booking: LocalWrenchBooking) {
+  const next = [booking, ...getWrenchBookings()].slice(0, 20)
+  writeJson(WRENCH_KEY, next)
+  return next
+}

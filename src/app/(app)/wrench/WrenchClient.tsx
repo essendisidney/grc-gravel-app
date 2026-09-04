@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Wrench, CheckCircle2, Loader2, MapPin } from 'lucide-react'
 import { formatKES } from '@/lib/utils'
+import { addWrenchBooking, getWrenchBookings, type LocalWrenchBooking } from '@/lib/localStore'
 
 const TIME_SLOTS = [
   '7:00 AM – 9:00 AM', '9:00 AM – 11:00 AM',
@@ -31,6 +32,11 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [localBookings, setLocalBookings] = useState<LocalWrenchBooking[]>([])
+
+  useEffect(() => {
+    setLocalBookings(getWrenchBookings())
+  }, [])
 
   async function handleBook() {
     if (!selectedService || !date || !timeSlot || !location) {
@@ -56,6 +62,21 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
 
     const data = await res.json()
     if (!res.ok) { setError(data.error || 'Booking failed'); setLoading(false); return }
+
+    const booking: LocalWrenchBooking = {
+      id: data.id || `wb_${Date.now()}`,
+      serviceName: selectedService.label || selectedService.id,
+      serviceId: selectedService.id,
+      date,
+      timeSlot,
+      location,
+      bikeInfo,
+      notes,
+      priceKes: selectedService.price,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    }
+    setLocalBookings(addWrenchBooking(booking))
     setSuccess(true)
     setLoading(false)
     setView('home')
@@ -257,6 +278,29 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
           Book a mechanic
         </button>
       </div>
+
+      {localBookings.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <div className="eyebrow" style={{ marginBottom: 12 }}>Your bookings · this device</div>
+          {localBookings.map(booking => (
+            <div key={booking.id} className="surface" style={{ padding: 14, marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 800 }}>{booking.serviceName}</div>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 3 }}>
+                    {booking.date} · {booking.timeSlot}
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{booking.location}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--accent)' }}>{formatKES(booking.priceKes)}</div>
+                  <span className="chip accent" style={{ border: 'none', marginTop: 6 }}>{booking.status}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {activeBookings.length > 0 && (
         <div style={{ marginBottom: 24 }}>

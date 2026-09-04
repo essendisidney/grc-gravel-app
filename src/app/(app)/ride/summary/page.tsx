@@ -4,7 +4,12 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { DEMO_RIDES } from '@/lib/demo'
-import { addActivity, getActivities } from '@/lib/localStore'
+import {
+  addActivity,
+  addClubStory,
+  getActivities,
+  getSession,
+} from '@/lib/localStore'
 import RouteMap from '@/components/maps/RouteMap'
 
 function formatElapsed(sec: number) {
@@ -23,6 +28,7 @@ function SummaryInner() {
   const pace = params.get('pace') || 'Cruiser'
   const ride = useMemo(() => DEMO_RIDES.find(r => r.id === rideId) || DEMO_RIDES[0], [rideId])
   const [saved, setSaved] = useState(false)
+  const [shared, setShared] = useState(false)
 
   const distanceKm = Math.min(
     ride?.distance_km || 86,
@@ -31,6 +37,7 @@ function SummaryInner() {
   const elevationM = Math.round(
     (ride?.elevation_gain_m || 800) * Math.min(1, Math.max(0.08, elapsed / (3.5 * 3600))),
   )
+  const title = ride?.route_label || ride?.title || 'Club ride'
 
   useEffect(() => {
     if (saved || elapsed < 5) return
@@ -44,7 +51,7 @@ function SummaryInner() {
     addActivity({
       id: `act_${Date.now()}`,
       rideId,
-      title: ride?.route_label || ride?.title || 'Club ride',
+      title,
       paceGroupName: pace,
       elapsedSec: elapsed,
       distanceKm,
@@ -52,16 +59,29 @@ function SummaryInner() {
       endedAt: new Date().toISOString(),
     })
     setSaved(true)
-  }, [saved, elapsed, rideId, pace, ride, distanceKm, elevationM])
+  }, [saved, elapsed, rideId, pace, title, distanceKm, elevationM])
+
+  function shareToClub() {
+    const session = getSession()
+    addClubStory({
+      id: `story_${Date.now()}`,
+      content: `Rolled ${title} with the ${pace} pack — ${distanceKm} km · ${elevationM} m ↑ · ${formatElapsed(elapsed)}. Dust still in the teeth.`,
+      rideTitle: title,
+      distanceKm,
+      createdAt: new Date().toISOString(),
+      authorName: session?.fullName || 'You',
+    })
+    setShared(true)
+  }
 
   return (
     <div className="animate-fade-in" style={{ padding: '16px 16px 28px' }}>
-      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 5 · Post-ride</div>
+      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 6 · Post-ride</div>
       <h1 style={{ margin: '0 0 6px', fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em' }}>
         Ride logged
       </h1>
       <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)' }}>
-        {ride?.route_label || ride?.title} · {pace}
+        {title} · {pace}
       </p>
 
       <RouteMap routeId={rideId} height={160} />
@@ -75,12 +95,22 @@ function SummaryInner() {
       <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
         <div style={{ fontWeight: 800, marginBottom: 6 }}>Dust report</div>
         <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
-          Demo summary from on-ride elapsed time. Live GPS tracking comes later — this still builds your passport activity streak.
+          Demo summary from on-ride elapsed time. Share a quick story to Club news for the pack.
         </div>
       </div>
 
-      <button type="button" className="btn-primary" onClick={() => router.push('/passport')}>
-        See activity on You
+      {shared ? (
+        <button type="button" className="btn-secondary" disabled style={{ marginBottom: 10 }}>
+          Shared to Club news ✓
+        </button>
+      ) : (
+        <button type="button" className="btn-primary" onClick={shareToClub} style={{ marginBottom: 10 }}>
+          Share to Club news
+        </button>
+      )}
+
+      <button type="button" className="btn-secondary" onClick={() => router.push(shared ? '/feed' : '/passport')}>
+        {shared ? 'Open Club news' : 'See activity on You'}
       </button>
       <Link
         href="/"

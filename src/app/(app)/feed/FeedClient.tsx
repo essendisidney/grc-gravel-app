@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getInitials, formatTimeAgo, getTierColor } from '@/lib/utils'
 import { Heart, MessageCircle, Share2, Pin, Plus, X, Loader2 } from 'lucide-react'
+import { addClubStory, getClubStories, getSession, type ClubStory } from '@/lib/localStore'
 
 export default function FeedClient({ posts: initialPosts, currentUserId }: {
   posts: any[], currentUserId?: string
@@ -11,6 +12,16 @@ export default function FeedClient({ posts: initialPosts, currentUserId }: {
   const [creating, setCreating] = useState(false)
   const [content, setContent] = useState('')
   const [posting, setPosting] = useState(false)
+
+  useEffect(() => {
+    const stories = getClubStories()
+    if (!stories.length) return
+    const mapped = stories.map(storyToPost)
+    setPosts(prev => {
+      const ids = new Set(prev.map(p => p.id))
+      return [...mapped.filter(p => !ids.has(p.id)), ...prev]
+    })
+  }, [])
 
   async function handleLike(postId: string, liked: boolean) {
     setPosts(prev => prev.map(p => p.id === postId
@@ -22,20 +33,19 @@ export default function FeedClient({ posts: initialPosts, currentUserId }: {
   async function handlePost() {
     if (!content.trim()) return
     setPosting(true)
-    setPosts(prev => [{
-      id: `local-${Date.now()}`,
+    const session = getSession()
+    const story: ClubStory = {
+      id: `story_${Date.now()}`,
       content: content.trim(),
-      post_type: 'general',
-      is_pinned: false,
-      like_count: 0,
-      comment_count: 0,
-      created_at: new Date().toISOString(),
-      user_liked: false,
-      profiles: { full_name: 'You', membership_tier: 'member', role: 'member', is_elite_team: false },
-    }, ...prev])
+      createdAt: new Date().toISOString(),
+      authorName: session?.fullName || 'You',
+    }
+    addClubStory(story)
+    setPosts(prev => [storyToPost(story), ...prev])
     setContent('')
     setCreating(false)
     setPosting(false)
+    void currentUserId
   }
 
   return (
@@ -125,4 +135,23 @@ export default function FeedClient({ posts: initialPosts, currentUserId }: {
       })}
     </div>
   )
+}
+
+function storyToPost(story: ClubStory) {
+  return {
+    id: story.id,
+    content: story.content,
+    post_type: story.rideTitle ? 'ride_recap' : 'general',
+    is_pinned: false,
+    like_count: 0,
+    comment_count: 0,
+    created_at: story.createdAt,
+    user_liked: false,
+    profiles: {
+      full_name: story.authorName,
+      membership_tier: 'member',
+      role: 'member',
+      is_elite_team: false,
+    },
+  }
 }
