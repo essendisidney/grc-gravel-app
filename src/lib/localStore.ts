@@ -832,6 +832,8 @@ export function clearDemoCaches() {
     'grc-club-stories',
     'grc-offline-packs',
     'grc-saved-rides',
+    'grc-ride-status',
+    'grc-kudos',
   ]
   keys.forEach(k => {
     try {
@@ -884,4 +886,106 @@ export function suggestPsi(tireMm = 40, riderKg = 75) {
   const front = Math.max(28, Math.min(55, base - 2))
   const rear = Math.max(30, Math.min(58, base + 1))
   return { front, rear, note: `${tireMm} mm · ~${riderKg} kg rider · start soft on Magadi dust` }
+}
+
+export type RideDayStatus = 'on' | 'postponed' | 'cancelled'
+
+const RIDE_STATUS_KEY = 'grc-ride-status'
+const KUDOS_KEY = 'grc-kudos'
+
+export function getRideStatus(rideId: string): RideDayStatus {
+  const all = readJson<Record<string, RideDayStatus>>(RIDE_STATUS_KEY, {})
+  return all[rideId] || 'on'
+}
+
+export function setRideStatus(rideId: string, status: RideDayStatus) {
+  const all = readJson<Record<string, RideDayStatus>>(RIDE_STATUS_KEY, {})
+  all[rideId] = status
+  writeJson(RIDE_STATUS_KEY, all)
+  return status
+}
+
+export type Kudos = {
+  id: string
+  toName: string
+  fromName: string
+  message: string
+  createdAt: string
+}
+
+export function getKudos(): Kudos[] {
+  return readJson<Kudos[]>(KUDOS_KEY, [
+    {
+      id: 'k_seed',
+      toName: 'Amina Otieno',
+      fromName: 'Sam Kariuki',
+      message: 'Held the Cruiser line through Magadi dust. Respect.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+    },
+  ])
+}
+
+export function addKudos(k: Kudos) {
+  const next = [k, ...getKudos()].slice(0, 30)
+  writeJson(KUDOS_KEY, next)
+  return next
+}
+
+export type CorridorPr = {
+  rideId: string
+  title: string
+  bestSec: number
+  distanceKm: number
+  feel?: number
+  at: string
+}
+
+/** Best elapsed time per ride corridor from logged activities */
+export function getCorridorPrs(): CorridorPr[] {
+  const map = new Map<string, CorridorPr>()
+  for (const a of getActivities()) {
+    if (!a.elapsedSec || a.elapsedSec < 60) continue
+    const prev = map.get(a.rideId)
+    if (!prev || a.elapsedSec < prev.bestSec) {
+      map.set(a.rideId, {
+        rideId: a.rideId,
+        title: a.title,
+        bestSec: a.elapsedSec,
+        distanceKm: a.distanceKm,
+        feel: a.feel,
+        at: a.endedAt,
+      })
+    }
+  }
+  // demo seed if empty
+  if (map.size === 0) {
+    return [
+      {
+        rideId: 'ngong-magadi',
+        title: 'Ngong → Magadi',
+        bestSec: 3 * 3600 + 42 * 60,
+        distanceKm: 86,
+        feel: 4,
+        at: new Date(Date.now() - 86400000 * 7).toISOString(),
+      },
+    ]
+  }
+  return [...map.values()].sort((a, b) => a.bestSec - b.bestSec)
+}
+
+export const MEETUP_PINS: Record<string, { id: string; name: string; note: string; km: number }[]> = {
+  'ngong-magadi': [
+    { id: 'm1', name: 'Tena gate', note: 'Roll-out · lights check', km: 0 },
+    { id: 'm2', name: 'Kona Baridi', note: 'Regroup · bottles', km: 28 },
+    { id: 'm3', name: 'Magadi flats pin', note: 'Dust caution · stay tight', km: 52 },
+    { id: 'm4', name: 'Finish — Magadi', note: 'Photo + cold soda', km: 86 },
+  ],
+}
+
+export function getMeetupPins(rideId: string) {
+  return MEETUP_PINS[rideId] || [
+    { id: 'g1', name: 'Start gate', note: 'Club roll-out', km: 0 },
+    { id: 'g2', name: 'Mid regroup', note: 'Captain call', km: 20 },
+    { id: 'g3', name: 'Finish', note: 'Pack photo', km: 40 },
+  ]
 }

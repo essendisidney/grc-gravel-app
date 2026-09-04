@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { getInitials, formatTimeAgo, getTierColor } from '@/lib/utils'
 import { Heart, MessageCircle, Share2, Pin, Plus, X, Loader2 } from 'lucide-react'
 import { addClubStory, getClubStories, getSession, type ClubStory } from '@/lib/localStore'
+import KudosBoard from '@/components/club/KudosBoard'
 
 export default function FeedClient({ posts: initialPosts, currentUserId }: {
   posts: any[], currentUserId?: string
@@ -50,6 +51,9 @@ export default function FeedClient({ posts: initialPosts, currentUserId }: {
 
   return (
     <div style={{ padding: '0 16px 24px' }}>
+      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 10 }}>Wave 16</div>
+      <KudosBoard />
+
       {creating ? (
         <div className="surface" style={{ padding: 16, marginBottom: 14 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>

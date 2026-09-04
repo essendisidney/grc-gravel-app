@@ -10,13 +10,14 @@ import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
 import WeatherBriefing from '@/components/home/WeatherBriefing'
 import AnnouncementsStrip from '@/components/home/AnnouncementsStrip'
+import RideStatusBanner from '@/components/home/RideStatusBanner'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
 import SaturdayStreak from '@/components/home/SaturdayStreak'
 import WeeklyGoal from '@/components/home/WeeklyGoal'
 import WeekSchedule from '@/components/home/WeekSchedule'
 import GravelTips from '@/components/home/GravelTips'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
-import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden } from '@/lib/localStore'
+import { getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 import SearchChip from '@/components/layout/SearchChip'
 
@@ -38,11 +39,13 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
   const [paceId, setPaceId] = useState(adventure?.pace_groups?.[1]?.id || adventure?.pace_groups?.[0]?.id || '')
   const [firstName, setFirstName] = useState((DEMO_PROFILE.full_name || 'Rider').split(' ')[0].toUpperCase())
   const [waiver, setWaiverOn] = useState(false)
+  const [rideStatus, setRideStatusLocal] = useState<RideDayStatus>('on')
 
   useEffect(() => {
     const s = getSession()
     if (s?.fullName) setFirstName(s.fullName.split(' ')[0].toUpperCase())
     if (!adventure) return
+    setRideStatusLocal(getRideStatus(adventure.id))
     const r = getRsvp(adventure.id)
     if (r) {
       setJoined(true)
@@ -182,7 +185,11 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
       </div>
 
       <div style={{ padding: '14px 14px 0' }}>
-        {joined ? (
+        {rideStatus === 'cancelled' || rideStatus === 'postponed' ? (
+          <button type="button" className="btn-primary" disabled style={{ opacity: 0.85 }}>
+            {rideStatus === 'cancelled' ? 'Ride cancelled' : 'Ride postponed'}
+          </button>
+        ) : joined ? (
           <>
             <Link
               href={`/ride/live?ride=${adventure.id}`}
@@ -232,6 +239,8 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
           <AddToCalendarButton ride={adventure} />
         </div>
       </div>
+
+      <RideStatusBanner rideId={adventure.id} />
 
       <AnnouncementsStrip />
 

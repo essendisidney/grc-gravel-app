@@ -6,6 +6,7 @@ import { CheckCircle2, Clock, Loader2, Bookmark } from 'lucide-react'
 import KitChecklist from '@/components/rides/KitChecklist'
 import CarpoolBoard from '@/components/rides/CarpoolBoard'
 import PaceBuddies from '@/components/rides/PaceBuddies'
+import MeetupPins from '@/components/rides/MeetupPins'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, isRideSaved, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -231,6 +232,8 @@ export default function RideDetailClient({
       {(isRegistered || isWaitlisted) && <KitChecklist rideId={rideId} />}
 
       <PaceBuddies rsvp={rsvp} roster={roster} />
+
+      <MeetupPins rideId={rideId} />
 
       {ride && (
         <div style={{ marginBottom: 14 }}>

@@ -9,14 +9,17 @@ import {
   addCaptainPing,
   getAnnouncements,
   getCaptainPings,
+  getRideStatus,
   getRollCall,
   getSession,
   getWaitlist,
   promoteWaitlist,
+  setRideStatus,
   toggleRollCall,
   type CaptainPing,
   type ClubAnnouncement,
   type LocalSession,
+  type RideDayStatus,
   type RollCallRider,
   type WaitlistRider,
 } from '@/lib/localStore'
@@ -34,6 +37,7 @@ export default function CaptainPage() {
   const [announceTitle, setAnnounceTitle] = useState('Saturday Magadi — dust advisory')
   const [announceBody, setAnnounceBody] = useState('Wind from the south. Lights on from Kona Baridi.')
   const [recurring, setRecurring] = useState(true)
+  const [rideStatus, setStatus] = useState<RideDayStatus>('on')
   const ride = DEMO_RIDES.find(r => r.id === RIDE_ID)
 
   useEffect(() => {
@@ -42,6 +46,7 @@ export default function CaptainPage() {
     setRollCall(getRollCall(RIDE_ID))
     setPings(getCaptainPings())
     setAnnouncements(getAnnouncements())
+    setStatus(getRideStatus(RIDE_ID))
   }, [])
 
   if (session && !session.isCaptain) {
@@ -95,13 +100,33 @@ export default function CaptainPage() {
     <div>
       <TopBar showBack title="Captain tools" showNotifications backHref="/club" />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 8 · Captain</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 16 · Captain</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {ride?.route_label || 'Club ride'}
         </h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>
-          Announcements, gate roll call, waitlist, group pings.
+          Ride status, announcements, gate roll call, waitlist, group pings.
         </p>
+
+        <div className="eyebrow" style={{ marginBottom: 10 }}>Saturday status</div>
+        <div className="surface" style={{ padding: 14, marginBottom: 16 }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {(['on', 'postponed', 'cancelled'] as RideDayStatus[]).map(s => (
+              <button
+                key={s}
+                type="button"
+                className={rideStatus === s ? 'chip accent' : 'chip'}
+                style={{ border: 'none', cursor: 'pointer', textTransform: 'uppercase' }}
+                onClick={() => setStatus(setRideStatus(RIDE_ID, s))}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 10, lineHeight: 1.4 }}>
+            Members see this on Home before they join.
+          </div>
+        </div>
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>Club announcement</div>
         <div className="surface" style={{ padding: 14, marginBottom: 16 }}>
