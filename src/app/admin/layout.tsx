@@ -12,11 +12,11 @@ const NAV = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh', background: 'var(--bg)' }}>
+    <div className="phone-shell topo-bg">
       <div style={{
         background: '#fff', borderBottom: '1px solid var(--line)',
         padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        position: 'sticky', top: 0, zIndex: 50,
+        flexShrink: 0,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <GrcLogo size={28} rounded={8} />
@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/" style={{ color: 'var(--muted)', display: 'flex' }}><LogOut size={16} /></Link>
         </div>
       </div>
-      <div style={{ display: 'flex', overflowX: 'auto', scrollbarWidth: 'none', borderBottom: '1px solid var(--line)', background: '#fff' }}>
+      <div style={{ display: 'flex', overflowX: 'auto', scrollbarWidth: 'none', borderBottom: '1px solid var(--line)', background: '#fff', flexShrink: 0 }}>
         {NAV.map(({ href, label, icon: Icon }) => (
           <Link
             key={href}
@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
         ))}
       </div>
-      <main style={{ padding: '20px 16px 40px' }}>{children}</main>
+      <main className="scroll-content" style={{ padding: '20px 16px 40px' }}>{children}</main>
     </div>
   )
 }

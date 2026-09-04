@@ -250,7 +250,6 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
             onClick={e => e.stopPropagation()}
             style={{
               width: '100%',
-              maxWidth: 430,
               background: 'var(--bg)',
               borderRadius: '22px 22px 0 0',
               padding: '18px 16px calc(18px + env(safe-area-inset-bottom))',

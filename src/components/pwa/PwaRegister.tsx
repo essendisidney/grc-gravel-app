@@ -52,7 +52,7 @@ export default function PwaRegister() {
         transform: 'translateX(-50%)',
         bottom: 'calc(var(--nav-h) + 12px + env(safe-area-inset-bottom))',
         width: 'calc(100% - 28px)',
-        maxWidth: 402,
+        maxWidth: 366,
         zIndex: 60,
         background: 'var(--charcoal)',
         color: '#fff',

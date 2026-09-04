@@ -29,35 +29,67 @@
 
 html, body {
   margin: 0;
+  width: 100%;
+  min-height: 100%;
   min-height: 100dvh;
   font-family: var(--font);
-  background: #0E0C0A;
+  background: var(--bg);
   color: var(--ink);
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-button, a, input { touch-action: manipulation; }
+button, a, input, textarea, select { touch-action: manipulation; }
 
+/* Full-bleed on real phones; framed preview on larger screens */
 .phone-shell {
-  max-width: 430px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   background: var(--bg);
   position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 24px 80px rgba(0,0,0,0.45);
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .scroll-content {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   overscroll-behavior-y: contain;
 }
 .scroll-content::-webkit-scrollbar { display: none; }
+
+@media (min-width: 480px) {
+  html, body {
+    background: #0E0C0A;
+  }
+
+  .phone-shell {
+    width: 100%;
+    max-width: 390px;
+    height: min(844px, calc(100dvh - 24px));
+    min-height: unset;
+    max-height: min(844px, calc(100dvh - 24px));
+    margin: 12px auto;
+    border-radius: 32px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 0 0 10px #1a1714,
+      0 28px 80px rgba(0,0,0,0.55);
+  }
+}
 
 .topo-bg {
   background-color: var(--bg);
@@ -185,11 +217,13 @@ button, a, input { touch-action: manipulation; }
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 15px;
+  padding: 14px 14px;
+  font-size: 16px; /* 16px+ avoids iOS focus zoom */
   color: var(--ink);
   outline: none;
   font-family: var(--font);
+  -webkit-appearance: none;
+  appearance: none;
 }
 .grc-input:focus { border-color: var(--accent); }
 .grc-input::placeholder { color: #A39A8E; }
@@ -252,12 +286,12 @@ button, a, input { touch-action: manipulation; }
 .week-cell:last-child { border-right: none; }
 
 .nav-shell {
-  position: fixed;
+  position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   width: 100%;
-  max-width: 430px;
+  max-width: none;
   z-index: 50;
   padding: 0 12px max(10px, env(safe-area-inset-bottom));
   pointer-events: none;
@@ -303,4 +337,11 @@ button, a, input { touch-action: manipulation; }
   .stagger > *,
   .animate-fade-in,
   .live-dot { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+/* Short phones: shrink login hero so form stays usable */
+@media (max-height: 700px) {
+  .login-hero {
+    height: min(28dvh, 180px) !important;
+  }
 }

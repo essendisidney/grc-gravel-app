@@ -26,8 +26,8 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="animate-fade-in" style={{ padding: '0 20px' }}>
-      <div style={{ textAlign: 'center', marginBottom: 22 }}>
+    <div className="animate-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, padding: '0 18px' }}>
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
         <div style={{ display: 'inline-block', marginBottom: 12 }}>
           <GrcLogo size={56} rounded={14} />
         </div>
@@ -38,11 +38,26 @@ export default function SignupPage() {
       </div>
 
       <div className="section-label" style={{ marginBottom: 6 }}>Full name</div>
-      <input className="grc-input" value={fullName} onChange={e => setFullName(e.target.value)} style={{ marginBottom: 12 }} />
+      <input
+        className="grc-input"
+        value={fullName}
+        onChange={e => setFullName(e.target.value)}
+        autoComplete="name"
+        style={{ marginBottom: 12 }}
+      />
       <div className="section-label" style={{ marginBottom: 6 }}>Phone</div>
-      <input className="grc-input" value={phone} onChange={e => setPhone(e.target.value)} inputMode="tel" style={{ marginBottom: 16 }} />
+      <input
+        className="grc-input"
+        value={phone}
+        onChange={e => setPhone(e.target.value)}
+        inputMode="tel"
+        autoComplete="tel"
+        style={{ marginBottom: 16 }}
+      />
 
-      <button className="btn-primary" onClick={join}>Enter as a rider</button>
+      <button className="btn-primary" onClick={join} style={{ marginTop: 'auto' }}>
+        Enter as a rider
+      </button>
       <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: 'var(--muted)' }}>
         Already riding?{' '}
         <Link href="/login" style={{ color: 'var(--ink)', fontWeight: 700, textDecoration: 'none' }}>
