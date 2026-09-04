@@ -16,6 +16,7 @@ import ExportSeasonButton from '@/components/passport/ExportSeasonButton'
 import CorridorPrs from '@/components/passport/CorridorPrs'
 import TrainingLoadCard from '@/components/passport/TrainingLoadCard'
 import OfflinePackHealth from '@/components/passport/OfflinePackHealth'
+import SeasonMilestones from '@/components/passport/SeasonMilestones'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -116,6 +117,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
       </div>
       <TrainingLoadCard />
       <OfflinePackHealth />
+      <SeasonMilestones />
 
       <Link
         href="/passport/garage"

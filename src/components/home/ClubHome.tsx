@@ -22,8 +22,10 @@ import RollOutBanner from '@/components/home/RollOutBanner'
 import HeatWindAdvisory from '@/components/home/HeatWindAdvisory'
 import HomeClubhousePicker from '@/components/home/HomeClubhousePicker'
 import WeekDigestStrip from '@/components/home/WeekDigestStrip'
-import NewRiderTip from '@/components/home/NewRiderTip'
 import RollOutCountdown from '@/components/home/RollOutCountdown'
+import MorningPrepChecklist from '@/components/home/MorningPrepChecklist'
+import DelayBanner from '@/components/home/DelayBanner'
+import NewRiderTip from '@/components/home/NewRiderTip'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
@@ -255,6 +257,8 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
 
       <RollOutBanner />
 
+      <DelayBanner rideId={adventure.id} />
+
       <AnnouncementsStrip />
 
       <div style={{ padding: '14px 14px 0' }}>
@@ -267,6 +271,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
           startTime={adventure.start_time}
           title={adventure.route_label || adventure.title}
         />
+        {joined && <MorningPrepChecklist rideId={adventure.id} />}
         <NewRiderTip />
         <WeekDigestStrip />
         <DustSeasonCard />

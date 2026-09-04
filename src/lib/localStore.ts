@@ -847,6 +847,8 @@ export function clearDemoCaches() {
     'grc-night-ride',
     'grc-fav-pace',
     'grc-stretch-checks',
+    'grc-prep-checks',
+    'grc-ride-delay',
   ]
   keys.forEach(k => {
     try {
@@ -1568,4 +1570,85 @@ export function getSignalDeadZones(routeId: string): SignalDeadZone[] {
       { id: 'd1', name: 'Mid corridor', fromKm: 15, toKm: 25, note: 'Assume patchy — pack offline' },
     ]
   )
+}
+
+const PREP_KEY = 'grc-prep-checks'
+const DELAY_KEY = 'grc-ride-delay'
+
+export const PREP_STEPS = [
+  { id: 'bottles', label: 'Bottles in fridge' },
+  { id: 'lights', label: 'Lights charged' },
+  { id: 'tubes', label: 'Tubes + CO2 in jersey' },
+  { id: 'alarm', label: 'Alarm set for gate' },
+  { id: 'kit', label: 'Kit laid out' },
+]
+
+export function getPrepChecked(rideId: string): string[] {
+  const all = readJson<Record<string, string[]>>(PREP_KEY, {})
+  return all[rideId] || []
+}
+
+export function togglePrep(rideId: string, stepId: string) {
+  const all = readJson<Record<string, string[]>>(PREP_KEY, {})
+  const set = new Set(all[rideId] || [])
+  if (set.has(stepId)) set.delete(stepId)
+  else set.add(stepId)
+  all[rideId] = [...set]
+  writeJson(PREP_KEY, all)
+  return all[rideId]
+}
+
+export function getRideDelayMin(rideId: string) {
+  const all = readJson<Record<string, number>>(DELAY_KEY, {})
+  return all[rideId] || 0
+}
+
+export function setRideDelayMin(rideId: string, minutes: number) {
+  const all = readJson<Record<string, number>>(DELAY_KEY, {})
+  all[rideId] = Math.max(0, minutes)
+  writeJson(DELAY_KEY, all)
+  return all[rideId]
+}
+
+export type ClimbSegment = {
+  id: string
+  name: string
+  fromKm: number
+  toKm: number
+  gainM: number
+  note: string
+}
+
+export const CLIMB_SEGMENTS: Record<string, ClimbSegment[]> = {
+  'magadi-loop': [
+    { id: 'c1', name: 'Ngong rise', fromKm: 4, toKm: 12, gainM: 280, note: 'Settle early · keep cadence' },
+    { id: 'c2', name: 'Olepolos wall', fromKm: 40, toKm: 48, gainM: 320, note: 'Hardest pitch · regroup top' },
+  ],
+  'ngong-ridge': [
+    { id: 'c1', name: 'Ridge punch', fromKm: 3, toKm: 9, gainM: 210, note: 'Short & steep' },
+  ],
+  'kona-baridi': [
+    { id: 'c1', name: 'Baridi climb', fromKm: 10, toKm: 18, gainM: 240, note: 'Steady grind' },
+  ],
+}
+
+export function getClimbSegments(routeId: string): ClimbSegment[] {
+  return (
+    CLIMB_SEGMENTS[routeId] || [
+      { id: 'c0', name: 'Main climb', fromKm: 8, toKm: 16, gainM: 200, note: 'Demo segment' },
+    ]
+  )
+}
+
+export function getSeasonMilestones() {
+  const km = getSeasonKm()
+  const streak = getStreak().count
+  const rides = getActivities().length
+  const defs = [
+    { id: 'm1', label: 'First dust', done: rides >= 1 || km > 0, hint: 'Log a ride' },
+    { id: 'm2', label: '100 km season', done: km >= 100, hint: `${Math.min(100, Math.round(km))}/100` },
+    { id: 'm3', label: '3-Saturday streak', done: streak >= 3, hint: `${streak}/3` },
+    { id: 'm4', label: 'Rift 500', done: km >= 500, hint: `${Math.min(500, Math.round(km))}/500` },
+  ]
+  return defs
 }

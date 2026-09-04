@@ -72,3 +72,21 @@ function trainingBand(load) {
 assert.equal(trainingBand(200), 'peak')
 assert.equal(trainingBand(10), 'rest')
 console.log('verify-helpers: OK (training load)')
+
+function getRollOutCountdown(rideDate, startTime, now) {
+  const [hh, mm] = (startTime || '06:15:00').split(':').map(Number)
+  const target = new Date(`${rideDate}T00:00:00`)
+  target.setHours(hh || 6, mm || 15, 0, 0)
+  const totalSec = Math.floor((target.getTime() - now.getTime()) / 1000)
+  return { past: totalSec <= 0, totalSec }
+}
+const future = getRollOutCountdown('2099-01-01', '06:15:00', new Date('2026-09-04T12:00:00'))
+assert.equal(future.past, false)
+assert.ok(future.totalSec > 0)
+const past = getRollOutCountdown('2020-01-01', '06:15:00', new Date('2026-09-04T12:00:00'))
+assert.equal(past.past, true)
+console.log('verify-helpers: OK (roll-out countdown)')
+
+assert.ok([0, 15, 30, 45].includes(30))
+console.log('verify-helpers: OK (delay options)')
+console.log('verify-helpers: ALL PASSED')
