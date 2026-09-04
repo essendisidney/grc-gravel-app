@@ -7,7 +7,7 @@ function dayOffset(days: number) {
 }
 
 const RIDER_STACK = [
-  { initials: 'VD', color: '#E07A2F' },
+  { initials: 'VD', color: '#FEC72E' },
   { initials: 'AO', color: '#2A6F97' },
   { initials: 'MK', color: '#2F7D4B' },
   { initials: 'JN', color: '#6B4C9A' },

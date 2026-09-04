@@ -5,7 +5,7 @@ import Image from 'next/image'
 export default function GrcLogo({
   size = 40,
   rounded = 11,
-  alt = 'GRC',
+  alt = 'Gravel Riders Club',
 }: {
   size?: number
   rounded?: number
@@ -27,6 +27,7 @@ export default function GrcLogo({
         objectFit: 'cover',
         display: 'block',
         flexShrink: 0,
+        boxShadow: '0 0 0 1px rgba(10,10,10,0.06)',
       }}
     />
   )

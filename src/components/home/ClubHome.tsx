@@ -327,7 +327,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
                     marginBottom: 8,
                     padding: 12,
                     borderRadius: 12,
-                    border: `1px solid ${on ? 'rgba(224,122,47,0.5)' : 'var(--line)'}`,
+                    border: `1px solid ${on ? 'rgba(254,199,46,0.5)' : 'var(--line)'}`,
                     background: on ? 'var(--accent-soft)' : 'var(--surface)',
                     cursor: 'pointer',
                     fontFamily: 'var(--font)',

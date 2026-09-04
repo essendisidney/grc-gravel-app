@@ -71,7 +71,7 @@ export default function RaceDayClient({ raceId }: { raceId: string }) {
               padding: 14,
               marginBottom: 14,
               background: 'linear-gradient(165deg, #FFF8F1, #FFFCFA)',
-              border: '1px solid rgba(224,122,47,0.35)',
+              border: '1px solid rgba(254,199,46,0.35)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

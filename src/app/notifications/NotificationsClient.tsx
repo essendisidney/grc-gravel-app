@@ -64,7 +64,7 @@ export default function NotificationsClient({ notifications: initial }: { notifi
               padding: 14,
               marginBottom: 8,
               background: n.is_read ? 'var(--surface)' : 'linear-gradient(165deg, #FFF8F1, #FFFCFA)',
-              borderColor: n.is_read ? 'var(--line)' : 'rgba(224,122,47,0.28)',
+              borderColor: n.is_read ? 'var(--line)' : 'rgba(254,199,46,0.28)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginBottom: 4 }}>

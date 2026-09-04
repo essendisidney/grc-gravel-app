@@ -1,6 +1,9 @@
+import RiderSplash from '@/components/brand/RiderSplash'
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="phone-shell topo-bg">
+      <RiderSplash />
       <main
         className="scroll-content"
         style={{

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import PwaRegister from '@/components/pwa/PwaRegister'
-import RiderSplash from '@/components/brand/RiderSplash'
 
 export const metadata: Metadata = {
   title: 'Gravel Riders Club — Ride beyond the tarmac',
@@ -31,7 +30,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#E07A2F',
+  themeColor: '#FEC72E',
   viewportFit: 'cover',
 }
 
@@ -46,7 +45,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/brand/logo.png" type="image/png" />
       </head>
       <body>
-        <RiderSplash />
         {children}
         <PwaRegister />
       </body>

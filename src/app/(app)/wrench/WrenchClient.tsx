@@ -128,7 +128,7 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
                   width: '100%', textAlign: 'left',
                   background: on ? 'var(--accent-soft)' : 'var(--surface)',
                   borderRadius: 14,
-                  border: `1px solid ${on ? 'rgba(224,122,47,0.45)' : 'var(--line)'}`,
+                  border: `1px solid ${on ? 'rgba(254,199,46,0.45)' : 'var(--line)'}`,
                   padding: '13px 16px', marginBottom: 8, cursor: 'pointer',
                   fontFamily: 'var(--font)', color: 'var(--ink)',
                 }}
@@ -173,7 +173,7 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
                   style={{
                     padding: '10px 14px', borderRadius: 12, textAlign: 'left',
                     background: on ? 'var(--accent-soft)' : 'var(--surface)',
-                    border: `1px solid ${on ? 'rgba(224,122,47,0.4)' : 'var(--line)'}`,
+                    border: `1px solid ${on ? 'rgba(254,199,46,0.4)' : 'var(--line)'}`,
                     color: on ? '#9A4A12' : 'var(--ink)',
                     fontSize: 13, fontWeight: on ? 700 : 500,
                     cursor: 'pointer', fontFamily: 'var(--font)',
@@ -258,14 +258,14 @@ export default function WrenchClient({ services, activeBookings, pastBookings }:
             width: 48,
             height: 48,
             borderRadius: 14,
-            background: 'rgba(224,122,47,0.2)',
+            background: 'rgba(254,199,46,0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 14px',
           }}
         >
-          <Wrench size={22} color="#E07A2F" />
+          <Wrench size={22} color="#FEC72E" />
         </div>
         <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em', marginBottom: 8, color: '#FFFFFF' }}>
           Doorstep Bike Repair

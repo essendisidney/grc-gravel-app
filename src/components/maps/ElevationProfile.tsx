@@ -24,8 +24,8 @@ export default function ElevationProfile({
       }}
     >
       <svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="none">
-        <path d={area} fill="rgba(224,122,47,0.16)" />
-        <path d={d} fill="none" stroke="#E07A2F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+        <path d={area} fill="rgba(254,199,46,0.16)" />
+        <path d={d} fill="none" stroke="#FEC72E" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
       </svg>
       <div
         style={{

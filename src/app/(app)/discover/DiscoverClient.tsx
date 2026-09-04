@@ -201,7 +201,7 @@ export default function DiscoverClient() {
                   }}
                   aria-label="Favourite"
                 >
-                  <Heart size={16} fill={loved ? '#E07A2F' : 'none'} color={loved ? '#E07A2F' : '#fff'} />
+                  <Heart size={16} fill={loved ? '#FEC72E' : 'none'} color={loved ? '#FEC72E' : '#fff'} />
                 </button>
                 <div className="hero-media" style={{ height: 148, borderRadius: 0 }}>
                   {route.image && (

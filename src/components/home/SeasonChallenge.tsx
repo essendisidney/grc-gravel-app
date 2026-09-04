@@ -63,7 +63,7 @@ export default function SeasonChallenge({ compact = false }: { compact?: boolean
           style={{
             width: `${pct}%`,
             height: '100%',
-            background: 'linear-gradient(90deg, #E07A2F, #C45A12)',
+            background: 'linear-gradient(90deg, #FEC72E, #E5A91A)',
             transition: 'width 0.4s ease',
           }}
         />

@@ -50,11 +50,11 @@ export default function BottomNav() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: active ? 'rgba(224,122,47,0.22)' : 'transparent',
+                  background: active ? 'rgba(254,199,46,0.22)' : 'transparent',
                   transition: 'background 0.2s ease',
                 }}
               >
-                <Icon size={20} strokeWidth={active ? 2.4 : 1.7} color={active ? '#E07A2F' : 'rgba(255,255,255,0.5)'} />
+                <Icon size={20} strokeWidth={active ? 2.4 : 1.7} color={active ? '#FEC72E' : 'rgba(255,255,255,0.5)'} />
               </span>
               <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, letterSpacing: '0.02em' }}>
                 {label}

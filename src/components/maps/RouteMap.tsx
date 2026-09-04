@@ -14,7 +14,7 @@ export default function RouteMap({
 }) {
   const { d, start, end } = useMemo(() => waypointsToSvgPath(routeId), [routeId])
   const ink = dark ? 'rgba(255,252,250,0.15)' : 'rgba(20,18,16,0.08)'
-  const line = dark ? '#E07A2F' : '#E07A2F'
+  const line = dark ? '#FEC72E' : '#FEC72E'
   const dot = dark ? '#FFFCFA' : '#141210'
 
   return (
@@ -45,7 +45,7 @@ export default function RouteMap({
           strokeWidth="2.2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ filter: 'drop-shadow(0 0 4px rgba(224,122,47,0.35))' }}
+          style={{ filter: 'drop-shadow(0 0 4px rgba(254,199,46,0.35))' }}
         />
         <circle cx={start[0]} cy={start[1]} r="2.4" fill={dot} />
         <circle cx={start[0]} cy={start[1]} r="4.2" fill="none" stroke={line} strokeWidth="0.8" opacity="0.7" />

@@ -1,8 +1,10 @@
 import BottomNav from '@/components/layout/BottomNav'
+import RiderSplash from '@/components/brand/RiderSplash'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="phone-shell topo-bg">
+      <RiderSplash />
       <main
         className="scroll-content"
         style={{

@@ -59,7 +59,7 @@ export default function GaragePage() {
             style={{
               padding: 14,
               marginBottom: 10,
-              border: b.isPrimary ? '1px solid rgba(224,122,47,0.45)' : '1px solid var(--line)',
+              border: b.isPrimary ? '1px solid rgba(254,199,46,0.45)' : '1px solid var(--line)',
               background: b.isPrimary ? 'var(--accent-soft)' : 'var(--surface)',
             }}
           >

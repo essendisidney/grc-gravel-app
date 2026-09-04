@@ -114,7 +114,7 @@ export default function RideDetailClient({
                   padding: '12px 12px',
                   marginBottom: 8,
                   borderRadius: 12,
-                  border: `1px solid ${on ? 'rgba(224,122,47,0.5)' : 'var(--line)'}`,
+                  border: `1px solid ${on ? 'rgba(254,199,46,0.5)' : 'var(--line)'}`,
                   background: on ? 'var(--accent-soft)' : 'var(--bg)',
                   cursor: 'pointer',
                   fontFamily: 'var(--font)',
@@ -185,7 +185,7 @@ export default function RideDetailClient({
           <div
             style={{
               background: 'var(--accent-soft)',
-              border: '1px solid rgba(224,122,47,0.35)',
+              border: '1px solid rgba(254,199,46,0.35)',
               borderRadius: 14,
               padding: 16,
               display: 'flex',

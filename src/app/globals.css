@@ -3,24 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --bg: #F3EFE8;
-  --surface: #FFFCFA;
-  --ink: #141210;
-  --muted: #6B645A;
-  --line: #E4DDD3;
-  --accent: #E07A2F;
-  --accent-ink: #1A1008;
-  --accent-soft: rgba(224, 122, 47, 0.14);
-  --charcoal: #1C1916;
+  /* Official GRC mark: black on gold #FEC72E */
+  --bg: #F7F4EC;
+  --surface: #FFFEFA;
+  --ink: #0A0A0A;
+  --muted: #5C574E;
+  --line: #E6E0D4;
+  --accent: #FEC72E;
+  --accent-ink: #0A0A0A;
+  --accent-soft: rgba(254, 199, 46, 0.28);
+  --charcoal: #0A0A0A;
   --good: #2F7D4B;
   --warn: #C47A12;
   --bad: #B33A3A;
   --font: 'Sora', system-ui, sans-serif;
   --display: 'Sora', system-ui, sans-serif;
-  --club: #E07A2F;
-  --club-ink: #1A1008;
-  --club-soft: rgba(224, 122, 47, 0.14);
-  --navy: #1C1916;
+  --club: #FEC72E;
+  --club-ink: #0A0A0A;
+  --club-soft: rgba(254, 199, 46, 0.28);
+  --navy: #0A0A0A;
   --nav-h: 72px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -108,8 +109,8 @@ button, a, input, textarea, select { touch-action: manipulation; }
 .topo-bg {
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse at 12% -10%, rgba(224,122,47,0.14), transparent 42%),
-    radial-gradient(ellipse at 100% 20%, rgba(42,38,34,0.06), transparent 40%),
+    radial-gradient(ellipse at 12% -10%, rgba(254,199,46,0.22), transparent 42%),
+    radial-gradient(ellipse at 100% 20%, rgba(10,10,10,0.05), transparent 40%),
     url("data:image/svg+xml,%3Csvg width='140' height='140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 70c24-24 46-24 70 0s46 24 70 0M0 105c24-24 46-24 70 0s46 24 70 0M0 35c24-24 46-24 70 0s46 24 70 0' fill='none' stroke='%23d8d0c4' stroke-width='1'/%3E%3C/svg%3E");
   background-size: auto, auto, 140px 140px;
 }
@@ -155,8 +156,8 @@ button, a, input, textarea, select { touch-action: manipulation; }
   border-radius: 16px;
   padding: 16px 18px;
   background: var(--accent);
-  color: #fff;
-  font-weight: 700;
+  color: var(--accent-ink);
+  font-weight: 800;
   font-size: 14px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -166,17 +167,19 @@ button, a, input, textarea, select { touch-action: manipulation; }
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(224, 122, 47, 0.35);
+  box-shadow: 0 10px 28px rgba(254, 199, 46, 0.4);
   transition: transform 0.18s var(--ease-out), box-shadow 0.18s ease, background 0.18s ease;
 }
-.btn-primary:active { transform: scale(0.975); box-shadow: 0 4px 14px rgba(224, 122, 47, 0.28); }
+.btn-primary:active { transform: scale(0.975); box-shadow: 0 4px 14px rgba(254, 199, 46, 0.3); }
 .btn-primary:disabled {
   opacity: 1;
   background: var(--charcoal);
+  color: #fff;
   box-shadow: none;
 }
 .btn-primary.joined {
   background: var(--charcoal);
+  color: #fff;
   box-shadow: none;
 }
 
@@ -224,7 +227,7 @@ button, a, input, textarea, select { touch-action: manipulation; }
   font-family: var(--font);
 }
 .chip.hard { background: #1A1008; color: #fff; border-color: #1A1008; }
-.chip.accent { background: var(--accent-soft); color: #9A4A12; border-color: transparent; }
+.chip.accent { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 700; }
 
 .grc-input {
   width: 100%;
@@ -361,153 +364,106 @@ button, a, input, textarea, select { touch-action: manipulation; }
 }
 
 
-/* --- Rider splash (compact crest) --- */
+/* --- Brand splash (official GRC mark) --- */
 .grc-splash {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 9999;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  background: rgba(14, 12, 10, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  gap: 20px;
+  background: var(--accent);
   pointer-events: none;
-  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+  border-radius: inherit;
+  overflow: hidden;
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
 }
 .grc-splash--exit {
   opacity: 0;
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
-.grc-splash__orb {
+.grc-splash__mark {
   position: relative;
-  width: 120px;
-  height: 120px;
-  display: grid;
-  place-items: center;
-  animation: orbIn 0.7s var(--ease-out) both;
+  width: min(52vw, 168px);
+  height: min(52vw, 168px);
+  max-width: 168px;
+  max-height: 168px;
+  animation: markIn 0.75s var(--ease-out) both;
+}
+
+.grc-splash__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.18));
 }
 
 .grc-splash__ring {
   position: absolute;
-  inset: 0;
-}
-
-.grc-splash__ring-dash {
-  transform-origin: 60px 60px;
-  animation: ringSpin 8s linear infinite;
-}
-
-.grc-splash__orbit {
-  transform-origin: 60px 60px;
-  animation: riderOrbit 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.grc-splash__rider-fix {
-  transform-origin: 0px 0px;
-  animation: riderOrbit 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
-}
-
-.grc-splash__crest {
-  position: relative;
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: #0E0C0A;
-  border: 1px solid rgba(224, 122, 47, 0.45);
-  display: grid;
-  place-items: center;
-  box-shadow:
-    0 0 0 6px rgba(224, 122, 47, 0.08),
-    0 16px 40px rgba(0, 0, 0, 0.45);
-  animation: crestPop 0.85s var(--ease-out) 0.15s both;
-  overflow: hidden;
-}
-
-.grc-splash__grc {
-  font-family: var(--display);
-  font-size: 18px;
-  font-weight: 800;
-  font-style: italic;
-  letter-spacing: 0.06em;
-  color: #E07A2F;
-  position: relative;
-  z-index: 1;
-}
-
-.grc-splash__pulse {
-  position: absolute;
-  inset: -20%;
-  background: radial-gradient(circle, rgba(224,122,47,0.35) 0%, transparent 62%);
-  animation: crestPulse 1.6s ease-in-out infinite;
-}
-
-.grc-splash__mote {
-  position: absolute;
-  width: 4px;
-  height: 4px;
+  inset: -14%;
   border-radius: 50%;
-  background: #E07A2F;
-  opacity: 0;
-  animation: moteFloat 1.8s ease-out infinite;
+  border: 1.5px dashed rgba(10, 10, 10, 0.18);
+  animation: ringSpin 10s linear infinite;
+  pointer-events: none;
 }
-.grc-splash__mote.m1 { top: 12%; left: 8%; animation-delay: 0.2s; }
-.grc-splash__mote.m2 { top: 70%; right: 4%; width: 3px; height: 3px; animation-delay: 0.55s; background: #FFFCFA; }
-.grc-splash__mote.m3 { bottom: 18%; left: 18%; width: 5px; height: 5px; animation-delay: 0.9s; }
 
 .grc-splash__whisper {
   margin: 0;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 252, 250, 0.55);
-  animation: whisperIn 0.8s var(--ease-out) 0.45s both;
+  color: rgba(10, 10, 10, 0.72);
+  animation: whisperIn 0.7s var(--ease-out) 0.35s both;
 }
 
-@keyframes orbIn {
-  from { opacity: 0; transform: scale(0.82); }
-  to { opacity: 1; transform: none; }
+.grc-splash__bar {
+  position: absolute;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  left: 50%;
+  width: 72px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.2);
+  overflow: hidden;
+  transform: translateX(-50%);
 }
-@keyframes crestPop {
-  from { opacity: 0; transform: scale(0.7) rotate(-8deg); }
-  to { opacity: 1; transform: none; }
+.grc-splash__bar > i {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: #0A0A0A;
+  border-radius: inherit;
+  animation: splashBar 1.6s ease-in-out infinite;
 }
-@keyframes crestPulse {
-  0%, 100% { opacity: 0.35; transform: scale(0.9); }
-  50% { opacity: 0.75; transform: scale(1.05); }
+
+@keyframes markIn {
+  from { opacity: 0; transform: scale(0.78) rotate(-6deg); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes ringSpin {
   to { transform: rotate(360deg); }
 }
-@keyframes riderOrbit {
-  to { transform: rotate(360deg); }
-}
-@keyframes moteFloat {
-  0% { opacity: 0; transform: translate(0, 8px) scale(0.6); }
-  30% { opacity: 0.9; }
-  100% { opacity: 0; transform: translate(14px, -28px) scale(0.2); }
+@keyframes splashBar {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(280%); }
 }
 @keyframes whisperIn {
-  from { opacity: 0; letter-spacing: 0.28em; transform: translateY(6px); }
-  to { opacity: 1; letter-spacing: 0.18em; transform: none; }
+  from { opacity: 0; letter-spacing: 0.32em; transform: translateY(8px); }
+  to { opacity: 1; letter-spacing: 0.2em; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grc-splash__orbit,
-  .grc-splash__rider-fix,
-  .grc-splash__ring-dash,
-  .grc-splash__pulse,
-  .grc-splash__mote {
+  .grc-splash__ring,
+  .grc-splash__bar > i {
     animation: none !important;
   }
-  .grc-splash__grc,
-  .grc-splash__whisper,
-  .grc-splash__crest,
-  .grc-splash__orb {
+  .grc-splash__mark,
+  .grc-splash__whisper {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

@@ -105,7 +105,7 @@ export default function LiveRideClient() {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
         <div>
-          <div className="eyebrow" style={{ color: 'rgba(224,122,47,0.9)', marginBottom: 4 }}>On ride</div>
+          <div className="eyebrow" style={{ color: 'rgba(254,199,46,0.9)', marginBottom: 4 }}>On ride</div>
           <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>
             {ride?.route_label || ride?.title}
           </div>
@@ -117,8 +117,8 @@ export default function LiveRideClient() {
             gap: 6,
             padding: '6px 10px',
             borderRadius: 999,
-            background: 'rgba(224,122,47,0.18)',
-            color: '#E07A2F',
+            background: 'rgba(254,199,46,0.18)',
+            color: '#FEC72E',
             fontSize: 11,
             fontWeight: 800,
             letterSpacing: '0.06em',
@@ -158,7 +158,7 @@ export default function LiveRideClient() {
         <div style={{ fontSize: 17, fontWeight: 800 }}>{checkpoint.label}</div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginTop: 4 }}>{checkpoint.note}</div>
         {next && (
-          <div style={{ marginTop: 10, fontSize: 12, color: '#E07A2F', fontWeight: 700 }}>
+          <div style={{ marginTop: 10, fontSize: 12, color: '#FEC72E', fontWeight: 700 }}>
             Next · {next.label} in ~{Math.max(1, Math.round(next.atMin - minutes))} min
           </div>
         )}
@@ -177,14 +177,14 @@ export default function LiveRideClient() {
             gap: 10,
             padding: 12,
             borderRadius: 14,
-            background: 'rgba(224,122,47,0.14)',
-            border: '1px solid rgba(224,122,47,0.28)',
+            background: 'rgba(254,199,46,0.14)',
+            border: '1px solid rgba(254,199,46,0.28)',
             marginBottom: 14,
           }}
         >
-          <Megaphone size={16} color="#E07A2F" style={{ flexShrink: 0, marginTop: 2 }} />
+          <Megaphone size={16} color="#FEC72E" style={{ flexShrink: 0, marginTop: 2 }} />
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: '#E07A2F' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: '#FEC72E' }}>
               CAPTAIN
             </div>
             <div style={{ fontSize: 13, lineHeight: 1.4, marginTop: 2 }}>{ping}</div>
@@ -249,7 +249,7 @@ export default function LiveRideClient() {
                 marginTop: 10,
                 fontSize: 12,
                 fontWeight: 700,
-                color: '#E07A2F',
+                color: '#FEC72E',
                 textDecoration: 'none',
               }}
             >

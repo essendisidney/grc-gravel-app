@@ -1,5 +1,5 @@
 /* GRC service worker — app-shell + offline ride packs */
-const CACHE = 'grc-shell-v4'
+const CACHE = 'grc-shell-v5'
 const PRECACHE = [
   '/',
   '/manifest.json',

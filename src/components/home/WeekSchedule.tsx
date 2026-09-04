@@ -60,7 +60,7 @@ export default function WeekSchedule({ rides }: { rides: DemoRide[] }) {
                 minWidth: 48,
                 padding: '10px 8px',
                 borderRadius: 14,
-                border: on ? '1px solid rgba(224,122,47,0.5)' : '1px solid var(--line)',
+                border: on ? '1px solid rgba(254,199,46,0.5)' : '1px solid var(--line)',
                 background: on ? 'var(--accent-soft)' : 'var(--surface)',
                 cursor: 'pointer',
                 fontFamily: 'var(--font)',

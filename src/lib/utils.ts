@@ -52,7 +52,7 @@ export function getInitials(name: string): string {
 
 export function getTierColor(tier: string): string {
   switch (tier) {
-    case 'founding': return '#F5C518'
+    case 'founding': return '#FEC72E'
     case 'elite': return '#EF4444'
     case 'member': return '#3B82F6'
     case 'youth': return '#22C55E'
@@ -74,7 +74,7 @@ export function getTierLabel(tier: string): string {
 
 export function getRideTypeColor(type: string): string {
   switch (type) {
-    case 'gravel': return '#F5C518'
+    case 'gravel': return '#FEC72E'
     case 'road': return '#3B82F6'
     case 'mtb': return '#22C55E'
     case 'social': return '#8B5CF6'
@@ -87,7 +87,7 @@ export function getRideTypeColor(type: string): string {
 
 export function getRideTypeBg(type: string): string {
   switch (type) {
-    case 'gravel': return 'bg-[rgba(245,197,24,0.15)] text-[#F5C518]'
+    case 'gravel': return 'bg-[rgba(254,199,46,0.18)] text-[#B8860B]'
     case 'road': return 'bg-[rgba(59,130,246,0.15)] text-[#60A5FA]'
     case 'mtb': return 'bg-[rgba(34,197,94,0.15)] text-[#22C55E]'
     case 'social': return 'bg-[rgba(139,92,246,0.15)] text-[#A78BFA]'

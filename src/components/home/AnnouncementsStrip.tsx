@@ -44,13 +44,13 @@ export default function AnnouncementsStrip() {
               width: 36,
               height: 36,
               borderRadius: 12,
-              background: 'rgba(224,122,47,0.2)',
+              background: 'rgba(254,199,46,0.2)',
               display: 'grid',
               placeItems: 'center',
               flexShrink: 0,
             }}
           >
-            <Megaphone size={16} color="#E07A2F" />
+            <Megaphone size={16} color="#FEC72E" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 800, letterSpacing: '-0.01em' }}>{top.title}</div>
@@ -64,7 +64,7 @@ export default function AnnouncementsStrip() {
           <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
             {items.slice(1, 3).map(a => (
               <div key={a.id} style={{ fontSize: 12, opacity: 0.7, marginBottom: 6, lineHeight: 1.35 }}>
-                <span style={{ color: '#E07A2F', fontWeight: 700 }}>{a.title}</span>
+                <span style={{ color: '#FEC72E', fontWeight: 700 }}>{a.title}</span>
                 {' — '}
                 {a.body.slice(0, 60)}
                 {a.body.length > 60 ? '…' : ''}
