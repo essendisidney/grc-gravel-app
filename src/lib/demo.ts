@@ -51,8 +51,20 @@ export const DEMO_CLUB = {
   elite_rank: 3,
   bikes_repaired: 13000,
   clubhouses: [
-    { id: 'tena', name: 'The Gravel — Tena', address: 'Off Manyanja Road, Tena Estate, Nairobi' },
-    { id: 'utawala', name: 'The Gravel — Utawala', address: 'Kibiku Road, Utawala Estate, Nairobi' },
+    {
+      id: 'tena',
+      name: 'The Gravel — Tena',
+      address: 'Off Manyanja Road, Tena Estate, Nairobi',
+      hours: 'Tue–Sun 07:00–19:00 · Wrench by booking',
+      openNowHint: 'Workshop + coffee before Saturday roll-out',
+    },
+    {
+      id: 'utawala',
+      name: 'The Gravel — Utawala',
+      address: 'Kibiku Road, Utawala Estate, Nairobi',
+      hours: 'Wed–Sun 08:00–18:30 · Race week extended',
+      openNowHint: 'Full Gas start lists & kit pickup',
+    },
   ],
   contact: {
     email: 'ridewithus@gravelriders.club',

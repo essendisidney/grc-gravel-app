@@ -50,6 +50,14 @@ export default function ClubPage() {
             <div key={ch.id} className="surface" style={{ padding: 14 }}>
               <div style={{ fontSize: 15, fontWeight: 800 }}>{ch.name}</div>
               <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4, lineHeight: 1.4 }}>{ch.address}</div>
+              {'hours' in ch && ch.hours && (
+                <div style={{ fontSize: 12, fontWeight: 700, marginTop: 10, color: 'var(--accent-ink)' }}>
+                  {ch.hours}
+                </div>
+              )}
+              {'openNowHint' in ch && ch.openNowHint && (
+                <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>{ch.openNowHint}</div>
+              )}
             </div>
           ))}
         </div>

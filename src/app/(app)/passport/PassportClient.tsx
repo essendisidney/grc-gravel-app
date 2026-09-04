@@ -6,7 +6,7 @@ import { getInitials, formatKm } from '@/lib/utils'
 import { Settings, LogOut, Mountain, Bike } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DEMO_PROFILE } from '@/lib/demo'
-import { clearSession, getActivities, getBikes, getLiveBadges, getOfflinePacks, getSession, type GarageBike, type LiveBadge, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
+import { clearSession, getActivities, getBikes, getLiveBadges, getOfflinePacks, getSession, updateActivityNote, type GarageBike, type LiveBadge, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
 import SaturdayStreak from '@/components/home/SaturdayStreak'
 import WeeklyGoal from '@/components/home/WeeklyGoal'
@@ -22,6 +22,8 @@ export default function PassportClient({ profile, badges, recentRides }: {
   const [activities, setActivities] = useState<RideActivity[]>([])
   const [bikes, setBikes] = useState<GarageBike[]>([])
   const [liveBadges, setLiveBadges] = useState<LiveBadge[]>([])
+  const [noteId, setNoteId] = useState<string | null>(null)
+  const [noteDraft, setNoteDraft] = useState('')
 
   useEffect(() => {
     setLocal(getSession())
@@ -190,6 +192,49 @@ export default function PassportClient({ profile, badges, recentRides }: {
                 {a.distanceKm} km · {Math.floor(a.elapsedSec / 60)} min · {a.elevationM} m ↑ ·{' '}
                 {new Date(a.endedAt).toLocaleDateString()}
               </div>
+              {a.note && noteId !== a.id && (
+                <div style={{ fontSize: 12, marginTop: 8, lineHeight: 1.4 }}>{a.note}</div>
+              )}
+              {noteId === a.id ? (
+                <div style={{ marginTop: 8 }}>
+                  <textarea
+                    className="grc-input"
+                    rows={2}
+                    value={noteDraft}
+                    onChange={e => setNoteDraft(e.target.value)}
+                    placeholder="Dust, legs, regroup point…"
+                    style={{ resize: 'none', marginBottom: 8 }}
+                  />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      style={{ flex: 1 }}
+                      onClick={() => {
+                        setActivities(updateActivityNote(a.id, noteDraft))
+                        setNoteId(null)
+                      }}
+                    >
+                      Save note
+                    </button>
+                    <button type="button" className="btn-secondary" style={{ flex: 1 }} onClick={() => setNoteId(null)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="chip"
+                  style={{ border: 'none', cursor: 'pointer', marginTop: 8 }}
+                  onClick={() => {
+                    setNoteId(a.id)
+                    setNoteDraft(a.note || '')
+                  }}
+                >
+                  {a.note ? 'Edit note' : 'Add note'}
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -270,13 +315,18 @@ export default function PassportClient({ profile, badges, recentRides }: {
       </div>
 
       <div style={{ display: 'flex', gap: 10 }}>
+        <Link href="/settings" style={{ flex: 1, textDecoration: 'none' }}>
+          <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <Settings size={15} /> Settings
+          </button>
+        </Link>
         <Link href="/profile/edit" style={{ flex: 1, textDecoration: 'none' }}>
           <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <Settings size={15} /> Edit
+            Edit
           </button>
         </Link>
         <button onClick={signOut} className="btn-danger" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <LogOut size={15} /> Sign out
+          <LogOut size={15} /> Out
         </button>
       </div>
     </div>

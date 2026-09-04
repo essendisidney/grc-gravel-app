@@ -260,6 +260,7 @@ export type RideActivity = {
   distanceKm: number
   elevationM: number
   endedAt: string
+  note?: string
 }
 
 const ACTIVITY_KEY = 'grc-activities'
@@ -270,6 +271,12 @@ export function getActivities(): RideActivity[] {
 
 export function addActivity(activity: RideActivity) {
   const next = [activity, ...getActivities()].slice(0, 30)
+  writeJson(ACTIVITY_KEY, next)
+  return next
+}
+
+export function updateActivityNote(id: string, note: string) {
+  const next = getActivities().map(a => (a.id === id ? { ...a, note: note.trim() } : a))
   writeJson(ACTIVITY_KEY, next)
   return next
 }
@@ -778,4 +785,57 @@ export function getLiveBadges(): LiveBadge[] {
       earned: checkIns >= 1,
     },
   ]
+}
+
+export type NotifPrefs = {
+  rideReminders: boolean
+  captainPings: boolean
+  raceAlerts: boolean
+  wrenchUpdates: boolean
+}
+
+const PREFS_KEY = 'grc-notif-prefs'
+
+export function getNotifPrefs(): NotifPrefs {
+  return readJson<NotifPrefs>(PREFS_KEY, {
+    rideReminders: true,
+    captainPings: true,
+    raceAlerts: true,
+    wrenchUpdates: true,
+  })
+}
+
+export function setNotifPrefs(prefs: NotifPrefs) {
+  writeJson(PREFS_KEY, prefs)
+  return prefs
+}
+
+export function resetSplash() {
+  if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem('grc-splash-done')
+}
+
+/** Soft clear of demo local data (keeps session). */
+export function clearDemoCaches() {
+  const keys = [
+    'grc-rsvps',
+    'grc-favorites',
+    'grc-announcements',
+    'grc-kit-checks',
+    'grc-carpool',
+    'grc-conditions',
+    'grc-saturday-streak',
+    'grc-weekly-goal',
+    'grc-clubhouse-checkins',
+    'grc-bike-service',
+    'grc-activities',
+    'grc-club-stories',
+    'grc-offline-packs',
+  ]
+  keys.forEach(k => {
+    try {
+      localStorage.removeItem(k)
+    } catch {
+      /* ignore */
+    }
+  })
 }
