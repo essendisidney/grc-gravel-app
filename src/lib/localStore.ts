@@ -841,6 +841,8 @@ export function clearDemoCaches() {
     'grc-gate-self',
     'grc-chai-kitty',
     'grc-roll-out',
+    'grc-home-clubhouse',
+    'grc-emergency-proto',
   ]
   keys.forEach(k => {
     try {
@@ -1362,3 +1364,54 @@ export const DEMO_MERCH = [
   { id: 'm2', name: 'Club cap', priceKes: 1200, note: 'Dust-season essential' },
   { id: 'm3', name: 'Bidon 750ml', priceKes: 800, note: 'Clubhouse stock' },
 ]
+
+const HOME_HOUSE_KEY = 'grc-home-clubhouse'
+const EMERGENCY_PROTO_KEY = 'grc-emergency-proto'
+
+export type HomeClubhouse = 'tena' | 'utawala'
+
+export function getHomeClubhouse(): HomeClubhouse {
+  return readJson<HomeClubhouse>(HOME_HOUSE_KEY, 'tena')
+}
+
+export function setHomeClubhouse(h: HomeClubhouse) {
+  writeJson(HOME_HOUSE_KEY, h)
+  return h
+}
+
+export const EMERGENCY_PROTOCOL = [
+  { id: 'stop', label: 'Stop safely · off the road' },
+  { id: 'group', label: 'Alert your pace group / captain' },
+  { id: 'sos', label: 'Call SOS contact or club line' },
+  { id: 'location', label: 'Share pin / landmark if signal' },
+  { id: 'stay', label: 'Stay with rider until help arrives' },
+]
+
+export function getEmergencyProtoChecked(): string[] {
+  return readJson<string[]>(EMERGENCY_PROTO_KEY, [])
+}
+
+export function toggleEmergencyProto(id: string) {
+  const set = new Set(getEmergencyProtoChecked())
+  if (set.has(id)) set.delete(id)
+  else set.add(id)
+  const next = [...set]
+  writeJson(EMERGENCY_PROTO_KEY, next)
+  return next
+}
+
+export function getWeekDigest() {
+  const load = getWeeklyTrainingLoad()
+  const streak = getStreak()
+  return {
+    lines: [
+      streak.count > 0
+        ? `Saturday streak · ${streak.count} week${streak.count === 1 ? '' : 's'}`
+        : 'No Saturday streak yet — join the next Magadi',
+      load.seeded
+        ? 'Training load waiting on your first logged ride'
+        : `This week · ${load.km} km · load ${load.load} (${load.band})`,
+      'Club kit pickup · Tena & Utawala — see Club shop',
+    ],
+  }
+}

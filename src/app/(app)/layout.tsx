@@ -1,4 +1,5 @@
 import BottomNav from '@/components/layout/BottomNav'
+import PullToRefreshScroll from '@/components/layout/PullToRefreshScroll'
 import RiderSplash from '@/components/brand/RiderSplash'
 import Onboarding from '@/components/brand/Onboarding'
 
@@ -7,8 +8,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="phone-shell topo-bg">
       <RiderSplash />
       <Onboarding />
-      <main
-        className="scroll-content"
+      <PullToRefreshScroll
         style={{
           flex: 1,
           paddingTop: 'env(safe-area-inset-top)',
@@ -16,7 +16,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         }}
       >
         {children}
-      </main>
+      </PullToRefreshScroll>
       <BottomNav />
     </div>
   )

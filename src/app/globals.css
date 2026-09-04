@@ -45,7 +45,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   overscroll-behavior: none;
-  overscroll-behavior-y: none; /* blocks Chrome/Android pull-to-refresh */
+  overscroll-behavior-y: none; /* body fixed — refresh via PullToRefreshScroll */
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -82,7 +82,8 @@ button, a, input, textarea, select { touch-action: manipulation; }
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  overscroll-behavior-y: none;
+  overscroll-behavior-y: contain; /* allow custom PTR; don't bounce into parent */
+  touch-action: pan-y;
 }
 .scroll-content::-webkit-scrollbar { display: none; }
 
