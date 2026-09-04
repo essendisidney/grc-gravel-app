@@ -12,7 +12,9 @@ import WeatherBriefing from '@/components/home/WeatherBriefing'
 import AnnouncementsStrip from '@/components/home/AnnouncementsStrip'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
 import SaturdayStreak from '@/components/home/SaturdayStreak'
+import WeeklyGoal from '@/components/home/WeeklyGoal'
 import WeekSchedule from '@/components/home/WeekSchedule'
+import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 
@@ -223,6 +225,9 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         >
           Route details
         </Link>
+        <div style={{ marginTop: 10 }}>
+          <AddToCalendarButton ride={adventure} />
+        </div>
       </div>
 
       <AnnouncementsStrip />
@@ -230,6 +235,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
       <div style={{ padding: '14px 14px 0' }}>
         <SeasonChallenge />
         <SaturdayStreak />
+        <WeeklyGoal />
       </div>
 
       <div style={{ padding: '22px 14px 8px' }}>

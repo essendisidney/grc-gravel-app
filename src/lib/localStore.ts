@@ -642,3 +642,65 @@ export function getStreak(): { count: number; lastDate: string | null } {
   }
   return { count, lastDate: sorted[0] }
 }
+
+const WEEKLY_GOAL_KEY = 'grc-weekly-goal'
+const CHECKIN_KEY = 'grc-clubhouse-checkins'
+
+export function getWeeklyGoalKm(): number {
+  return readJson<number>(WEEKLY_GOAL_KEY, 80)
+}
+
+export function setWeeklyGoalKm(km: number) {
+  const v = Math.max(20, Math.min(300, Math.round(km)))
+  writeJson(WEEKLY_GOAL_KEY, v)
+  return v
+}
+
+export function getWeekKm(): number {
+  const start = new Date()
+  start.setHours(0, 0, 0, 0)
+  start.setDate(start.getDate() - start.getDay()) // Sunday start
+  const fromActivities = getActivities()
+    .filter(a => new Date(a.endedAt) >= start)
+    .reduce((sum, a) => sum + (a.distanceKm || 0), 0)
+  return Math.max(fromActivities, 42) // demo floor mid-week
+}
+
+export type ClubhouseCheckIn = {
+  id: string
+  clubhouse: 'tena' | 'utawala'
+  at: string
+}
+
+export function getClubhouseCheckIns(): ClubhouseCheckIn[] {
+  return readJson<ClubhouseCheckIn[]>(CHECKIN_KEY, [])
+}
+
+export function checkInClubhouse(clubhouse: 'tena' | 'utawala') {
+  const next: ClubhouseCheckIn[] = [
+    { id: `ch_${Date.now()}`, clubhouse, at: new Date().toISOString() },
+    ...getClubhouseCheckIns(),
+  ].slice(0, 20)
+  writeJson(CHECKIN_KEY, next)
+  return next
+}
+
+/** Demo season board — merge local season km for "you" */
+export function getSeasonLeaderboard(youName?: string, youKm?: number) {
+  const board = [
+    { name: 'Victor Dawa', km: 412, elite: true },
+    { name: 'Amina Otieno', km: 388, elite: true },
+    { name: 'Dan Kiprop', km: 341, elite: true },
+    { name: 'Mercy Njeri', km: 298, elite: true },
+    { name: 'Leo Otieno', km: 244, elite: false },
+    { name: 'Sam Kariuki', km: 221, elite: false },
+    { name: 'Faith Wanjiku', km: 198, elite: false },
+    { name: 'James Njoroge', km: 176, elite: false },
+  ]
+  const you = youName || 'You'
+  const km = youKm ?? getSeasonKm()
+  const withoutYou = board.filter(b => b.name !== you)
+  return [...withoutYou, { name: you, km, elite: false, isYou: true as const }]
+    .sort((a, b) => b.km - a.km)
+    .map((row, i) => ({ ...row, rank: i + 1 }))
+}

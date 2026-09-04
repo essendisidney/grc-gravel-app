@@ -5,16 +5,17 @@ import Link from 'next/link'
 import { getInitials, formatKm } from '@/lib/utils'
 import { Settings, LogOut, Mountain, Bike } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { DEMO_BADGES, DEMO_CLUB, DEMO_PROFILE } from '@/lib/demo'
+import { DEMO_BADGES, DEMO_PROFILE } from '@/lib/demo'
 import { clearSession, getActivities, getBikes, getOfflinePacks, getSession, type GarageBike, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
 import SaturdayStreak from '@/components/home/SaturdayStreak'
+import WeeklyGoal from '@/components/home/WeeklyGoal'
+import MemberCard from '@/components/passport/MemberCard'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
 }) {
   const router = useRouter()
-  const [showQR, setShowQR] = useState(false)
   const [session, setLocal] = useState<LocalSession | null>(null)
   const [packs, setPacks] = useState<OfflinePack[]>([])
   const [activities, setActivities] = useState<RideActivity[]>([])
@@ -44,7 +45,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
         <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 16 }}>
           <div style={{
             width: 56, height: 56, borderRadius: 16, background: 'var(--accent)',
-            color: '#fff', fontWeight: 800, fontSize: 18,
+            color: 'var(--accent-ink)', fontWeight: 800, fontSize: 18,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             {initials}
@@ -73,17 +74,21 @@ export default function PassportClient({ profile, badges, recentRides }: {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--line)' }}>
           <div>
-            <div className="section-label" style={{ marginBottom: 3 }}>Member card</div>
+            <div className="section-label" style={{ marginBottom: 3 }}>Member #</div>
             <div style={{ fontWeight: 800, letterSpacing: 1 }}>{profile?.membership_number}</div>
           </div>
-          <button onClick={() => setShowQR(!showQR)} className="chip">Show card</button>
+          <Link href="/club/leaderboard" className="chip accent" style={{ textDecoration: 'none', border: 'none' }}>
+            Season board
+          </Link>
         </div>
-        {showQR && (
-          <div style={{ marginTop: 12, padding: 16, background: 'var(--bg)', borderRadius: 12, textAlign: 'center', fontSize: 12, color: 'var(--muted)' }}>
-            Check-in at {DEMO_CLUB.clubhouses[0].name} / Utawala
-          </div>
-        )}
       </div>
+
+      <MemberCard
+        name={name}
+        membershipNumber={profile?.membership_number || 'GRC-0412'}
+        title={title}
+        isCaptain={session?.isCaptain}
+      />
 
       {session?.isCaptain && (
         <Link href="/captain" className="btn-primary" style={{ textDecoration: 'none', display: 'flex', marginBottom: 14 }}>
@@ -96,6 +101,9 @@ export default function PassportClient({ profile, badges, recentRides }: {
       </div>
       <div style={{ marginBottom: 16 }}>
         <SaturdayStreak compact />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <WeeklyGoal compact />
       </div>
 
       <Link

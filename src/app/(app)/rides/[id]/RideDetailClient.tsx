@@ -6,7 +6,9 @@ import { CheckCircle2, Clock, Loader2 } from 'lucide-react'
 import KitChecklist from '@/components/rides/KitChecklist'
 import CarpoolBoard from '@/components/rides/CarpoolBoard'
 import PaceBuddies from '@/components/rides/PaceBuddies'
+import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, markSaturdayRidden, setRsvp, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
+import { DEMO_RIDES } from '@/lib/demo'
 
 type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
 
@@ -73,6 +75,7 @@ export default function RideDetailClient({
   const isWaitlisted = rsvp?.status === 'waitlisted'
   const isFull = spotsLeft !== null && spotsLeft <= 0 && !isRegistered && !isWaitlisted
   const presentCount = roster.filter(r => r.present).length
+  const ride = DEMO_RIDES.find(r => r.id === rideId)
 
   return (
     <div>
@@ -182,6 +185,12 @@ export default function RideDetailClient({
 
       <PaceBuddies rsvp={rsvp} roster={roster} />
 
+      {ride && (
+        <div style={{ marginBottom: 14 }}>
+          <AddToCalendarButton ride={ride} />
+        </div>
+      )}
+
       <CarpoolBoard rideId={rideId} />
 
       {isRegistered && (
@@ -200,7 +209,7 @@ export default function RideDetailClient({
           >
             <CheckCircle2 size={20} color="var(--accent)" />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#9A4A12' }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--accent-ink)' }}>
                 Niko in · {rsvp?.paceGroupName}
               </div>
               <div style={{ fontSize: 12, color: 'var(--muted)' }}>

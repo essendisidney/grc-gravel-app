@@ -82,6 +82,9 @@ export default function ClubPage() {
         <Link href="/club/members" className="btn-primary" style={{ textDecoration: 'none', marginBottom: 10, display: 'flex' }}>
           Member directory
         </Link>
+        <Link href="/club/leaderboard" className="btn-secondary" style={{ textDecoration: 'none', marginBottom: 10, display: 'flex' }}>
+          Season km board
+        </Link>
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>Membership</div>
         <Link href="/join" className="btn-secondary" style={{ textDecoration: 'none', marginBottom: 10, display: 'flex' }}>
