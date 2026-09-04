@@ -44,6 +44,42 @@ const WAYPOINTS: Record<string, [number, number][]> = {
   ],
 }
 
+/** Club ride IDs → route corridor for map/GPX */
+const RIDE_ROUTE: Record<string, string> = {
+  'ngong-magadi': 'magadi-loop',
+  'kiserian-loop': 'kiserian-classic',
+}
+
+export function getWaypoints(routeOrRideId: string): [number, number][] {
+  const id = RIDE_ROUTE[routeOrRideId] || routeOrRideId
+  return WAYPOINTS[id] || WAYPOINTS['magadi-loop']
+}
+
+/** Project lat/lon path into an SVG polyline (viewBox 0 0 100 100) */
+export function waypointsToSvgPath(routeOrRideId: string, pad = 8) {
+  const pts = getWaypoints(routeOrRideId)
+  const lats = pts.map(p => p[0])
+  const lons = pts.map(p => p[1])
+  const minLat = Math.min(...lats)
+  const maxLat = Math.max(...lats)
+  const minLon = Math.min(...lons)
+  const maxLon = Math.max(...lons)
+  const spanLat = Math.max(maxLat - minLat, 0.01)
+  const spanLon = Math.max(maxLon - minLon, 0.01)
+  const size = 100 - pad * 2
+
+  const projected = pts.map(([lat, lon]) => {
+    const x = pad + ((lon - minLon) / spanLon) * size
+    const y = pad + ((maxLat - lat) / spanLat) * size
+    return [x, y] as [number, number]
+  })
+
+  const d = projected.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' ')
+  const start = projected[0]
+  const end = projected[projected.length - 1]
+  return { d, start, end, projected }
+}
+
 export function getRouteById(id: string) {
   return DEMO_ROUTES.find(r => r.id === id) || null
 }
@@ -53,7 +89,7 @@ export function getRegionName(regionId: string) {
 }
 
 export function buildGpx(routeId: string, name: string) {
-  const pts = WAYPOINTS[routeId] || WAYPOINTS['magadi-loop']
+  const pts = getWaypoints(routeId)
   const trkpts = pts
     .map(([lat, lon], i) => {
       const ele = 1600 + Math.round(Math.sin(i / 2) * 80)

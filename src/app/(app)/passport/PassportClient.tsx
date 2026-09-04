@@ -6,7 +6,7 @@ import { getInitials, formatKm } from '@/lib/utils'
 import { Settings, LogOut, Mountain } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DEMO_BADGES, DEMO_CLUB, DEMO_PROFILE } from '@/lib/demo'
-import { clearSession, getOfflinePacks, getSession, type LocalSession, type OfflinePack } from '@/lib/localStore'
+import { clearSession, getActivities, getOfflinePacks, getSession, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -15,10 +15,12 @@ export default function PassportClient({ profile, badges, recentRides }: {
   const [showQR, setShowQR] = useState(false)
   const [session, setLocal] = useState<LocalSession | null>(null)
   const [packs, setPacks] = useState<OfflinePack[]>([])
+  const [activities, setActivities] = useState<RideActivity[]>([])
 
   useEffect(() => {
     setLocal(getSession())
     setPacks(getOfflinePacks())
+    setActivities(getActivities())
   }, [])
 
   const name = session?.fullName || profile?.full_name || DEMO_PROFILE.full_name
@@ -114,6 +116,24 @@ export default function PassportClient({ profile, badges, recentRides }: {
                 {p.distanceKm} km · {p.gravelPct}% gravel · {p.signal} signal · GPX on device
               </div>
             </Link>
+          ))}
+        </div>
+      )}
+
+      {activities.length > 0 && (
+        <div style={{ marginBottom: 18 }}>
+          <div className="eyebrow" style={{ marginBottom: 10 }}>Activity · {activities.length}</div>
+          {activities.slice(0, 8).map(a => (
+            <div key={a.id} className="surface" style={{ padding: 12, marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <div style={{ fontSize: 14, fontWeight: 800 }}>{a.title}</div>
+                <span className="chip accent" style={{ border: 'none' }}>{a.paceGroupName}</span>
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>
+                {a.distanceKm} km · {Math.floor(a.elapsedSec / 60)} min · {a.elevationM} m ↑ ·{' '}
+                {new Date(a.endedAt).toLocaleDateString()}
+              </div>
+            </div>
           ))}
         </div>
       )}

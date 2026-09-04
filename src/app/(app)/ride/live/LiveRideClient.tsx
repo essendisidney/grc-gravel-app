@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Droplets, Megaphone, Phone, Signal, TriangleAlert } from 'lucide-react'
 import { DEMO_RIDES } from '@/lib/demo'
+import RouteMap from '@/components/maps/RouteMap'
 import {
   endLiveRide,
   getCaptainPings,
@@ -82,7 +83,7 @@ export default function LiveRideClient() {
 
   function finish() {
     endLiveRide()
-    router.push('/')
+    router.push(`/ride/summary?ride=${rideId}&t=${elapsed}&pace=${encodeURIComponent(paceName)}`)
   }
 
   if (!ready) {
@@ -131,10 +132,14 @@ export default function LiveRideClient() {
         <div style={{ fontSize: 13, color: 'rgba(255,252,250,0.5)', marginTop: 4 }}>Elapsed</div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 14 }}>
         <HudStat label="Est. km" value={String(estKm)} />
         <HudStat label="Climb" value={`${ride?.elevation_gain_m || 0}`} />
         <HudStat label="Gravel" value={`${ride?.gravel_pct || 80}%`} />
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <RouteMap routeId={rideId} height={120} dark />
       </div>
 
       <div

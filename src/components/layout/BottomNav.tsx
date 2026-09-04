@@ -13,7 +13,7 @@ const NAV_ITEMS = [
 
 export default function BottomNav() {
   const pathname = usePathname()
-  if (pathname.startsWith('/ride/live')) return null
+  if (pathname.startsWith('/ride/live') || pathname.startsWith('/ride/summary')) return null
 
   function isActive(href: string) {
     if (href === '/') return pathname === '/'

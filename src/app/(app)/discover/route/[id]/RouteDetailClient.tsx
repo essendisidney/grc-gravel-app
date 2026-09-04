@@ -7,6 +7,7 @@ import { ArrowLeft, Download, HardDriveDownload, MapPinned } from 'lucide-react'
 import TopBar from '@/components/layout/TopBar'
 import { buildGpx, getRegionName, getRouteById } from '@/lib/gpx'
 import { isRouteSaved, removeOfflinePack, saveOfflinePack } from '@/lib/localStore'
+import RouteMap from '@/components/maps/RouteMap'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
@@ -102,6 +103,10 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
           <Intel label="Condition" value={route.road_condition} />
           <Intel label="Signal" value={route.signal} />
           <Intel label="Water" value={`${route.water_points} pts`} />
+        </div>
+
+        <div style={{ marginBottom: 14 }}>
+          <RouteMap routeId={route.id} height={170} />
         </div>
 
         <div className="surface" style={{ padding: 14, marginBottom: 14 }}>

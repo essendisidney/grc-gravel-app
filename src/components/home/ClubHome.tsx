@@ -8,6 +8,7 @@ import { formatRideDate, formatTime } from '@/lib/utils'
 import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
+import WeatherBriefing from '@/components/home/WeatherBriefing'
 import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 
@@ -220,6 +221,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
       </div>
 
       <div style={{ padding: '22px 14px 8px' }}>
+        <WeatherBriefing />
         <div className="eyebrow" style={{ marginBottom: 12 }}>This week</div>
         <div className="week-strip">
           <div className="week-cell">

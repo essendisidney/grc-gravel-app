@@ -250,3 +250,26 @@ export function endLiveRide() {
   if (typeof window === 'undefined') return
   localStorage.removeItem(LIVE_KEY)
 }
+
+export type RideActivity = {
+  id: string
+  rideId: string
+  title: string
+  paceGroupName: string
+  elapsedSec: number
+  distanceKm: number
+  elevationM: number
+  endedAt: string
+}
+
+const ACTIVITY_KEY = 'grc-activities'
+
+export function getActivities(): RideActivity[] {
+  return readJson<RideActivity[]>(ACTIVITY_KEY, [])
+}
+
+export function addActivity(activity: RideActivity) {
+  const next = [activity, ...getActivities()].slice(0, 30)
+  writeJson(ACTIVITY_KEY, next)
+  return next
+}
