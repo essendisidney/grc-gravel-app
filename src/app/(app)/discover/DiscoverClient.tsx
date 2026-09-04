@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { ChevronRight, Heart, MapPinned, SlidersHorizontal } from 'lucide-react'
 import { DEMO_REGIONS, DEMO_ROUTES } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
+import GravelTips from '@/components/home/GravelTips'
 import { getFavorites, toggleFavorite } from '@/lib/localStore'
 
 type SortKey = 'featured' | 'distance' | 'gravel' | 'climb'
@@ -47,6 +48,10 @@ export default function DiscoverClient() {
         <p style={{ margin: '12px 0 0', fontSize: 14, color: 'var(--muted)', lineHeight: 1.5, maxWidth: 300 }}>
           Filter by gravel, distance, signal — save favourites for patchy reception.
         </p>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <GravelTips compact />
       </div>
 
       <div

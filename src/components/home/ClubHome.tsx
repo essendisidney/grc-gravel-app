@@ -14,6 +14,7 @@ import SeasonChallenge from '@/components/home/SeasonChallenge'
 import SaturdayStreak from '@/components/home/SaturdayStreak'
 import WeeklyGoal from '@/components/home/WeeklyGoal'
 import WeekSchedule from '@/components/home/WeekSchedule'
+import GravelTips from '@/components/home/GravelTips'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
@@ -238,6 +239,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         <SeasonChallenge />
         <SaturdayStreak />
         <WeeklyGoal />
+        <GravelTips />
       </div>
 
       <div style={{ padding: '22px 14px 8px' }}>

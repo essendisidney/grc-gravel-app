@@ -12,6 +12,7 @@ import SaturdayStreak from '@/components/home/SaturdayStreak'
 import WeeklyGoal from '@/components/home/WeeklyGoal'
 import MemberCard from '@/components/passport/MemberCard'
 import InviteFriend from '@/components/club/InviteFriend'
+import ExportSeasonButton from '@/components/passport/ExportSeasonButton'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -289,6 +290,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
       </div>
 
       <InviteFriend />
+      <ExportSeasonButton />
 
       {recentRides.length > 0 && (
         <div style={{ marginBottom: 18 }}>

@@ -71,6 +71,20 @@ export default function RideDetailClient({
     setLoading(false)
   }
 
+  function changePace(id: string) {
+    const group = paceGroups.find(g => g.id === id)
+    if (!group || !rsvp) return
+    setPaceId(id)
+    const next: LocalRsvp = {
+      ...rsvp,
+      paceGroupId: id,
+      paceGroupName: group.name,
+    }
+    setRsvp(next)
+    setLocal(next)
+    setMessage(`Pace updated — you’re with ${group.name} now.`)
+  }
+
   const isRegistered = rsvp?.status === 'registered'
   const isWaitlisted = rsvp?.status === 'waitlisted'
   const isFull = spotsLeft !== null && spotsLeft <= 0 && !isRegistered && !isWaitlisted
@@ -136,6 +150,28 @@ export default function RideDetailClient({
               </button>
             )
           })}
+        </div>
+      )}
+
+      {(isRegistered || isWaitlisted) && paceGroups.length > 1 && (
+        <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
+          <div className="section-label" style={{ marginBottom: 8 }}>Change pace</div>
+          <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 10, lineHeight: 1.4 }}>
+            Currently {rsvp?.paceGroupName}. Switch before roll-out if legs say otherwise.
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {paceGroups.map(g => (
+              <button
+                key={g.id}
+                type="button"
+                className={paceId === g.id ? 'chip accent' : 'chip'}
+                style={{ border: 'none', cursor: 'pointer' }}
+                onClick={() => changePace(g.id)}
+              >
+                {g.name}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
