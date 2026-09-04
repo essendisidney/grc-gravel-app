@@ -14,6 +14,7 @@ import MemberCard from '@/components/passport/MemberCard'
 import InviteFriend from '@/components/club/InviteFriend'
 import ExportSeasonButton from '@/components/passport/ExportSeasonButton'
 import CorridorPrs from '@/components/passport/CorridorPrs'
+import TrainingLoadCard from '@/components/passport/TrainingLoadCard'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -112,6 +113,7 @@ export default function PassportClient({ profile, badges, recentRides }: {
       <div style={{ marginBottom: 16 }}>
         <WeeklyGoal compact />
       </div>
+      <TrainingLoadCard />
 
       <Link
         href="/passport/garage"

@@ -25,6 +25,7 @@ import {
 } from '@/lib/localStore'
 import AttendanceSummary from '@/components/captain/AttendanceSummary'
 import StartListShare from '@/components/captain/StartListShare'
+import RollOutNow from '@/components/captain/RollOutNow'
 import { DEMO_RIDES } from '@/lib/demo'
 
 const RIDE_ID = 'ngong-magadi'
@@ -102,7 +103,7 @@ export default function CaptainPage() {
     <div>
       <TopBar showBack title="Captain tools" showNotifications backHref="/club" />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 19 · Captain</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 20 · Captain</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {ride?.route_label || 'Club ride'}
         </h1>
@@ -225,6 +226,8 @@ export default function CaptainPage() {
           rideId={RIDE_ID}
           title={ride?.route_label || 'Club ride'}
         />
+
+        <RollOutNow rideId={RIDE_ID} onPing={setPings} />
 
         <div className="eyebrow" style={{ margin: '18px 0 10px' }}>Waitlist</div>
         {waitlist.length === 0 ? (

@@ -18,6 +18,8 @@ import WeekSchedule from '@/components/home/WeekSchedule'
 import GravelTips from '@/components/home/GravelTips'
 import DustSeasonCard from '@/components/home/DustSeasonCard'
 import ClubEventsStrip from '@/components/home/ClubEventsStrip'
+import RollOutBanner from '@/components/home/RollOutBanner'
+import HeatWindAdvisory from '@/components/home/HeatWindAdvisory'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
@@ -244,6 +246,8 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
 
       <RideStatusBanner rideId={adventure.id} />
 
+      <RollOutBanner />
+
       <AnnouncementsStrip />
 
       <div style={{ padding: '14px 14px 0' }}>
@@ -251,6 +255,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         <SaturdayStreak />
         <WeeklyGoal />
         <DustSeasonCard />
+        <HeatWindAdvisory />
         <ClubEventsStrip />
         <GravelTips />
       </div>

@@ -62,3 +62,13 @@ assert.equal(recoveryTip(1), 'Recovery day')
 assert.equal(recoveryTip(5), 'Bank the fitness')
 assert.equal(recoveryTip(null), null)
 console.log('verify-helpers: OK (recovery tips)')
+
+function trainingBand(load) {
+  if (load >= 180) return 'peak'
+  if (load >= 90) return 'build'
+  if (load >= 30) return 'easy'
+  return 'rest'
+}
+assert.equal(trainingBand(200), 'peak')
+assert.equal(trainingBand(10), 'rest')
+console.log('verify-helpers: OK (training load)')

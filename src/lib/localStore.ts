@@ -840,6 +840,7 @@ export function clearDemoCaches() {
     'grc-rollout-checks',
     'grc-gate-self',
     'grc-chai-kitty',
+    'grc-roll-out',
   ]
   keys.forEach(k => {
     try {
@@ -1281,3 +1282,83 @@ export function recoveryTip(feel: number | null | undefined) {
     body: 'You felt strong — keep hydration high and note the corridor PR.',
   }
 }
+
+const ROLL_OUT_KEY = 'grc-roll-out'
+
+export type RollOutBroadcast = {
+  rideId: string
+  message: string
+  at: string
+  captainName: string
+}
+
+export function getRollOutBroadcast(): RollOutBroadcast | null {
+  const b = readJson<RollOutBroadcast | null>(ROLL_OUT_KEY, null)
+  if (!b?.at) return null
+  // expire after 3 hours
+  if (Date.now() - new Date(b.at).getTime() > 3 * 3600 * 1000) return null
+  return b
+}
+
+export function setRollOutBroadcast(b: RollOutBroadcast) {
+  writeJson(ROLL_OUT_KEY, b)
+  return b
+}
+
+export function clearRollOutBroadcast() {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(ROLL_OUT_KEY)
+}
+
+/** Rough training load from logged activities in the last 7 days. */
+export function getWeeklyTrainingLoad() {
+  const weekAgo = Date.now() - 7 * 86400000
+  const acts = getActivities().filter(a => new Date(a.endedAt).getTime() >= weekAgo)
+  const km = acts.reduce((s, a) => s + (a.distanceKm || 0), 0)
+  const climb = acts.reduce((s, a) => s + (a.elevationM || 0), 0)
+  const hours = acts.reduce((s, a) => s + (a.elapsedSec || 0), 0) / 3600
+  // demo TSS-ish: km * 1.2 + climb/100
+  const load = Math.round(km * 1.2 + climb / 100)
+  let band: 'easy' | 'build' | 'peak' | 'rest' = 'rest'
+  if (load >= 180) band = 'peak'
+  else if (load >= 90) band = 'build'
+  else if (load >= 30) band = 'easy'
+  return {
+    km: Math.round(km * 10) / 10,
+    climb: Math.round(climb),
+    hours: Math.round(hours * 10) / 10,
+    rides: acts.length,
+    load: load || (acts.length ? load : 42), // demo seed feel when empty
+    band: acts.length ? band : ('easy' as const),
+    seeded: acts.length === 0,
+  }
+}
+
+export function getHeatWindAdvisory(date = new Date()) {
+  const month = date.getMonth() + 1
+  const hour = date.getHours()
+  const heat =
+    (month >= 1 && month <= 3) || month === 12
+      ? { level: 'elevated' as const, note: 'Rift heat builds by mid-morning — roll early, extra bottles.' }
+      : month >= 6 && month <= 9
+        ? { level: 'moderate' as const, note: 'Cooler dust mornings — heat still climbs after 10:00.' }
+        : { level: 'mild' as const, note: 'Shoulder season temps — watch afternoon storms.' }
+  const wind =
+    month >= 6 && month <= 9
+      ? { level: 'gusty' as const, note: 'Magadi flats often windy — stay in echelon.' }
+      : { level: 'light' as const, note: 'Expect valley breezes on the descent.' }
+  const morningBias = hour < 9
+  return {
+    heat,
+    wind,
+    tip: morningBias
+      ? 'Best window: before 09:00 for cooler roll-out.'
+      : 'If rolling late, double water and regroup tighter on exposed flats.',
+  }
+}
+
+export const DEMO_MERCH = [
+  { id: 'm1', name: 'GRC gravel jersey', priceKes: 4500, note: 'Gold crest · breathable' },
+  { id: 'm2', name: 'Club cap', priceKes: 1200, note: 'Dust-season essential' },
+  { id: 'm3', name: 'Bidon 750ml', priceKes: 800, note: 'Clubhouse stock' },
+]
