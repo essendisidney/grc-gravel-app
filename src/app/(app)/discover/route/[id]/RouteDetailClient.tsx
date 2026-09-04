@@ -11,6 +11,7 @@ import RouteMap from '@/components/maps/RouteMap'
 import ElevationProfile from '@/components/maps/ElevationProfile'
 import ConditionReports from '@/components/discover/ConditionReports'
 import FuelPlanner from '@/components/discover/FuelPlanner'
+import WaterRefills from '@/components/discover/WaterRefills'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
@@ -122,6 +123,8 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
           elevationM={route.elevation_m}
           estHours={route.est_hours}
         />
+
+        <WaterRefills routeId={route.id} />
 
         <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>

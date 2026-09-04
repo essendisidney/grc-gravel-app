@@ -7,6 +7,7 @@ import KitChecklist from '@/components/rides/KitChecklist'
 import CarpoolBoard from '@/components/rides/CarpoolBoard'
 import PaceBuddies from '@/components/rides/PaceBuddies'
 import MeetupPins from '@/components/rides/MeetupPins'
+import RunningLate from '@/components/rides/RunningLate'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, isRideSaved, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -234,6 +235,8 @@ export default function RideDetailClient({
       <PaceBuddies rsvp={rsvp} roster={roster} />
 
       <MeetupPins rideId={rideId} />
+
+      {(isRegistered || isWaitlisted) && <RunningLate rideId={rideId} />}
 
       {ride && (
         <div style={{ marginBottom: 14 }}>

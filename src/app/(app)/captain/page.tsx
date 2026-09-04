@@ -23,6 +23,7 @@ import {
   type RollCallRider,
   type WaitlistRider,
 } from '@/lib/localStore'
+import AttendanceSummary from '@/components/captain/AttendanceSummary'
 import { DEMO_RIDES } from '@/lib/demo'
 
 const RIDE_ID = 'ngong-magadi'
@@ -100,12 +101,12 @@ export default function CaptainPage() {
     <div>
       <TopBar showBack title="Captain tools" showNotifications backHref="/club" />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 16 · Captain</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 17 · Captain</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {ride?.route_label || 'Club ride'}
         </h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>
-          Ride status, announcements, gate roll call, waitlist, group pings.
+          Ride status, announcements, gate roll call, attendance export, waitlist, group pings.
         </p>
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>Saturday status</div>
@@ -209,6 +210,14 @@ export default function CaptainPage() {
             </span>
           </button>
         ))}
+
+        <div style={{ marginTop: 8, marginBottom: 8 }}>
+          <AttendanceSummary
+            key={`att-${rollCall.filter(r => r.present).length}`}
+            rideId={RIDE_ID}
+            title={ride?.route_label || 'Club ride'}
+          />
+        </div>
 
         <div className="eyebrow" style={{ margin: '18px 0 10px' }}>Waitlist</div>
         {waitlist.length === 0 ? (

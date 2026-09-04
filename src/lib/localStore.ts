@@ -625,7 +625,7 @@ export function markSaturdayRidden(isoDate = new Date().toISOString()) {
 }
 
 export function getStreak(): { count: number; lastDate: string | null } {
-  let dates = readJson<string[]>(STREAK_KEY, [])
+  const dates = readJson<string[]>(STREAK_KEY, [])
   if (!dates.length) {
     // demo seed: last 3 Saturdays so streak reads live
     const simple: string[] = []
@@ -834,6 +834,8 @@ export function clearDemoCaches() {
     'grc-saved-rides',
     'grc-ride-status',
     'grc-kudos',
+    'grc-late-pings',
+    'grc-gear-board',
   ]
   keys.forEach(k => {
     try {
@@ -988,4 +990,145 @@ export function getMeetupPins(rideId: string) {
     { id: 'g2', name: 'Mid regroup', note: 'Captain call', km: 20 },
     { id: 'g3', name: 'Finish', note: 'Pack photo', km: 40 },
   ]
+}
+
+const LATE_KEY = 'grc-late-pings'
+const GEAR_KEY = 'grc-gear-board'
+
+export type LatePing = {
+  id: string
+  rideId: string
+  name: string
+  etaMin: number
+  note: string
+  createdAt: string
+}
+
+export function getLatePings(rideId: string): LatePing[] {
+  return readJson<LatePing[]>(LATE_KEY, []).filter(p => p.rideId === rideId)
+}
+
+export function addLatePing(ping: LatePing) {
+  const all = [ping, ...readJson<LatePing[]>(LATE_KEY, [])].slice(0, 40)
+  writeJson(LATE_KEY, all)
+  return all.filter(p => p.rideId === ping.rideId)
+}
+
+export type WaterRefill = {
+  id: string
+  name: string
+  km: number
+  note: string
+  reliable: boolean
+}
+
+export const WATER_REFILLS: Record<string, WaterRefill[]> = {
+  'magadi-loop': [
+    { id: 'w1', name: 'Tena clubhouse', km: 0, note: 'Fill 2 bottles before roll-out', reliable: true },
+    { id: 'w2', name: 'Kona Baridi kiosk', km: 28, note: 'Cold drinks · cash/M-Pesa', reliable: true },
+    { id: 'w3', name: 'Magadi town pump', km: 78, note: 'Confirm open · dusty afternoon', reliable: false },
+  ],
+  'ngong-ridge': [
+    { id: 'w1', name: 'Ngong town', km: 0, note: 'Last reliable fill', reliable: true },
+    { id: 'w2', name: 'Ridge viewpoint stall', km: 12, note: 'Seasonal — weekends only', reliable: false },
+  ],
+  'kona-baridi': [
+    { id: 'w1', name: 'Tena gate', km: 0, note: 'Club fill-up', reliable: true },
+    { id: 'w2', name: 'Kona Baridi', km: 22, note: 'Main regroup bottles', reliable: true },
+  ],
+}
+
+export function getWaterRefills(routeId: string): WaterRefill[] {
+  return (
+    WATER_REFILLS[routeId] || [
+      { id: 'd1', name: 'Start', km: 0, note: 'Fill before departure', reliable: true },
+      { id: 'd2', name: 'Midway kiosk', km: 20, note: 'Ask locals', reliable: false },
+    ]
+  )
+}
+
+export type GearOffer = {
+  id: string
+  item: string
+  fromName: string
+  note: string
+  available: boolean
+  createdAt: string
+}
+
+export function getGearBoard(): GearOffer[] {
+  return readJson<GearOffer[]>(GEAR_KEY, [
+    {
+      id: 'g_seed1',
+      item: 'CO2 + spare tube (700×40)',
+      fromName: 'Sam Kariuki',
+      note: 'At Tena · Saturday mornings',
+      available: true,
+      createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    },
+    {
+      id: 'g_seed2',
+      item: 'Front light (USB)',
+      fromName: 'Amina Otieno',
+      note: 'Return after Magadi',
+      available: true,
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+    },
+  ])
+}
+
+export function addGearOffer(offer: GearOffer) {
+  const next = [offer, ...getGearBoard()].slice(0, 24)
+  writeJson(GEAR_KEY, next)
+  return next
+}
+
+export function claimGear(id: string) {
+  const next = getGearBoard().map(g => (g.id === id ? { ...g, available: false } : g))
+  writeJson(GEAR_KEY, next)
+  return next
+}
+
+/** Dust / dry months for Nairobi–Magadi gravel (demo heuristic). */
+export const DUST_SEASON_MONTHS = [1, 2, 6, 7, 8, 9] // Jan–Feb, Jun–Sep
+
+export function getDustSeasonStatus(date = new Date()) {
+  const month = date.getMonth() + 1
+  const inDust = DUST_SEASON_MONTHS.includes(month)
+  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return {
+    inDust,
+    monthLabel: labels[month - 1],
+    months: DUST_SEASON_MONTHS.map(m => labels[m - 1]),
+    tip: inDust
+      ? 'Dust season — lights on, tighter groups, extra bottles.'
+      : 'Shoulder season — mud pockets possible after rain; check trail reports.',
+  }
+}
+
+export function getAttendanceSummary(rideId: string) {
+  const roster = getRollCall(rideId)
+  const present = roster.filter(r => r.present)
+  const absent = roster.filter(r => !r.present)
+  const byPace = new Map<string, { present: number; total: number }>()
+  for (const r of roster) {
+    const cur = byPace.get(r.paceGroup) || { present: 0, total: 0 }
+    cur.total += 1
+    if (r.present) cur.present += 1
+    byPace.set(r.paceGroup, cur)
+  }
+  return {
+    total: roster.length,
+    present: present.length,
+    absent: absent.length,
+    presentNames: present.map(r => r.name),
+    absentNames: absent.map(r => r.name),
+    byPace: [...byPace.entries()].map(([pace, v]) => ({ pace, ...v })),
+  }
+}
+
+export function attendanceCsv(rideId: string, title = 'Club ride') {
+  const roster = getRollCall(rideId)
+  const lines = ['name,pace,status', ...roster.map(r => `"${r.name}","${r.paceGroup}",${r.present ? 'present' : 'absent'}`)]
+  return `# ${title}\n# exported ${new Date().toISOString()}\n${lines.join('\n')}`
 }
