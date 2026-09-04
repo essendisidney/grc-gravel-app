@@ -11,8 +11,9 @@ import GrcLogo from '@/components/brand/GrcLogo'
 import WeatherBriefing from '@/components/home/WeatherBriefing'
 import AnnouncementsStrip from '@/components/home/AnnouncementsStrip'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
+import SaturdayStreak from '@/components/home/SaturdayStreak'
 import WeekSchedule from '@/components/home/WeekSchedule'
-import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver } from '@/lib/localStore'
+import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 
 function greeting() {
@@ -66,6 +67,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
     })
     setJoined(true)
     setPaceName(group?.name || 'Cruiser')
+    markSaturdayRidden()
     setSheet(false)
   }
 
@@ -227,6 +229,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
 
       <div style={{ padding: '14px 14px 0' }}>
         <SeasonChallenge />
+        <SaturdayStreak />
       </div>
 
       <div style={{ padding: '22px 14px 8px' }}>

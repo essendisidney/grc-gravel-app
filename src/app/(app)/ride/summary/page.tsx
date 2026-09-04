@@ -9,8 +9,10 @@ import {
   addClubStory,
   getActivities,
   getSession,
+  markSaturdayRidden,
 } from '@/lib/localStore'
 import RouteMap from '@/components/maps/RouteMap'
+import ShareRideCard from '@/components/ride/ShareRideCard'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -29,6 +31,7 @@ function SummaryInner() {
   const ride = useMemo(() => DEMO_RIDES.find(r => r.id === rideId) || DEMO_RIDES[0], [rideId])
   const [saved, setSaved] = useState(false)
   const [shared, setShared] = useState(false)
+  const [riderName, setRiderName] = useState('GRC rider')
 
   const distanceKm = Math.min(
     ride?.distance_km || 86,
@@ -38,6 +41,11 @@ function SummaryInner() {
     (ride?.elevation_gain_m || 800) * Math.min(1, Math.max(0.08, elapsed / (3.5 * 3600))),
   )
   const title = ride?.route_label || ride?.title || 'Club ride'
+
+  useEffect(() => {
+    const s = getSession()
+    if (s?.fullName) setRiderName(s.fullName)
+  }, [])
 
   useEffect(() => {
     if (saved || elapsed < 5) return
@@ -58,6 +66,7 @@ function SummaryInner() {
       elevationM,
       endedAt: new Date().toISOString(),
     })
+    markSaturdayRidden()
     setSaved(true)
   }, [saved, elapsed, rideId, pace, title, distanceKm, elevationM])
 
@@ -76,13 +85,22 @@ function SummaryInner() {
 
   return (
     <div className="animate-fade-in" style={{ padding: '16px 16px 28px' }}>
-      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 6 · Post-ride</div>
+      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 10 · Post-ride</div>
       <h1 style={{ margin: '0 0 6px', fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em' }}>
         Ride logged
       </h1>
       <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)' }}>
         {title} · {pace}
       </p>
+
+      <ShareRideCard
+        title={title}
+        pace={pace}
+        distanceKm={distanceKm}
+        elevationM={elevationM}
+        elapsedLabel={formatElapsed(elapsed)}
+        riderName={riderName}
+      />
 
       <RouteMap routeId={rideId} height={160} />
 

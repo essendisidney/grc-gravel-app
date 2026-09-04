@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { DEMO_BADGES, DEMO_CLUB, DEMO_PROFILE } from '@/lib/demo'
 import { clearSession, getActivities, getBikes, getOfflinePacks, getSession, type GarageBike, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
+import SaturdayStreak from '@/components/home/SaturdayStreak'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -92,6 +93,9 @@ export default function PassportClient({ profile, badges, recentRides }: {
 
       <div style={{ marginBottom: 16 }}>
         <SeasonChallenge compact />
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <SaturdayStreak compact />
       </div>
 
       <Link

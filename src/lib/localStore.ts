@@ -554,3 +554,91 @@ export function getSeasonKm(): number {
   // demo floor so new users still see progress
   return Math.max(fromActivities, 186)
 }
+
+export type ConditionTag = 'dust' | 'mud' | 'wind' | 'signal' | 'heat' | 'clear'
+
+export type TrailCondition = {
+  id: string
+  routeId: string
+  tags: ConditionTag[]
+  note: string
+  authorName: string
+  createdAt: string
+}
+
+const CONDITIONS_KEY = 'grc-conditions'
+const STREAK_KEY = 'grc-saturday-streak'
+
+export function getConditions(routeId: string): TrailCondition[] {
+  const all = readJson<Record<string, TrailCondition[]>>(CONDITIONS_KEY, {})
+  if (all[routeId]?.length) return all[routeId]
+  if (routeId === 'magadi-loop' || routeId === 'ngong-magadi') {
+    return [
+      {
+        id: 'cond_seed_1',
+        routeId,
+        tags: ['dust', 'heat'],
+        note: 'Magadi flats blowing hard after 09:00. Lights help in the haze.',
+        authorName: 'Amina Otieno',
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
+      },
+      {
+        id: 'cond_seed_2',
+        routeId,
+        tags: ['signal'],
+        note: 'Patchy Safaricom past Kona Baridi — download the offline pack.',
+        authorName: 'Sam Kariuki',
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 40).toISOString(),
+      },
+    ]
+  }
+  return []
+}
+
+export function addCondition(c: TrailCondition) {
+  const all = readJson<Record<string, TrailCondition[]>>(CONDITIONS_KEY, {})
+  const base = all[c.routeId] || getConditions(c.routeId)
+  const next = [c, ...base].slice(0, 25)
+  all[c.routeId] = next
+  writeJson(CONDITIONS_KEY, all)
+  return next
+}
+
+/** Mark this Saturday as ridden (RSVP or finished activity). */
+export function markSaturdayRidden(isoDate = new Date().toISOString()) {
+  const d = new Date(isoDate)
+  // Count any ride day toward streak demo; prefer Saturdays when available
+  const key = d.toISOString().slice(0, 10)
+  const dates = new Set(readJson<string[]>(STREAK_KEY, []))
+  dates.add(key)
+  const list = [...dates].sort().reverse().slice(0, 52)
+  writeJson(STREAK_KEY, list)
+  return getStreak()
+}
+
+export function getStreak(): { count: number; lastDate: string | null } {
+  let dates = readJson<string[]>(STREAK_KEY, [])
+  if (!dates.length) {
+    // demo seed: last 3 Saturdays so streak reads live
+    const simple: string[] = []
+    const cur = new Date()
+    const day = cur.getDay()
+    const backToSat = day === 6 ? 7 : (day + 1) % 7
+    cur.setDate(cur.getDate() - backToSat)
+    for (let i = 0; i < 3; i++) {
+      simple.push(new Date(cur).toISOString().slice(0, 10))
+      cur.setDate(cur.getDate() - 7)
+    }
+    return { count: 3, lastDate: simple[0] }
+  }
+  const sorted = [...dates].sort().reverse()
+  let count = 1
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const a = new Date(sorted[i] + 'T12:00:00')
+    const b = new Date(sorted[i + 1] + 'T12:00:00')
+    const diffDays = Math.round((a.getTime() - b.getTime()) / 86400000)
+    if (diffDays >= 6 && diffDays <= 8) count++
+    else break
+  }
+  return { count, lastDate: sorted[0] }
+}

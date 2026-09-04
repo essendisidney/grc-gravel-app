@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { CheckCircle2, Clock, Loader2 } from 'lucide-react'
-import { clearRsvp, getRollCall, getRsvp, setRsvp, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import KitChecklist from '@/components/rides/KitChecklist'
 import CarpoolBoard from '@/components/rides/CarpoolBoard'
+import PaceBuddies from '@/components/rides/PaceBuddies'
+import { clearRsvp, getRollCall, getRsvp, markSaturdayRidden, setRsvp, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 
 type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
 
@@ -50,6 +51,7 @@ export default function RideDetailClient({
     }
     setRsvp(next)
     setLocal(next)
+    if (status === 'registered') markSaturdayRidden()
     setMessage(
       status === 'registered'
         ? `Niko in — ${next.paceGroupName} group. See you at the gate.`
@@ -177,6 +179,8 @@ export default function RideDetailClient({
       </div>
 
       {(isRegistered || isWaitlisted) && <KitChecklist rideId={rideId} />}
+
+      <PaceBuddies rsvp={rsvp} roster={roster} />
 
       <CarpoolBoard rideId={rideId} />
 
