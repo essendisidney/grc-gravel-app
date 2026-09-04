@@ -22,6 +22,7 @@ import RollOutBanner from '@/components/home/RollOutBanner'
 import HeatWindAdvisory from '@/components/home/HeatWindAdvisory'
 import HomeClubhousePicker from '@/components/home/HomeClubhousePicker'
 import WeekDigestStrip from '@/components/home/WeekDigestStrip'
+import NewRiderTip from '@/components/home/NewRiderTip'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
@@ -257,6 +258,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         <SaturdayStreak />
         <WeeklyGoal />
         <HomeClubhousePicker />
+        <NewRiderTip />
         <WeekDigestStrip />
         <DustSeasonCard />
         <HeatWindAdvisory />

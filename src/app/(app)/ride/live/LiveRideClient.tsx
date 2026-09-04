@@ -11,8 +11,10 @@ import {
   getCaptainPings,
   getEmergencyContact,
   getLiveRide,
+  getNightRidePref,
   getRsvp,
   getSession,
+  setNightRidePref,
   startLiveRide,
 } from '@/lib/localStore'
 import IncidentLog from '@/components/ride/IncidentLog'
@@ -45,12 +47,14 @@ export default function LiveRideClient() {
   const [sos, setSos] = useState(false)
   const [ready, setReady] = useState(false)
   const [emergency, setEmergency] = useState<{ name: string; phone: string } | null>(null)
+  const [night, setNight] = useState(false)
 
   useEffect(() => {
     const rsvp = getRsvp(rideId)
     const session = getSession()
     const pace = rsvp?.paceGroupName || getLiveRide()?.paceGroupName || 'Cruiser'
     setPaceName(pace)
+    setNight(getNightRidePref())
 
     let live = getLiveRide()
     if (!live || live.rideId !== rideId) {
@@ -76,6 +80,10 @@ export default function LiveRideClient() {
     return () => window.clearInterval(id)
   }, [rideId])
 
+  function toggleNight() {
+    setNight(setNightRidePref(!night))
+  }
+
   const minutes = elapsed / 60
   const checkpoint =
     [...CHECKPOINTS].reverse().find(c => minutes >= c.atMin) || CHECKPOINTS[0]
@@ -99,9 +107,12 @@ export default function LiveRideClient() {
       className="animate-fade-in"
       style={{
         minHeight: '100%',
-        background: 'linear-gradient(180deg, #1C1916 0%, #0E0C0A 48%, #141210 100%)',
+        background: night
+          ? 'linear-gradient(180deg, #050505 0%, #000 55%, #0A0A0A 100%)'
+          : 'linear-gradient(180deg, #1C1916 0%, #0E0C0A 48%, #141210 100%)',
         color: '#FFFCFA',
         padding: '16px 16px calc(24px + env(safe-area-inset-bottom))',
+        filter: night ? 'brightness(0.88) contrast(1.08)' : undefined,
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
@@ -111,22 +122,41 @@ export default function LiveRideClient() {
             {ride?.route_label || ride?.title}
           </div>
         </div>
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '6px 10px',
-            borderRadius: 999,
-            background: 'rgba(254,199,46,0.18)',
-            color: '#FEC72E',
-            fontSize: 11,
-            fontWeight: 800,
-            letterSpacing: '0.06em',
-          }}
-        >
-          <span className="live-dot" /> LIVE · {paceName.toUpperCase()}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            type="button"
+            onClick={toggleNight}
+            style={{
+              border: '1px solid rgba(255,255,255,0.18)',
+              background: night ? 'rgba(254,199,46,0.22)' : 'rgba(255,255,255,0.08)',
+              color: night ? '#FEC72E' : 'rgba(255,255,255,0.75)',
+              borderRadius: 999,
+              padding: '6px 10px',
+              fontSize: 10,
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              cursor: 'pointer',
+            }}
+          >
+            {night ? 'NIGHT' : 'DAY'}
+          </button>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 10px',
+              borderRadius: 999,
+              background: 'rgba(254,199,46,0.18)',
+              color: '#FEC72E',
+              fontSize: 11,
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+            }}
+          >
+            <span className="live-dot" /> LIVE · {paceName.toUpperCase()}
+          </span>
+        </div>
       </div>
 
       <div style={{ textAlign: 'center', margin: '28px 0 8px' }}>

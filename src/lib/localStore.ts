@@ -843,6 +843,8 @@ export function clearDemoCaches() {
     'grc-roll-out',
     'grc-home-clubhouse',
     'grc-emergency-proto',
+    'grc-hazards',
+    'grc-night-ride',
   ]
   keys.forEach(k => {
     try {
@@ -1414,4 +1416,70 @@ export function getWeekDigest() {
       'Club kit pickup · Tena & Utawala — see Club shop',
     ],
   }
+}
+
+const HAZARD_KEY = 'grc-hazards'
+const NIGHT_KEY = 'grc-night-ride'
+
+export type HazardPin = {
+  id: string
+  rideId: string
+  kind: 'pothole' | 'gravel' | 'cattle' | 'other'
+  note: string
+  kmApprox: number
+  name: string
+  createdAt: string
+}
+
+export function getHazards(rideId: string): HazardPin[] {
+  return readJson<HazardPin[]>(HAZARD_KEY, [
+    {
+      id: 'hz_seed',
+      rideId: 'ngong-magadi',
+      kind: 'gravel',
+      note: 'Deep corrugation after Kona Baridi',
+      kmApprox: 32,
+      name: 'Amina Otieno',
+      createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    },
+  ]).filter(h => h.rideId === rideId)
+}
+
+export function addHazard(h: HazardPin) {
+  const all = [h, ...readJson<HazardPin[]>(HAZARD_KEY, [])].slice(0, 40)
+  writeJson(HAZARD_KEY, all)
+  return all.filter(x => x.rideId === h.rideId)
+}
+
+export function getNightRidePref() {
+  return readJson<boolean>(NIGHT_KEY, false)
+}
+
+export function setNightRidePref(on: boolean) {
+  writeJson(NIGHT_KEY, on)
+  return on
+}
+
+export function getOfflinePackHealth() {
+  const packs = getOfflinePacks()
+  if (!packs.length) {
+    return { score: 0, label: 'No packs', hint: 'Save a Magadi pack from Discover for patchy signal.', packs: 0 }
+  }
+  const fresh = packs.filter(p => Date.now() - new Date(p.savedAt).getTime() < 14 * 86400000).length
+  const score = Math.round((fresh / packs.length) * 70 + Math.min(30, packs.length * 10))
+  const label = score >= 80 ? 'Ready' : score >= 50 ? 'OK' : 'Stale'
+  return {
+    score,
+    label,
+    hint:
+      label === 'Stale'
+        ? 'Re-save route packs — intel older than 2 weeks.'
+        : `${packs.length} pack${packs.length === 1 ? '' : 's'} on this device.`,
+    packs: packs.length,
+    fresh,
+  }
+}
+
+export function isNewRider() {
+  return getActivities().length === 0 && !getRsvp('ngong-magadi')
 }
