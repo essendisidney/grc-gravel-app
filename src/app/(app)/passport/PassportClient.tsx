@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getInitials, formatKm } from '@/lib/utils'
-import { Settings, LogOut, Mountain } from 'lucide-react'
+import { Settings, LogOut, Mountain, Bike } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DEMO_BADGES, DEMO_CLUB, DEMO_PROFILE } from '@/lib/demo'
-import { clearSession, getActivities, getOfflinePacks, getSession, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
+import { clearSession, getActivities, getBikes, getOfflinePacks, getSession, type GarageBike, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
+import SeasonChallenge from '@/components/home/SeasonChallenge'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -16,11 +17,13 @@ export default function PassportClient({ profile, badges, recentRides }: {
   const [session, setLocal] = useState<LocalSession | null>(null)
   const [packs, setPacks] = useState<OfflinePack[]>([])
   const [activities, setActivities] = useState<RideActivity[]>([])
+  const [bikes, setBikes] = useState<GarageBike[]>([])
 
   useEffect(() => {
     setLocal(getSession())
     setPacks(getOfflinePacks())
     setActivities(getActivities())
+    setBikes(getBikes())
   }, [])
 
   const name = session?.fullName || profile?.full_name || DEMO_PROFILE.full_name
@@ -86,6 +89,45 @@ export default function PassportClient({ profile, badges, recentRides }: {
           Open captain tools
         </Link>
       )}
+
+      <div style={{ marginBottom: 16 }}>
+        <SeasonChallenge compact />
+      </div>
+
+      <Link
+        href="/passport/garage"
+        className="surface"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: 14,
+          marginBottom: 14,
+          textDecoration: 'none',
+          color: 'var(--ink)',
+        }}
+      >
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 12,
+            background: 'var(--charcoal)',
+            color: '#fff',
+            display: 'grid',
+            placeItems: 'center',
+          }}
+        >
+          <Bike size={18} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 800, fontSize: 14 }}>Bike garage</div>
+          <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
+            {bikes.find(b => b.isPrimary)?.name || 'Add a bike'} · {bikes.length} in fleet
+          </div>
+        </div>
+        <span className="chip accent" style={{ border: 'none' }}>Wave 9</span>
+      </Link>
 
       <Link
         href="/ride/live?ride=ngong-magadi"

@@ -1,5 +1,5 @@
 /* GRC service worker — app-shell + offline ride packs */
-const CACHE = 'grc-shell-v3'
+const CACHE = 'grc-shell-v4'
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -9,11 +9,13 @@ const PRECACHE = [
   '/club',
   '/club/members',
   '/passport',
+  '/passport/garage',
   '/ride/live',
   '/ride/summary',
   '/captain',
   '/wrench',
   '/feed',
+  '/rides/ngong-magadi',
   '/brand/hero-adventure.jpg',
   '/brand/adventure-wide.jpg',
   '/brand/clubhouse.jpg',

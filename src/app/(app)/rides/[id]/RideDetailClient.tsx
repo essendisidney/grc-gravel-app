@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { CheckCircle2, Clock, Loader2 } from 'lucide-react'
 import { clearRsvp, getRollCall, getRsvp, setRsvp, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
+import KitChecklist from '@/components/rides/KitChecklist'
+import CarpoolBoard from '@/components/rides/CarpoolBoard'
 
 type PaceGroup = { id: string; name: string; avg_kph: number; count: number; captain?: string }
 
@@ -173,6 +175,10 @@ export default function RideDetailClient({
           Captain roll call →
         </Link>
       </div>
+
+      {(isRegistered || isWaitlisted) && <KitChecklist rideId={rideId} />}
+
+      <CarpoolBoard rideId={rideId} />
 
       {isRegistered && (
         <div style={{ marginBottom: 12 }}>

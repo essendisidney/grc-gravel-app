@@ -417,3 +417,140 @@ export function addAnnouncement(a: ClubAnnouncement) {
   writeJson(ANNOUNCE_KEY, next)
   return next
 }
+
+export type GarageBike = {
+  id: string
+  name: string
+  brand: string
+  type: 'gravel' | 'road' | 'mtb' | 'hybrid'
+  tireMm?: number
+  notes?: string
+  isPrimary?: boolean
+}
+
+const BIKES_KEY = 'grc-bikes'
+const KIT_KEY = 'grc-kit-checks'
+const CARPOOL_KEY = 'grc-carpool'
+
+export const DEFAULT_KIT = [
+  { id: 'lights', label: 'Front + rear lights' },
+  { id: 'bottles', label: '2 bottles filled' },
+  { id: 'tubes', label: 'Spare tube / plugs' },
+  { id: 'pump', label: 'Pump or CO₂' },
+  { id: 'cash', label: 'Cash / M-Pesa float' },
+  { id: 'helmet', label: 'Helmet + gloves' },
+  { id: 'snack', label: 'Bars / bananas' },
+  { id: 'phone', label: 'Phone charged + offline pack' },
+] as const
+
+export function getBikes(): GarageBike[] {
+  return readJson<GarageBike[]>(BIKES_KEY, [
+    {
+      id: 'b_default',
+      name: 'Daily gravel',
+      brand: 'Trek Checkpoint',
+      type: 'gravel',
+      tireMm: 40,
+      isPrimary: true,
+    },
+  ])
+}
+
+export function saveBikes(bikes: GarageBike[]) {
+  writeJson(BIKES_KEY, bikes)
+  return bikes
+}
+
+export function addBike(bike: GarageBike) {
+  const list = getBikes()
+  const next = bike.isPrimary
+    ? [bike, ...list.map(b => ({ ...b, isPrimary: false }))]
+    : [...list, bike]
+  return saveBikes(next)
+}
+
+export function setPrimaryBike(id: string) {
+  return saveBikes(getBikes().map(b => ({ ...b, isPrimary: b.id === id })))
+}
+
+export function removeBike(id: string) {
+  const next = getBikes().filter(b => b.id !== id)
+  if (next.length && !next.some(b => b.isPrimary)) next[0].isPrimary = true
+  return saveBikes(next)
+}
+
+export function getKitChecked(rideId: string): string[] {
+  const all = readJson<Record<string, string[]>>(KIT_KEY, {})
+  return all[rideId] || []
+}
+
+export function toggleKitItem(rideId: string, itemId: string) {
+  const all = readJson<Record<string, string[]>>(KIT_KEY, {})
+  const set = new Set(all[rideId] || [])
+  if (set.has(itemId)) set.delete(itemId)
+  else set.add(itemId)
+  all[rideId] = [...set]
+  writeJson(KIT_KEY, all)
+  return all[rideId]
+}
+
+export type CarpoolOffer = {
+  id: string
+  rideId: string
+  name: string
+  role: 'offer' | 'need'
+  seats: number
+  fromArea: string
+  note: string
+  phone?: string
+  createdAt: string
+}
+
+export function getCarpool(rideId: string): CarpoolOffer[] {
+  const all = readJson<Record<string, CarpoolOffer[]>>(CARPOOL_KEY, {})
+  if (all[rideId]) return all[rideId]
+  // seed demo offers for Magadi
+  if (rideId === 'ngong-magadi') {
+    return [
+      {
+        id: 'c1',
+        rideId,
+        name: 'James Njoroge',
+        role: 'offer',
+        seats: 2,
+        fromArea: 'Utawala',
+        note: 'Leaving 05:20. Bike rack for 2.',
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'c2',
+        rideId,
+        name: 'Faith Wanjiku',
+        role: 'need',
+        seats: 1,
+        fromArea: 'South B',
+        note: 'Need lift to Tena gate.',
+        createdAt: new Date().toISOString(),
+      },
+    ]
+  }
+  return []
+}
+
+export function addCarpool(offer: CarpoolOffer) {
+  const all = readJson<Record<string, CarpoolOffer[]>>(CARPOOL_KEY, {})
+  const base = all[offer.rideId] || getCarpool(offer.rideId)
+  const next = [offer, ...base].slice(0, 20)
+  all[offer.rideId] = next
+  writeJson(CARPOOL_KEY, all)
+  return next
+}
+
+/** Season goal — Rift 500 km from logged activities */
+export const SEASON_GOAL_KM = 500
+
+export function getSeasonKm(): number {
+  const fromActivities = getActivities().reduce((sum, a) => sum + (a.distanceKm || 0), 0)
+  // demo floor so new users still see progress
+  return Math.max(fromActivities, 186)
+}
