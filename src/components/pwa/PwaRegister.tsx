@@ -50,7 +50,7 @@ export default function PwaRegister() {
         position: 'fixed',
         left: '50%',
         transform: 'translateX(-50%)',
-        bottom: 'calc(var(--nav-h) + 12px + env(safe-area-inset-bottom))',
+        bottom: 'calc(var(--nav-h) + 12px)',
         width: 'calc(100% - 28px)',
         maxWidth: 366,
         zIndex: 60,

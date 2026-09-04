@@ -22,7 +22,7 @@ export default function BottomNav() {
 
   return (
     <div className="nav-shell">
-      <nav className="nav-bar">
+      <nav className="nav-bar" aria-label="Main">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = isActive(href)
           return (
@@ -30,33 +30,49 @@ export default function BottomNav() {
               key={href}
               href={href}
               className="pressable"
+              aria-current={active ? 'page' : undefined}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: 4,
-                minWidth: 58,
-                padding: '4px 8px',
+                justifyContent: 'center',
+                gap: 2,
+                flex: 1,
+                minWidth: 0,
+                minHeight: 48,
+                padding: '4px 6px',
                 textDecoration: 'none',
-                color: active ? '#fff' : 'rgba(255,255,255,0.45)',
-                position: 'relative',
+                color: active ? '#FEC72E' : 'rgba(255,255,255,0.72)',
               }}
             >
               <span
                 style={{
-                  width: 40,
+                  width: 44,
                   height: 28,
                   borderRadius: 999,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   background: active ? 'rgba(254,199,46,0.22)' : 'transparent',
-                  transition: 'background 0.2s ease',
+                  border: active ? '1px solid rgba(254,199,46,0.45)' : '1px solid transparent',
+                  boxSizing: 'border-box',
                 }}
               >
-                <Icon size={20} strokeWidth={active ? 2.4 : 1.7} color={active ? '#FEC72E' : 'rgba(255,255,255,0.5)'} />
+                <Icon
+                  size={20}
+                  strokeWidth={active ? 2.4 : 2}
+                  color={active ? '#FEC72E' : 'rgba(255,255,255,0.78)'}
+                />
               </span>
-              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, letterSpacing: '0.02em' }}>
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: active ? 700 : 600,
+                  letterSpacing: '0.02em',
+                  lineHeight: 1.1,
+                  whiteSpace: 'nowrap',
+                }}
+              >
                 {label}
               </span>
             </Link>

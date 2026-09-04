@@ -12,7 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         style={{
           flex: 1,
           paddingTop: 'env(safe-area-inset-top)',
-          paddingBottom: 'calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px)',
+          paddingBottom: 'calc(var(--nav-h) + 6px)',
         }}
       >
         {children}

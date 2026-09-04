@@ -22,7 +22,10 @@
   --club-ink: #0A0A0A;
   --club-soft: rgba(254, 199, 46, 0.28);
   --navy: #0A0A0A;
-  --nav-h: 72px;
+  --nav-content-h: 60px;
+  /* Android 3-button / gesture bar: never less than 28px even if inset reports 0 */
+  --nav-safe-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+  --nav-h: calc(var(--nav-content-h) + var(--nav-safe-bottom) + 10px);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -311,21 +314,26 @@ button, a, input, textarea, select { touch-action: manipulation; }
   width: 100%;
   max-width: none;
   z-index: 50;
-  padding: 0 12px max(10px, env(safe-area-inset-bottom));
+  /* Solid dock so icons never sit under the system bar */
+  background: #141210;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 10px var(--nav-safe-bottom);
   pointer-events: none;
+  box-sizing: border-box;
 }
 .nav-bar {
   pointer-events: auto;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 6px;
-  border-radius: 22px;
-  background: rgba(28, 25, 22, 0.92);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.28);
+  min-height: var(--nav-content-h);
+  height: var(--nav-content-h);
+  padding: 4px 4px 6px;
+  border-radius: 18px;
+  background: rgba(34, 30, 26, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
 }
 
 .stagger > * {
