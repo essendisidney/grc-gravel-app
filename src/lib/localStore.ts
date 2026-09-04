@@ -704,3 +704,78 @@ export function getSeasonLeaderboard(youName?: string, youKm?: number) {
     .sort((a, b) => b.km - a.km)
     .map((row, i) => ({ ...row, rank: i + 1 }))
 }
+
+export type BikeService = {
+  id: string
+  bikeId: string
+  kind: 'tune' | 'tires' | 'chain' | 'brake' | 'other'
+  note: string
+  at: string
+  kmAtService?: number
+}
+
+const SERVICE_KEY = 'grc-bike-service'
+
+export function getBikeServices(bikeId?: string): BikeService[] {
+  const all = readJson<BikeService[]>(SERVICE_KEY, [])
+  if (!bikeId) return all
+  return all.filter(s => s.bikeId === bikeId)
+}
+
+export function addBikeService(s: BikeService) {
+  const next = [s, ...getBikeServices()].slice(0, 40)
+  writeJson(SERVICE_KEY, next)
+  return next.filter(x => x.bikeId === s.bikeId)
+}
+
+export type LiveBadge = {
+  id: string
+  name: string
+  hint: string
+  earned: boolean
+}
+
+export function getLiveBadges(): LiveBadge[] {
+  const streak = getStreak().count
+  const season = getSeasonKm()
+  const rides = getActivities().length
+  const checkIns = getClubhouseCheckIns().length
+  return [
+    {
+      id: 'ngong',
+      name: 'Ngong Climber',
+      hint: 'Log any climb activity',
+      earned: rides >= 1 || season >= 50,
+    },
+    {
+      id: 'magadi',
+      name: 'Magadi Veteran',
+      hint: 'Reach 150 season km',
+      earned: season >= 150,
+    },
+    {
+      id: 'streak3',
+      name: 'Saturday Flame',
+      hint: '3-week Saturday streak',
+      earned: streak >= 3,
+    },
+    {
+      id: 'rift',
+      name: 'Rift Runner',
+      hint: '250 km toward Rift 500',
+      earned: season >= 250,
+    },
+    {
+      id: 'hells',
+      name: "Hell's Gate Survivor",
+      hint: 'Finish Hell\'s Gate ride (demo: 400 km)',
+      earned: season >= 400,
+    },
+    {
+      id: 'house',
+      name: 'Clubhouse Regular',
+      hint: 'Check in at Tena or Utawala',
+      earned: checkIns >= 1,
+    },
+  ]
+}

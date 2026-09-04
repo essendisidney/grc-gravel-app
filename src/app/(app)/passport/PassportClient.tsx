@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { getInitials, formatKm } from '@/lib/utils'
 import { Settings, LogOut, Mountain, Bike } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { DEMO_BADGES, DEMO_PROFILE } from '@/lib/demo'
-import { clearSession, getActivities, getBikes, getOfflinePacks, getSession, type GarageBike, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
+import { DEMO_PROFILE } from '@/lib/demo'
+import { clearSession, getActivities, getBikes, getLiveBadges, getOfflinePacks, getSession, type GarageBike, type LiveBadge, type LocalSession, type OfflinePack, type RideActivity } from '@/lib/localStore'
 import SeasonChallenge from '@/components/home/SeasonChallenge'
 import SaturdayStreak from '@/components/home/SaturdayStreak'
 import WeeklyGoal from '@/components/home/WeeklyGoal'
 import MemberCard from '@/components/passport/MemberCard'
+import InviteFriend from '@/components/club/InviteFriend'
 
 export default function PassportClient({ profile, badges, recentRides }: {
   profile: any, badges: any[], recentRides: any[], raceResults?: any[]
@@ -20,18 +21,20 @@ export default function PassportClient({ profile, badges, recentRides }: {
   const [packs, setPacks] = useState<OfflinePack[]>([])
   const [activities, setActivities] = useState<RideActivity[]>([])
   const [bikes, setBikes] = useState<GarageBike[]>([])
+  const [liveBadges, setLiveBadges] = useState<LiveBadge[]>([])
 
   useEffect(() => {
     setLocal(getSession())
     setPacks(getOfflinePacks())
     setActivities(getActivities())
     setBikes(getBikes())
+    setLiveBadges(getLiveBadges())
   }, [])
 
   const name = session?.fullName || profile?.full_name || DEMO_PROFILE.full_name
   const title = session?.title || profile?.title || 'Club Member'
   const initials = getInitials(name)
-  const expedition = badges?.length ? badges : DEMO_BADGES
+  const expedition = liveBadges.length ? liveBadges : badges
 
   function signOut() {
     clearSession()
@@ -193,7 +196,9 @@ export default function PassportClient({ profile, badges, recentRides }: {
       )}
 
       <div style={{ marginBottom: 18 }}>
-        <div className="eyebrow" style={{ marginBottom: 10 }}>Expedition badges</div>
+        <div className="eyebrow" style={{ marginBottom: 10 }}>
+          Expedition badges · {expedition.filter((b: any) => b.earned).length}/{expedition.length}
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {expedition.map((b: any) => {
             const badgeName = b.name || b.badge_definitions?.name || 'Badge'
@@ -222,14 +227,23 @@ export default function PassportClient({ profile, badges, recentRides }: {
                     flexShrink: 0,
                   }}
                 >
-                  <Mountain size={16} color={earned ? 'var(--accent)' : 'var(--muted)'} />
+                  <Mountain size={16} color={earned ? 'var(--accent-ink)' : 'var(--muted)'} />
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.3 }}>{badgeName}</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.3 }}>{badgeName}</div>
+                  {b.hint && (
+                    <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3, lineHeight: 1.3 }}>
+                      {earned ? 'Unlocked' : b.hint}
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}
         </div>
       </div>
+
+      <InviteFriend />
 
       {recentRides.length > 0 && (
         <div style={{ marginBottom: 18 }}>

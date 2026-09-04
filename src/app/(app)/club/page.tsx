@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import TopBar from '@/components/layout/TopBar'
+import InviteFriend from '@/components/club/InviteFriend'
 import { DEMO_CLUB, DEMO_RIDES } from '@/lib/demo'
 import { formatRideDate, formatTime } from '@/lib/utils'
 
@@ -79,6 +80,7 @@ export default function ClubPage() {
         </div>
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>People</div>
+        <InviteFriend />
         <Link href="/club/members" className="btn-primary" style={{ textDecoration: 'none', marginBottom: 10, display: 'flex' }}>
           Member directory
         </Link>

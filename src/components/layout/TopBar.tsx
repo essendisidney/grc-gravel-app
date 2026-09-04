@@ -33,7 +33,7 @@ export default function TopBar({
         padding: '12px 16px',
         position: 'sticky',
         top: 0,
-        background: 'rgba(243,239,232,0.88)',
+        background: 'rgba(247,244,236,0.9)',
         backdropFilter: 'blur(14px)',
         zIndex: 40,
         borderBottom: '1px solid transparent',

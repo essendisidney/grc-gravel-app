@@ -17,6 +17,7 @@ import WeekSchedule from '@/components/home/WeekSchedule'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
+import SearchChip from '@/components/layout/SearchChip'
 
 function greeting() {
   const h = new Date().getHours()
@@ -83,6 +84,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
               {greeting()}, {firstName}
             </div>
             <NotifBell />
+            <SearchChip />
           </div>
         </div>
 
