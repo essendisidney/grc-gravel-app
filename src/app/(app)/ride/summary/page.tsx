@@ -21,6 +21,7 @@ import StretchChecklist from '@/components/ride/StretchChecklist'
 import ThanksCaptain from '@/components/ride/ThanksCaptain'
 import NutritionTip from '@/components/ride/NutritionTip'
 import FinishLineChecklist from '@/components/ride/FinishLineChecklist'
+import DustRinseTip from '@/components/ride/DustRinseTip'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -158,6 +159,8 @@ function SummaryInner() {
       <StretchChecklist rideId={rideId} />
 
       <FinishLineChecklist rideId={rideId} />
+
+      <DustRinseTip distanceKm={distanceKm} />
 
       <ThanksCaptain
         rideId={rideId}

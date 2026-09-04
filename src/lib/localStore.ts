@@ -854,6 +854,7 @@ export function clearDemoCaches() {
     'grc-clubhouse-now',
     'grc-phone-charged',
     'grc-finish-checks',
+    'grc-cash-float',
   ]
   keys.forEach(k => {
     try {
@@ -1874,4 +1875,82 @@ export function getSurfaceMix(gravelPct: number, tarmacPct?: number) {
   const tarmac = tarmacPct != null ? Math.max(0, Math.min(100, tarmacPct)) : Math.max(0, 100 - gravel)
   const other = Math.max(0, 100 - gravel - tarmac)
   return { gravel, tarmac, other }
+}
+
+/** Leave-home cue — Nairobi traffic buffer before Magadi roll-out */
+export function getLeaveHomeCue(startTime = '06:15:00', bufferMin = 50) {
+  const [hh, mm] = startTime.split(':').map(Number)
+  const startMin = (hh || 6) * 60 + (mm || 15)
+  const leaveMin = Math.max(0, startMin - bufferMin)
+  const lh = Math.floor(leaveMin / 60)
+  const lm = leaveMin % 60
+  const label = `${String(lh).padStart(2, '0')}:${String(lm).padStart(2, '0')}`
+  return {
+    leaveBy: label,
+    bufferMin,
+    tip: `Aim to leave home by ${label} for a calm gate arrival — Saturday Ngong Road traffic adds ~${bufferMin} min.`,
+  }
+}
+
+const CASH_FLOAT_KEY = 'grc-cash-float'
+
+export function getCashFloatPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(CASH_FLOAT_KEY, {})[rideId] === true
+}
+
+export function setCashFloatPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(CASH_FLOAT_KEY, {})
+  all[rideId] = on
+  writeJson(CASH_FLOAT_KEY, all)
+  return on
+}
+
+export function getGateParkingTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Park at Ngong gate lot',
+      body: 'Arrive early — overflow spills onto the verge. Lock bikes facing the roll-out line, not the highway.',
+    },
+    'ngong-ridge': {
+      title: 'Ridge trailhead parking',
+      body: 'Tight shoulder near the forest gate. Don’t block matatu turnarounds.',
+    },
+    'kona-baridi': {
+      title: 'Kona Baridi pull-off',
+      body: 'Use the chai stop shoulder — leave space for regroup vans.',
+    },
+    'kiserian-classic': {
+      title: 'Kiserian market edge',
+      body: 'Park past the market stalls; keep the taxi bay clear.',
+    },
+    'hells-gate-loop': {
+      title: 'Park HQ lot',
+      body: 'Pay park fees first, then stage bikes near the main gate briefing spot.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Gate parking',
+      body: 'Arrive 15 min early. Stage bikes clear of the roll-out line and keep the shoulder free for late cars.',
+    }
+  )
+}
+
+export function getDustRinseTip(distanceKm = 60) {
+  if (distanceKm >= 80) {
+    return {
+      title: 'Full rinse tonight',
+      body: 'Long Magadi dust day — hose the drivetrain, wipe the cassette, and check sealant before next Saturday.',
+    }
+  }
+  if (distanceKm >= 40) {
+    return {
+      title: 'Quick dust rinse',
+      body: 'Wipe chain + brake tracks before the bike sits overnight. Dry dust eats pads fast.',
+    }
+  }
+  return {
+    title: 'Wipe-down',
+    body: 'Short loop — still wipe the chain and check for grit in the jockey wheels.',
+  }
 }
