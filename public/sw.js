@@ -1,11 +1,12 @@
 /* GRC service worker — app-shell + offline ride packs */
-const CACHE = 'grc-shell-v8'
+const CACHE = 'grc-shell-v9'
 const PRECACHE = [
   '/',
   '/manifest.json',
-  '/icons/icon-192.png?v=3',
-  '/icons/icon-512.png?v=3',
-  '/brand/grc-hex.png?v=3',
+  '/icons/icon-192.png?v=4',
+  '/icons/icon-512.png?v=4',
+  '/icons/icon-maskable-512.png?v=4',
+  '/brand/grc-hex.png?v=4',
   '/discover',
   '/club',
   '/club/members',

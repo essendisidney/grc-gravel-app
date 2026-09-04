@@ -77,7 +77,7 @@ export default function MemberCard({ name, membershipNumber, title, isCaptain }:
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/grc-hex.png?v=3"
+              src="/brand/grc-hex.png?v=4"
               alt=""
               width={48}
               height={48}

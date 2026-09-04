@@ -47,7 +47,7 @@ export default function RiderSplash() {
         <span className="grc-splash__ring" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/brand/grc-hex.png?v=3"
+          src="/brand/grc-hex.png?v=4"
           alt=""
           width={168}
           height={168}

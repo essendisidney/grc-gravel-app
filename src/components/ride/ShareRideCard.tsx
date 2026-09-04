@@ -63,7 +63,7 @@ export default function ShareRideCard({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/grc-hex.png?v=3"
+              src="/brand/grc-hex.png?v=4"
               alt=""
               width={40}
               height={40}

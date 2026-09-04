@@ -446,7 +446,7 @@ function ReminderCard({ title, startTime }: { title: string; startTime?: string 
     // Demo: fire a sample reminder now so the rider sees it works
     new Notification('GRC ride reminder', {
       body: `${title} · roll-out ${(startTime || '06:15').slice(0, 5)}. Lights on.`,
-      icon: '/icons/icon-192.png',
+      icon: '/icons/icon-192.png?v=4',
       tag: 'grc-ride-reminder',
     })
     localStorage.setItem('grc-remind-enabled', '1')

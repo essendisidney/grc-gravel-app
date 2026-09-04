@@ -18,7 +18,7 @@ export default function GrcLogo({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/brand/grc-hex.png?v=3"
+      src="/brand/grc-hex.png?v=4"
       alt={alt}
       width={size}
       height={size}

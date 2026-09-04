@@ -62,7 +62,7 @@ export default function PwaRegister() {
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
         <Image
-          src="/brand/grc-hex.png?v=3"
+          src="/brand/grc-hex.png?v=4"
           alt="GRC"
           width={40}
           height={40}
