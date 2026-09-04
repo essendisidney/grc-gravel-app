@@ -849,6 +849,8 @@ export function clearDemoCaches() {
     'grc-stretch-checks',
     'grc-prep-checks',
     'grc-ride-delay',
+    'grc-captain-thanks',
+    'grc-regroup-eta',
   ]
   keys.forEach(k => {
     try {
@@ -1651,4 +1653,76 @@ export function getSeasonMilestones() {
     { id: 'm4', label: 'Rift 500', done: km >= 500, hint: `${Math.min(500, Math.round(km))}/500` },
   ]
   return defs
+}
+
+const THANKS_KEY = 'grc-captain-thanks'
+const REGROUP_KEY = 'grc-regroup-eta'
+
+export function getSunriseWindow(startTime = '06:15:00') {
+  const [hh, mm] = startTime.split(':').map(Number)
+  const startMin = (hh || 6) * 60 + (mm || 15)
+  // Nairobi-ish sunrise ~06:20 demo
+  const sunrise = 6 * 60 + 20
+  const delta = startMin - sunrise
+  if (Math.abs(delta) <= 25) {
+    return {
+      label: 'Golden hour roll-out',
+      tip: 'Soft light on Magadi — great for pack photos at Kona Baridi.',
+    }
+  }
+  if (delta < 0) {
+    return {
+      label: 'Pre-sunrise start',
+      tip: 'Lights mandatory. Expect chill air until the ridge.',
+    }
+  }
+  return {
+    label: 'Full sun window',
+    tip: 'Heat builds fast — extra bottle, early sunscreen.',
+  }
+}
+
+export function getPrimaryTireHint() {
+  const bikes = getBikes()
+  const primary = bikes.find(b => b.isPrimary) || bikes[0]
+  if (!primary) {
+    return { label: 'Add a bike', tip: 'Set tire width in Garage for PSI + tube hints.', href: '/passport/garage' }
+  }
+  const mm = primary.tireMm || 40
+  const psi = suggestPsi(mm, 75)
+  return {
+    label: primary.name || primary.brand || 'Primary bike',
+    tip: `${mm} mm · tubes/CO2 for that size · start ~${psi.front}/${psi.rear} psi`,
+    href: '/passport/garage',
+  }
+}
+
+export function getRegroupEtaMin(rideId: string) {
+  const all = readJson<Record<string, number>>(REGROUP_KEY, {})
+  return all[rideId] ?? 12
+}
+
+export function setRegroupEtaMin(rideId: string, min: number) {
+  const all = readJson<Record<string, number>>(REGROUP_KEY, {})
+  all[rideId] = Math.max(3, Math.min(45, min))
+  writeJson(REGROUP_KEY, all)
+  return all[rideId]
+}
+
+export function hasThankedCaptain(rideId: string) {
+  return readJson<string[]>(THANKS_KEY, []).includes(rideId)
+}
+
+export function thankCaptain(rideId: string, captainName: string, fromName: string) {
+  const ids = new Set(readJson<string[]>(THANKS_KEY, []))
+  ids.add(rideId)
+  writeJson(THANKS_KEY, [...ids])
+  addKudos({
+    id: `thx_${Date.now()}`,
+    toName: captainName,
+    fromName,
+    message: 'Thanks for holding the line today — safe pack, clear calls.',
+    createdAt: new Date().toISOString(),
+  })
+  return true
 }

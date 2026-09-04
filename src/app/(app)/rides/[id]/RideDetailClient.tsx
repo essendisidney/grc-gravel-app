@@ -12,6 +12,7 @@ import GateSelfCheckIn from '@/components/rides/GateSelfCheckIn'
 import RolloutChecklist from '@/components/rides/RolloutChecklist'
 import ChaiKittyBoard from '@/components/rides/ChaiKittyBoard'
 import HazardPins from '@/components/rides/HazardPins'
+import TireReminder from '@/components/rides/TireReminder'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, isRideSaved, isRolloutReady, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -237,6 +238,8 @@ export default function RideDetailClient({
       </div>
 
       {(isRegistered || isWaitlisted) && <KitChecklist rideId={rideId} />}
+
+      {(isRegistered || isWaitlisted) && <TireReminder />}
 
       <PaceBuddies rsvp={rsvp} roster={roster} />
 

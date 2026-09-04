@@ -25,6 +25,7 @@ import WeekDigestStrip from '@/components/home/WeekDigestStrip'
 import RollOutCountdown from '@/components/home/RollOutCountdown'
 import MorningPrepChecklist from '@/components/home/MorningPrepChecklist'
 import DelayBanner from '@/components/home/DelayBanner'
+import SunriseWindow from '@/components/home/SunriseWindow'
 import NewRiderTip from '@/components/home/NewRiderTip'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
@@ -272,6 +273,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
           title={adventure.route_label || adventure.title}
         />
         {joined && <MorningPrepChecklist rideId={adventure.id} />}
+        <SunriseWindow startTime={adventure.start_time} />
         <NewRiderTip />
         <WeekDigestStrip />
         <DustSeasonCard />

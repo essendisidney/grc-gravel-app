@@ -18,6 +18,7 @@ import {
   startLiveRide,
 } from '@/lib/localStore'
 import IncidentLog from '@/components/ride/IncidentLog'
+import RegroupEta from '@/components/ride/RegroupEta'
 
 const CHECKPOINTS = [
   { atMin: 0, label: 'Ngong Town', note: 'Roll-out · lights check' },
@@ -222,6 +223,8 @@ export default function LiveRideClient() {
           </div>
         </div>
       )}
+
+      <RegroupEta rideId={rideId} />
 
       <IncidentLog rideId={rideId} kmEst={estKm} />
 
