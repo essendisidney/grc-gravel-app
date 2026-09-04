@@ -97,15 +97,15 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
       </div>
 
       <div style={{ padding: '8px 14px 0' }}>
-        <div className="hero-media" style={{ aspectRatio: '3 / 4', maxHeight: '52dvh' }}>
+        <div className="hero-media" style={{ aspectRatio: '4 / 3', maxHeight: '46dvh' }}>
           <Image
             src={cover}
             alt={adventure.title}
             fill
             priority
-            sizes="430px"
+            sizes="(max-width: 480px) 100vw, 390px"
             className="hero-zoom"
-            style={{ objectFit: 'cover', objectPosition: 'center 35%' }}
+            style={{ objectFit: 'cover', objectPosition: 'center 42%' }}
           />
           <div
             style={{

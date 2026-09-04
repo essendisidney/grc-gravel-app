@@ -94,7 +94,7 @@ export const DEMO_RIDES: DemoRide[] = [
     user_registration: null,
     avg_speed_kph: 22,
     going: RIDER_STACK,
-    cover_image: '/brand/hero-adventure.jpg',
+    cover_image: '/brand/adventure-wide.jpg',
     gravel_pct: 82,
     tarmac_pct: 18,
     roughness: 4.2,

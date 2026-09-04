@@ -45,12 +45,12 @@ function LoginInner() {
         }}
       >
         <Image
-          src="/brand/hero-adventure.jpg"
+          src="/brand/adventure-wide.jpg"
           alt="GRC riders"
           fill
           priority
           sizes="(max-width: 480px) 100vw, 390px"
-          style={{ objectFit: 'cover', objectPosition: 'center 35%' }}
+          style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
         />
         <div
           style={{
