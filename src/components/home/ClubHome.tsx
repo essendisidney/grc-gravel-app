@@ -23,8 +23,9 @@ import HeatWindAdvisory from '@/components/home/HeatWindAdvisory'
 import HomeClubhousePicker from '@/components/home/HomeClubhousePicker'
 import WeekDigestStrip from '@/components/home/WeekDigestStrip'
 import NewRiderTip from '@/components/home/NewRiderTip'
+import RollOutCountdown from '@/components/home/RollOutCountdown'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
-import { getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
+import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
 import SearchChip from '@/components/layout/SearchChip'
 
@@ -53,11 +54,14 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
     if (s?.fullName) setFirstName(s.fullName.split(' ')[0].toUpperCase())
     if (!adventure) return
     setRideStatusLocal(getRideStatus(adventure.id))
+    const fav = getFavoritePaceId()
     const r = getRsvp(adventure.id)
     if (r) {
       setJoined(true)
       setPaceName(r.paceGroupName)
       setPaceId(r.paceGroupId)
+    } else if (adventure.pace_groups?.some(g => g.id === fav)) {
+      setPaceId(fav)
     }
     if (hasWaiver(adventure.id)) setWaiverOn(true)
   }, [adventure])
@@ -258,6 +262,11 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         <SaturdayStreak />
         <WeeklyGoal />
         <HomeClubhousePicker />
+        <RollOutCountdown
+          rideDate={adventure.ride_date}
+          startTime={adventure.start_time}
+          title={adventure.route_label || adventure.title}
+        />
         <NewRiderTip />
         <WeekDigestStrip />
         <DustSeasonCard />

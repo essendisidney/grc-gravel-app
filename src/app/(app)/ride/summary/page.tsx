@@ -17,6 +17,7 @@ import RouteMap from '@/components/maps/RouteMap'
 import ShareRideCard from '@/components/ride/ShareRideCard'
 import PackPhotoReminder from '@/components/ride/PackPhotoReminder'
 import RecoveryTipCard from '@/components/ride/RecoveryTipCard'
+import StretchChecklist from '@/components/ride/StretchChecklist'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -100,7 +101,7 @@ function SummaryInner() {
 
   return (
     <div className="animate-fade-in" style={{ padding: '16px 16px 28px' }}>
-      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 19 · Post-ride</div>
+      <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 23 · Post-ride</div>
       <h1 style={{ margin: '0 0 6px', fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em' }}>
         Ride logged
       </h1>
@@ -148,6 +149,8 @@ function SummaryInner() {
       </div>
 
       <RecoveryTipCard feel={feel} />
+
+      <StretchChecklist rideId={rideId} />
 
       <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
         <div style={{ fontWeight: 800, marginBottom: 6 }}>Dust report</div>

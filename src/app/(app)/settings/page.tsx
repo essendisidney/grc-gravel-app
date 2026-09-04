@@ -12,6 +12,7 @@ import {
   type NotifPrefs,
 } from '@/lib/localStore'
 import EmergencyProtocol from '@/components/settings/EmergencyProtocol'
+import FavoritePacePicker from '@/components/settings/FavoritePacePicker'
 
 const TOGGLES: { key: keyof NotifPrefs; label: string; hint: string }[] = [
   { key: 'rideReminders', label: 'Ride reminders', hint: 'Saturday roll-out pings' },
@@ -62,11 +63,13 @@ export default function SettingsPage() {
     <div>
       <TopBar showBack title="Settings" backHref="/passport" showNotifications={false} />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 21</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 23</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800 }}>Club prefs</h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>
           Pull down on any screen to refresh. Demo prefs stay on this device.
         </p>
+
+        <FavoritePacePicker />
 
         <EmergencyProtocol />
 

@@ -845,6 +845,8 @@ export function clearDemoCaches() {
     'grc-emergency-proto',
     'grc-hazards',
     'grc-night-ride',
+    'grc-fav-pace',
+    'grc-stretch-checks',
   ]
   keys.forEach(k => {
     try {
@@ -1482,4 +1484,88 @@ export function getOfflinePackHealth() {
 
 export function isNewRider() {
   return getActivities().length === 0 && !getRsvp('ngong-magadi')
+}
+
+const FAV_PACE_KEY = 'grc-fav-pace'
+const STRETCH_KEY = 'grc-stretch-checks'
+
+export function getFavoritePaceId() {
+  return readJson<string>(FAV_PACE_KEY, 'cruiser')
+}
+
+export function setFavoritePaceId(id: string) {
+  writeJson(FAV_PACE_KEY, id)
+  return id
+}
+
+export const STRETCH_STEPS = [
+  { id: 'quads', label: 'Quads · 30s each side' },
+  { id: 'hams', label: 'Hamstrings · hinge soft' },
+  { id: 'hips', label: 'Hip flexors · Magadi climb unwind' },
+  { id: 'calves', label: 'Calves · wall stretch' },
+  { id: 'neck', label: 'Neck / shoulders · dust shake-out' },
+]
+
+export function getStretchChecked(rideId: string): string[] {
+  const all = readJson<Record<string, string[]>>(STRETCH_KEY, {})
+  return all[rideId] || []
+}
+
+export function toggleStretch(rideId: string, stepId: string) {
+  const all = readJson<Record<string, string[]>>(STRETCH_KEY, {})
+  const set = new Set(all[rideId] || [])
+  if (set.has(stepId)) set.delete(stepId)
+  else set.add(stepId)
+  all[rideId] = [...set]
+  writeJson(STRETCH_KEY, all)
+  return all[rideId]
+}
+
+/** Countdown to ride start (ride_date + start_time local). */
+export function getRollOutCountdown(rideDate: string, startTime: string, now = new Date()) {
+  const [hh, mm] = (startTime || '06:15:00').split(':').map(Number)
+  const target = new Date(`${rideDate}T00:00:00`)
+  if (Number.isNaN(target.getTime())) {
+    return { label: 'Soon', totalSec: 0, past: false }
+  }
+  target.setHours(hh || 6, mm || 15, 0, 0)
+  const totalSec = Math.floor((target.getTime() - now.getTime()) / 1000)
+  if (totalSec <= 0) {
+    return { label: 'Rolling', totalSec: 0, past: true }
+  }
+  const d = Math.floor(totalSec / 86400)
+  const h = Math.floor((totalSec % 86400) / 3600)
+  const m = Math.floor((totalSec % 3600) / 60)
+  const label =
+    d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`
+  return { label, totalSec, past: false, days: d, hours: h, minutes: m }
+}
+
+export type SignalDeadZone = {
+  id: string
+  name: string
+  fromKm: number
+  toKm: number
+  note: string
+}
+
+export const SIGNAL_DEAD_ZONES: Record<string, SignalDeadZone[]> = {
+  'magadi-loop': [
+    { id: 's1', name: 'After Kona Baridi', fromKm: 28, toKm: 38, note: 'Patchy Safaricom · download pack first' },
+    { id: 's2', name: 'Magadi flats dip', fromKm: 55, toKm: 68, note: 'Expect dropouts · stay with group' },
+  ],
+  'ngong-ridge': [
+    { id: 's1', name: 'Ridge lee side', fromKm: 8, toKm: 14, note: 'Brief dead zone' },
+  ],
+  'kona-baridi': [
+    { id: 's1', name: 'Descent pocket', fromKm: 14, toKm: 18, note: 'Weak signal on climb reverse' },
+  ],
+}
+
+export function getSignalDeadZones(routeId: string): SignalDeadZone[] {
+  return (
+    SIGNAL_DEAD_ZONES[routeId] || [
+      { id: 'd1', name: 'Mid corridor', fromKm: 15, toKm: 25, note: 'Assume patchy — pack offline' },
+    ]
+  )
 }
