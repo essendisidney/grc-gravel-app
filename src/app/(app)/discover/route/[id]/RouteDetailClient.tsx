@@ -132,7 +132,11 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
           type="button"
           className={saved ? 'btn-secondary' : 'btn-primary'}
           onClick={toggleOffline}
-          style={saved ? undefined : { background: 'var(--charcoal)', boxShadow: 'none' }}
+          style={
+            saved
+              ? undefined
+              : { background: 'var(--charcoal)', color: '#fff', boxShadow: 'none' }
+          }
         >
           <HardDriveDownload size={16} /> {saved ? 'Saved offline · tap to remove' : 'Save offline pack'}
         </button>

@@ -1,11 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 
 /**
- * Cold-start brand splash — sits inside `.phone-shell` so it covers
- * the app frame (full-bleed on phones, framed preview on desktop).
+ * Cold-start brand splash — inside `.phone-shell` so it covers the app frame.
  * Skipped after first show in the session.
  */
 export default function RiderSplash() {
@@ -19,7 +17,6 @@ export default function RiderSplash() {
     }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    // Wait one frame so the phone shell paints first — logo lands in-place
     const raf = window.requestAnimationFrame(() => setPhase('show'))
 
     const exitAt = reduce ? 500 : 2200
@@ -48,13 +45,12 @@ export default function RiderSplash() {
     >
       <div className="grc-splash__mark">
         <span className="grc-splash__ring" />
-        <Image
-          src="/brand/logo.png"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/grc-hex.png?v=3"
           alt=""
           width={168}
           height={168}
-          priority
-          sizes="168px"
         />
       </div>
       <p className="grc-splash__whisper">Ride beyond the tarmac</p>

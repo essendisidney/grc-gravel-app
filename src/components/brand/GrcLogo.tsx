@@ -1,7 +1,9 @@
 'use client'
 
-import Image from 'next/image'
-
+/**
+ * Official GRC hex mark — black GRC on brand gold.
+ * Plain <img> (not next/image) so SW / optimizer caches don't stick on an old logo.
+ */
 export default function GrcLogo({
   size = 40,
   rounded = 11,
@@ -14,12 +16,13 @@ export default function GrcLogo({
   color?: string
 }) {
   return (
-    <Image
-      src="/brand/logo.png"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/grc-hex.png?v=3"
       alt={alt}
       width={size}
       height={size}
-      priority
+      decoding="async"
       style={{
         width: size,
         height: size,
@@ -27,7 +30,8 @@ export default function GrcLogo({
         objectFit: 'cover',
         display: 'block',
         flexShrink: 0,
-        boxShadow: '0 0 0 1px rgba(10,10,10,0.06)',
+        background: '#FEC72E',
+        boxShadow: '0 0 0 1px rgba(10,10,10,0.08)',
       }}
     />
   )

@@ -1,10 +1,11 @@
 /* GRC service worker — app-shell + offline ride packs */
-const CACHE = 'grc-shell-v5'
+const CACHE = 'grc-shell-v6'
 const PRECACHE = [
   '/',
   '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  '/icons/icon-192.png?v=3',
+  '/icons/icon-512.png?v=3',
+  '/brand/grc-hex.png?v=3',
   '/discover',
   '/club',
   '/club/members',
@@ -16,9 +17,6 @@ const PRECACHE = [
   '/wrench',
   '/feed',
   '/rides/ngong-magadi',
-  '/brand/hero-adventure.jpg',
-  '/brand/adventure-wide.jpg',
-  '/brand/clubhouse.jpg',
 ]
 
 self.addEventListener('install', (event) => {
@@ -48,7 +46,24 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url)
   if (url.origin !== self.location.origin) return
 
-  // Network-first for navigations; cache fallback offline
+  // Always network-first for logos / icons so brand updates aren't stuck
+  if (
+    url.pathname.startsWith('/brand/grc-') ||
+    url.pathname.startsWith('/brand/logo') ||
+    url.pathname.startsWith('/icons/')
+  ) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone()
+          caches.open(CACHE).then((c) => c.put(req, copy))
+          return res
+        })
+        .catch(() => caches.match(req))
+    )
+    return
+  }
+
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
@@ -62,10 +77,9 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Cache-first for brand, icons, and route pack assets
+  // Cache-first for heavy brand photos + route packs
   if (
     url.pathname.startsWith('/brand/') ||
-    url.pathname.startsWith('/icons/') ||
     url.pathname.startsWith('/gpx/') ||
     url.pathname.startsWith('/routes/')
   ) {
