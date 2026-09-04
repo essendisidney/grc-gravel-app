@@ -852,6 +852,8 @@ export function clearDemoCaches() {
     'grc-captain-thanks',
     'grc-regroup-eta',
     'grc-clubhouse-now',
+    'grc-phone-charged',
+    'grc-finish-checks',
   ]
   keys.forEach(k => {
     try {
@@ -1817,4 +1819,59 @@ export function getSpotsPulse(registered: number, max: number) {
   if (left === 0) return { label: 'Full', tone: 'full' as const, left: 0 }
   if (left <= 5) return { label: `${left} spots left`, tone: 'hot' as const, left }
   return { label: `${left} open`, tone: 'ok' as const, left }
+}
+
+const PHONE_CHARGE_KEY = 'grc-phone-charged'
+const FINISH_KEY = 'grc-finish-checks'
+
+export function getPhoneCharged(rideId: string) {
+  return readJson<Record<string, boolean>>(PHONE_CHARGE_KEY, {})[rideId] === true
+}
+
+export function setPhoneCharged(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(PHONE_CHARGE_KEY, {})
+  all[rideId] = on
+  writeJson(PHONE_CHARGE_KEY, all)
+  return on
+}
+
+export const FINISH_LINE_STEPS = [
+  { id: 'stretch', label: 'Quick stretch at the gate' },
+  { id: 'photo', label: 'Pack photo' },
+  { id: 'chai', label: 'Chai / soda with the pack' },
+  { id: 'log', label: 'Log the ride in the app' },
+]
+
+export function getFinishChecks(rideId: string): string[] {
+  const all = readJson<Record<string, string[]>>(FINISH_KEY, {})
+  return all[rideId] || []
+}
+
+export function toggleFinishCheck(rideId: string, stepId: string) {
+  const all = readJson<Record<string, string[]>>(FINISH_KEY, {})
+  const set = new Set(all[rideId] || [])
+  if (set.has(stepId)) set.delete(stepId)
+  else set.add(stepId)
+  all[rideId] = [...set]
+  writeJson(FINISH_KEY, all)
+  return all[rideId]
+}
+
+export function getWeekRsvpSummary(rides: { id: string; title: string; ride_date: string; distance_km?: number }[]) {
+  const rsvps = getRsvps()
+  const joined = rides.filter(r => rsvps.some(x => x.rideId === r.id && x.status === 'registered'))
+  const km = joined.reduce((s, r) => s + (r.distance_km || 0), 0)
+  return {
+    count: joined.length,
+    km: Math.round(km),
+    titles: joined.map(r => r.title),
+    empty: joined.length === 0,
+  }
+}
+
+export function getSurfaceMix(gravelPct: number, tarmacPct?: number) {
+  const gravel = Math.max(0, Math.min(100, gravelPct || 0))
+  const tarmac = tarmacPct != null ? Math.max(0, Math.min(100, tarmacPct)) : Math.max(0, 100 - gravel)
+  const other = Math.max(0, 100 - gravel - tarmac)
+  return { gravel, tarmac, other }
 }

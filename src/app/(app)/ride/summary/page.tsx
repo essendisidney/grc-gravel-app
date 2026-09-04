@@ -20,6 +20,7 @@ import RecoveryTipCard from '@/components/ride/RecoveryTipCard'
 import StretchChecklist from '@/components/ride/StretchChecklist'
 import ThanksCaptain from '@/components/ride/ThanksCaptain'
 import NutritionTip from '@/components/ride/NutritionTip'
+import FinishLineChecklist from '@/components/ride/FinishLineChecklist'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -155,6 +156,8 @@ function SummaryInner() {
       <NutritionTip feel={feel} distanceKm={distanceKm} />
 
       <StretchChecklist rideId={rideId} />
+
+      <FinishLineChecklist rideId={rideId} />
 
       <ThanksCaptain
         rideId={rideId}

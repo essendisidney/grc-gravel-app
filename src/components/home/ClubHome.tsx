@@ -28,6 +28,8 @@ import DelayBanner from '@/components/home/DelayBanner'
 import SunriseWindow from '@/components/home/SunriseWindow'
 import DustMaskTip from '@/components/home/DustMaskTip'
 import NewRiderTip from '@/components/home/NewRiderTip'
+import PhoneChargeReminder from '@/components/home/PhoneChargeReminder'
+import WeekRsvpSummary from '@/components/home/WeekRsvpSummary'
 import SpotsPulse from '@/components/rides/SpotsPulse'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
@@ -276,9 +278,11 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
           title={adventure.route_label || adventure.title}
         />
         {joined && <MorningPrepChecklist rideId={adventure.id} />}
+        {joined && <PhoneChargeReminder rideId={adventure.id} />}
         <SunriseWindow startTime={adventure.start_time} />
         <DustMaskTip />
         <NewRiderTip />
+        <WeekRsvpSummary rides={rides} />
         <WeekDigestStrip />
         <DustSeasonCard />
         <HeatWindAdvisory />
