@@ -5,6 +5,7 @@ import InviteFriend from '@/components/club/InviteFriend'
 import GearBorrowBoard from '@/components/club/GearBorrowBoard'
 import ClubEventsStrip from '@/components/home/ClubEventsStrip'
 import MerchTeaser from '@/components/club/MerchTeaser'
+import ClubhouseNow from '@/components/club/ClubhouseNow'
 import { DEMO_CLUB, DEMO_RIDES } from '@/lib/demo'
 import { formatRideDate, formatTime } from '@/lib/utils'
 
@@ -95,6 +96,9 @@ export default function ClubPage() {
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>Shop</div>
         <MerchTeaser />
+
+        <div className="eyebrow" style={{ marginBottom: 10 }}>Clubhouse</div>
+        <ClubhouseNow />
 
         <div className="eyebrow" style={{ marginBottom: 10 }}>People</div>
         <InviteFriend />

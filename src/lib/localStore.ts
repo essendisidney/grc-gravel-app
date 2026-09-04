@@ -851,6 +851,7 @@ export function clearDemoCaches() {
     'grc-ride-delay',
     'grc-captain-thanks',
     'grc-regroup-eta',
+    'grc-clubhouse-now',
   ]
   keys.forEach(k => {
     try {
@@ -1725,4 +1726,95 @@ export function thankCaptain(rideId: string, captainName: string, fromName: stri
     createdAt: new Date().toISOString(),
   })
   return true
+}
+
+const CLUBHOUSE_NOW_KEY = 'grc-clubhouse-now'
+
+export function getDustMaskTip(date = new Date()) {
+  const dust = getDustSeasonStatus(date)
+  if (dust.inDust) {
+    return {
+      show: true,
+      title: 'Dust mask / glasses',
+      body: 'Magadi dust season — buff or glasses in the jersey pocket before roll-out.',
+    }
+  }
+  return {
+    show: true,
+    title: 'Eye protection',
+    body: 'Shoulder season gravel still kicks — clear glasses recommended on descents.',
+  }
+}
+
+export function getPostRideNutrition(feel: number | null | undefined, distanceKm: number) {
+  if (feel != null && feel <= 2) {
+    return {
+      title: 'Rebuild meal',
+      body: 'Salt + protein within an hour. Mandazi and eggs beat pure sugar.',
+    }
+  }
+  if (distanceKm >= 60) {
+    return {
+      title: 'Long-day fuel',
+      body: 'Two bottles done — chai, banana, then a proper plate. Skip only coffee.',
+    }
+  }
+  return {
+    title: 'Easy top-up',
+    body: 'Water + something salty. Keep dinner normal; no need to feast.',
+  }
+}
+
+export type ClubhousePresence = {
+  id: string
+  name: string
+  clubhouse: 'tena' | 'utawala'
+  note: string
+  at: string
+}
+
+export function getClubhouseNow(): ClubhousePresence[] {
+  return readJson<ClubhousePresence[]>(CLUBHOUSE_NOW_KEY, [
+    {
+      id: 'cn1',
+      name: 'Sam Kariuki',
+      clubhouse: 'tena',
+      note: 'Wrench bay',
+      at: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
+    },
+    {
+      id: 'cn2',
+      name: 'Mercy Njeri',
+      clubhouse: 'tena',
+      note: 'Coffee',
+      at: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
+    },
+    {
+      id: 'cn3',
+      name: 'Dan Kiprop',
+      clubhouse: 'utawala',
+      note: 'Kit pickup',
+      at: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
+    },
+  ])
+}
+
+export function checkInClubhouseNow(clubhouse: 'tena' | 'utawala', name: string, note = 'Hanging out') {
+  const next: ClubhousePresence = {
+    id: `cn_${Date.now()}`,
+    name,
+    clubhouse,
+    note,
+    at: new Date().toISOString(),
+  }
+  const list = [next, ...getClubhouseNow().filter(p => p.name !== name)].slice(0, 20)
+  writeJson(CLUBHOUSE_NOW_KEY, list)
+  return list
+}
+
+export function getSpotsPulse(registered: number, max: number) {
+  const left = Math.max(0, max - registered)
+  if (left === 0) return { label: 'Full', tone: 'full' as const, left: 0 }
+  if (left <= 5) return { label: `${left} spots left`, tone: 'hot' as const, left }
+  return { label: `${left} open`, tone: 'ok' as const, left }
 }

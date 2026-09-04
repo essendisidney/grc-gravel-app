@@ -26,7 +26,9 @@ import RollOutCountdown from '@/components/home/RollOutCountdown'
 import MorningPrepChecklist from '@/components/home/MorningPrepChecklist'
 import DelayBanner from '@/components/home/DelayBanner'
 import SunriseWindow from '@/components/home/SunriseWindow'
+import DustMaskTip from '@/components/home/DustMaskTip'
 import NewRiderTip from '@/components/home/NewRiderTip'
+import SpotsPulse from '@/components/rides/SpotsPulse'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
@@ -164,11 +166,12 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
               <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', opacity: 0.9 }}>
                 {formatRideDate(adventure.ride_date).toUpperCase()} · {formatTime(adventure.start_time)}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6, flexWrap: 'wrap' }}>
                 <span className="live-dot" />
                 <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em' }}>
                   {going} RIDERS GOING
                 </span>
+                <SpotsPulse registered={going} max={adventure.max_participants || 40} />
               </div>
             </div>
             <div style={{ display: 'flex' }}>
@@ -274,6 +277,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         />
         {joined && <MorningPrepChecklist rideId={adventure.id} />}
         <SunriseWindow startTime={adventure.start_time} />
+        <DustMaskTip />
         <NewRiderTip />
         <WeekDigestStrip />
         <DustSeasonCard />
