@@ -1,5 +1,5 @@
-/* GRC service worker — app-shell cache for installable PWA */
-const CACHE = 'grc-shell-v2'
+/* GRC service worker — app-shell + offline ride packs */
+const CACHE = 'grc-shell-v3'
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -7,12 +7,27 @@ const PRECACHE = [
   '/icons/icon-512.png',
   '/discover',
   '/club',
+  '/club/members',
   '/passport',
+  '/ride/live',
+  '/ride/summary',
+  '/captain',
+  '/wrench',
+  '/feed',
+  '/brand/hero-adventure.jpg',
+  '/brand/adventure-wide.jpg',
+  '/brand/clubhouse.jpg',
 ]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((cache) =>
+      Promise.all(
+        PRECACHE.map((url) =>
+          cache.add(url).catch(() => undefined)
+        )
+      )
+    ).then(() => self.skipWaiting())
   )
 })
 
@@ -45,8 +60,13 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Cache-first for static brand/icons
-  if (url.pathname.startsWith('/brand/') || url.pathname.startsWith('/icons/')) {
+  // Cache-first for brand, icons, and route pack assets
+  if (
+    url.pathname.startsWith('/brand/') ||
+    url.pathname.startsWith('/icons/') ||
+    url.pathname.startsWith('/gpx/') ||
+    url.pathname.startsWith('/routes/')
+  ) {
     event.respondWith(
       caches.match(req).then((cached) => {
         if (cached) return cached

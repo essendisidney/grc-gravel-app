@@ -78,11 +78,16 @@ export default function ClubPage() {
           ))}
         </div>
 
+        <div className="eyebrow" style={{ marginBottom: 10 }}>People</div>
+        <Link href="/club/members" className="btn-primary" style={{ textDecoration: 'none', marginBottom: 10, display: 'flex' }}>
+          Member directory
+        </Link>
+
         <div className="eyebrow" style={{ marginBottom: 10 }}>Membership</div>
         <Link href="/join" className="btn-secondary" style={{ textDecoration: 'none', marginBottom: 10, display: 'flex' }}>
           Membership tiers · M-Pesa later
         </Link>
-        <Link href="/captain" className="btn-primary" style={{ textDecoration: 'none', marginBottom: 12, display: 'flex' }}>
+        <Link href="/captain" className="btn-secondary" style={{ textDecoration: 'none', marginBottom: 12, display: 'flex' }}>
           Captain tools
         </Link>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>

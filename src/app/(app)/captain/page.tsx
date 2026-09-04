@@ -5,7 +5,9 @@ import Link from 'next/link'
 import { Megaphone, RefreshCw, UserPlus } from 'lucide-react'
 import TopBar from '@/components/layout/TopBar'
 import {
+  addAnnouncement,
   addCaptainPing,
+  getAnnouncements,
   getCaptainPings,
   getRollCall,
   getSession,
@@ -13,6 +15,7 @@ import {
   promoteWaitlist,
   toggleRollCall,
   type CaptainPing,
+  type ClubAnnouncement,
   type LocalSession,
   type RollCallRider,
   type WaitlistRider,
@@ -26,7 +29,10 @@ export default function CaptainPage() {
   const [waitlist, setWaitlist] = useState<WaitlistRider[]>([])
   const [rollCall, setRollCall] = useState<RollCallRider[]>([])
   const [pings, setPings] = useState<CaptainPing[]>([])
+  const [announcements, setAnnouncements] = useState<ClubAnnouncement[]>([])
   const [message, setMessage] = useState('Regroup at Kona Baridi. Lights on — Magadi dust kicking.')
+  const [announceTitle, setAnnounceTitle] = useState('Saturday Magadi — dust advisory')
+  const [announceBody, setAnnounceBody] = useState('Wind from the south. Lights on from Kona Baridi.')
   const [recurring, setRecurring] = useState(true)
   const ride = DEMO_RIDES.find(r => r.id === RIDE_ID)
 
@@ -35,6 +41,7 @@ export default function CaptainPage() {
     setWaitlist(getWaitlist(RIDE_ID))
     setRollCall(getRollCall(RIDE_ID))
     setPings(getCaptainPings())
+    setAnnouncements(getAnnouncements())
   }, [])
 
   if (session && !session.isCaptain) {
@@ -70,17 +77,63 @@ export default function CaptainPage() {
     setMessage('')
   }
 
+  function postAnnouncement() {
+    if (!announceTitle.trim() || !announceBody.trim()) return
+    const next = addAnnouncement({
+      id: `a_${Date.now()}`,
+      title: announceTitle.trim(),
+      body: announceBody.trim(),
+      createdAt: new Date().toISOString(),
+      authorName: session?.fullName || 'Captain',
+    })
+    setAnnouncements(next)
+    setAnnounceTitle('')
+    setAnnounceBody('')
+  }
+
   return (
     <div>
       <TopBar showBack title="Captain tools" showNotifications backHref="/club" />
       <div className="animate-fade-in" style={{ padding: '0 16px 28px' }}>
-        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 4</div>
+        <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: 6 }}>Wave 8 · Captain</div>
         <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {ride?.route_label || 'Club ride'}
         </h1>
         <p style={{ margin: '0 0 16px', fontSize: 14, color: 'var(--muted)', lineHeight: 1.45 }}>
-          Gate roll call, waitlist, recurring flag, group pings.
+          Announcements, gate roll call, waitlist, group pings.
         </p>
+
+        <div className="eyebrow" style={{ marginBottom: 10 }}>Club announcement</div>
+        <div className="surface" style={{ padding: 14, marginBottom: 16 }}>
+          <input
+            className="grc-input"
+            value={announceTitle}
+            onChange={e => setAnnounceTitle(e.target.value)}
+            placeholder="Title"
+            style={{ marginBottom: 8 }}
+          />
+          <textarea
+            className="grc-input"
+            rows={3}
+            value={announceBody}
+            onChange={e => setAnnounceBody(e.target.value)}
+            placeholder="What should the club know?"
+            style={{ marginBottom: 10, resize: 'none' }}
+          />
+          <button type="button" className="btn-primary" onClick={postAnnouncement}>
+            <Megaphone size={16} /> Post to Home
+          </button>
+          {announcements.length > 0 && (
+            <div style={{ marginTop: 14 }}>
+              {announcements.slice(0, 3).map(a => (
+                <div key={a.id} style={{ padding: '10px 0', borderTop: '1px solid var(--line)' }}>
+                  <div style={{ fontWeight: 800, fontSize: 13 }}>{a.title}</div>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 3 }}>{a.body}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="surface" style={{ padding: 14, marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>

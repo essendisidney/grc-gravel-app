@@ -379,3 +379,41 @@ export function toggleRaceCheckIn(raceId: string, bib: number, name: string) {
   writeJson(RACE_CHECKIN_KEY, all)
   return all[raceId]
 }
+
+export type ClubAnnouncement = {
+  id: string
+  title: string
+  body: string
+  createdAt: string
+  authorName: string
+}
+
+const FAV_KEY = 'grc-favorites'
+const ANNOUNCE_KEY = 'grc-announcements'
+
+export function getFavorites(): string[] {
+  return readJson<string[]>(FAV_KEY, [])
+}
+
+export function isFavorite(routeId: string) {
+  return getFavorites().includes(routeId)
+}
+
+export function toggleFavorite(routeId: string) {
+  const set = new Set(getFavorites())
+  if (set.has(routeId)) set.delete(routeId)
+  else set.add(routeId)
+  const next = [...set]
+  writeJson(FAV_KEY, next)
+  return next
+}
+
+export function getAnnouncements(): ClubAnnouncement[] {
+  return readJson<ClubAnnouncement[]>(ANNOUNCE_KEY, [])
+}
+
+export function addAnnouncement(a: ClubAnnouncement) {
+  const next = [a, ...getAnnouncements()].slice(0, 10)
+  writeJson(ANNOUNCE_KEY, next)
+  return next
+}

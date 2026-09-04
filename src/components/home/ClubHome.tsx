@@ -9,6 +9,7 @@ import type { DemoRide } from '@/lib/demo'
 import { DEMO_PROFILE, DEMO_WEEK_STATS } from '@/lib/demo'
 import GrcLogo from '@/components/brand/GrcLogo'
 import WeatherBriefing from '@/components/home/WeatherBriefing'
+import AnnouncementsStrip from '@/components/home/AnnouncementsStrip'
 import WeekSchedule from '@/components/home/WeekSchedule'
 import { getRsvp, getSession, hasWaiver, setRsvp, setWaiver } from '@/lib/localStore'
 import NotifBell from '@/components/layout/NotifBell'
@@ -220,6 +221,8 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
           Route details
         </Link>
       </div>
+
+      <AnnouncementsStrip />
 
       <div style={{ padding: '22px 14px 8px' }}>
         <WeatherBriefing />

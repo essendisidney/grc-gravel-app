@@ -397,9 +397,16 @@ export const DEMO_RACES = [
 ]
 
 export const DEMO_MEMBERS = [
-  { id: '1', full_name: 'Victor Dawa', membership_number: 'GRC-0001', membership_tier: 'founding', phone: '0780 222 216', role: 'super_admin', is_elite_team: true },
-  { id: '2', full_name: 'Amina Otieno', membership_number: 'GRC-0412', membership_tier: 'elite', phone: '0712 000 412', role: 'member', is_elite_team: true },
-  { id: '3', full_name: 'James Njoroge', membership_number: 'GRC-0088', membership_tier: 'member', phone: '0722 000 088', role: 'member', is_elite_team: false },
+  { id: '1', full_name: 'Victor Dawa', membership_number: 'GRC-0001', membership_tier: 'founding', phone: '0780 222 216', role: 'super_admin', is_elite_team: true, clubhouse: 'tena', title: 'Founder / Captain' },
+  { id: '2', full_name: 'Amina Otieno', membership_number: 'GRC-0412', membership_tier: 'elite', phone: '0712 000 412', role: 'member', is_elite_team: true, clubhouse: 'tena', title: 'Ride Captain' },
+  { id: '3', full_name: 'James Njoroge', membership_number: 'GRC-0088', membership_tier: 'member', phone: '0722 000 088', role: 'member', is_elite_team: false, clubhouse: 'utawala', title: 'Social Captain' },
+  { id: '4', full_name: 'Mercy Njeri', membership_number: 'GRC-0210', membership_tier: 'elite', phone: '0711 220 010', role: 'member', is_elite_team: true, clubhouse: 'utawala', title: 'Elite' },
+  { id: '5', full_name: 'Sam Kariuki', membership_number: 'GRC-0331', membership_tier: 'member', phone: '0700 441 221', role: 'member', is_elite_team: false, clubhouse: 'tena', title: 'Cruiser' },
+  { id: '6', full_name: 'Brian Kamau', membership_number: 'GRC-0555', membership_tier: 'junior', phone: '0712 441 002', role: 'member', is_elite_team: false, clubhouse: 'utawala', title: 'Junior' },
+  { id: '7', full_name: 'Faith Wanjiku', membership_number: 'GRC-0612', membership_tier: 'member', phone: '0722 118 440', role: 'member', is_elite_team: false, clubhouse: 'tena', title: 'Member' },
+  { id: '8', full_name: 'Leo Otieno', membership_number: 'GRC-0701', membership_tier: 'gold', phone: '0701 993 221', role: 'member', is_elite_team: false, clubhouse: 'utawala', title: 'Gold' },
+  { id: '9', full_name: 'Njeri Mwangi', membership_number: 'GRC-0144', membership_tier: 'member', phone: '0713 555 019', role: 'member', is_elite_team: false, clubhouse: 'tena', title: 'Wrench lead' },
+  { id: '10', full_name: 'Dan Kiprop', membership_number: 'GRC-0902', membership_tier: 'elite', phone: '0720 888 102', role: 'member', is_elite_team: true, clubhouse: 'utawala', title: 'Elite' },
 ]
 
 export const DEMO_NOTIFICATIONS = [
