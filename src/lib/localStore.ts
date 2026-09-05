@@ -859,6 +859,8 @@ export function clearDemoCaches() {
     'grc-buddy-check',
     'grc-lights-check',
     'grc-snack-pack',
+    'grc-helmet-check',
+    'grc-bottles-fill',
   ]
   keys.forEach(k => {
     try {
@@ -2077,5 +2079,76 @@ export function getChainLubeTip(distanceKm = 60) {
   return {
     title: 'Quick chain wipe',
     body: 'Dust + chain = grind. Wipe tonight so the next roll feels quiet.',
+  }
+}
+
+const HELMET_KEY = 'grc-helmet-check'
+const BOTTLES_KEY = 'grc-bottles-fill'
+
+export function getHelmetReady(rideId: string) {
+  return readJson<Record<string, boolean>>(HELMET_KEY, {})[rideId] === true
+}
+
+export function setHelmetReady(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(HELMET_KEY, {})
+  all[rideId] = on
+  writeJson(HELMET_KEY, all)
+  return on
+}
+
+export function getBottlesFilled(rideId: string) {
+  return readJson<Record<string, boolean>>(BOTTLES_KEY, {})[rideId] === true
+}
+
+export function setBottlesFilled(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(BOTTLES_KEY, {})
+  all[rideId] = on
+  writeJson(BOTTLES_KEY, all)
+  return on
+}
+
+export function getMatatuCautionTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Share the Magadi road',
+      body: 'Matatus and trucks move fast on the tarmac sections — ride single file, no sudden swerves at the verge.',
+    },
+    'ngong-ridge': {
+      title: 'Ngong Road traffic',
+      body: 'Expect matatus near the forest gate. Hold your line and let them pass wide.',
+    },
+    'kiserian-classic': {
+      title: 'Market edge caution',
+      body: 'Pedestrians + bodas near the stalls. Soft pace until you’re clear of town.',
+    },
+    'hells-gate-loop': {
+      title: 'Park vehicles',
+      body: 'Safari vans stop without warning — leave a buffer and call obstacles early.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Road share',
+      body: 'Assume vehicles don’t see gravel riders. Bright kit, clear signals, single file on busy stretches.',
+    }
+  )
+}
+
+export function getSaddleBagTip(distanceKm = 60, feel?: number | null) {
+  if (feel === 1 || feel === 2 || distanceKm >= 80) {
+    return {
+      title: 'Saddle time recovery',
+      body: 'Long Magadi hours — stand and walk tonight, light hip openers, and check saddle height before next Saturday.',
+    }
+  }
+  if (distanceKm >= 50) {
+    return {
+      title: 'Shake out the hips',
+      body: 'A short walk after the car ride home keeps the lower back happy.',
+    }
+  }
+  return {
+    title: 'Easy cool-down',
+    body: 'Unclip, walk 2 minutes, hydrate — small habits beat next-day stiffness.',
   }
 }
