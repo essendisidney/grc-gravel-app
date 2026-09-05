@@ -31,6 +31,7 @@ import SleepRecoveryTip from '@/components/ride/SleepRecoveryTip'
 import FoamRollTip from '@/components/ride/FoamRollTip'
 import ProteinTip from '@/components/ride/ProteinTip'
 import ElectrolyteFollowUpTip from '@/components/ride/ElectrolyteFollowUpTip'
+import CoolDownWalkTip from '@/components/ride/CoolDownWalkTip'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -188,6 +189,8 @@ function SummaryInner() {
       <ProteinTip distanceKm={distanceKm} feel={feel} />
 
       <ElectrolyteFollowUpTip distanceKm={distanceKm} feel={feel} />
+
+      <CoolDownWalkTip distanceKm={distanceKm} feel={feel} />
 
       <ThanksCaptain
         rideId={rideId}

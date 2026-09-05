@@ -875,6 +875,8 @@ export function clearDemoCaches() {
     'grc-cable-ties',
     'grc-arm-warmers',
     'grc-valve-cores',
+    'grc-leg-warmers',
+    'grc-patch-kit',
   ]
   keys.forEach(k => {
     try {
@@ -2677,5 +2679,80 @@ export function getElectrolyteFollowUpTip(distanceKm = 60, feel?: number | null)
   return {
     title: 'Normal fluids',
     body: 'Short loop — finish your bottle at home and you’re fine.',
+  }
+}
+
+const LEG_WARMERS_KEY = 'grc-leg-warmers'
+const PATCH_KIT_KEY = 'grc-patch-kit'
+
+export function getLegWarmersPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(LEG_WARMERS_KEY, {})[rideId] === true
+}
+
+export function setLegWarmersPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(LEG_WARMERS_KEY, {})
+  all[rideId] = on
+  writeJson(LEG_WARMERS_KEY, all)
+  return on
+}
+
+export function getPatchKitPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(PATCH_KIT_KEY, {})[rideId] === true
+}
+
+export function setPatchKitPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(PATCH_KIT_KEY, {})
+  all[rideId] = on
+  writeJson(PATCH_KIT_KEY, all)
+  return on
+}
+
+export function getCattleGridTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Grid crossings',
+      body: 'Cattle grids on Magadi access roads — soft speed, straight line, no sudden lean on wet metal.',
+    },
+    'ngong-ridge': {
+      title: 'Farm grid caution',
+      body: 'Metal grids near forest edges get slick at dawn. Unweight slightly and roll square.',
+    },
+    'kona-baridi': {
+      title: 'Shop-road grids',
+      body: 'Expect grids near farm gates before chai — call them early for the pack.',
+    },
+    'kiserian-classic': {
+      title: 'Homestead grids',
+      body: 'Village grids after rain are polished. Soft pedal, eyes up, one at a time.',
+    },
+    'hells-gate-loop': {
+      title: 'Park access grids',
+      body: 'Entry grids can catch narrow tires — choose the cleanest bars and keep momentum gentle.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Cattle grid rule',
+      body: 'Straight, soft, and square. Never brake hard mid-grid — especially when wet.',
+    }
+  )
+}
+
+export function getCoolDownWalkTip(distanceKm = 60, feel?: number | null) {
+  if (feel === 1 || feel === 2 || distanceKm >= 80) {
+    return {
+      title: 'Walk before you drive',
+      body: 'Hard Magadi day — 5 minutes on foot at the gate loosens calves before the Ngong Road sit.',
+    }
+  }
+  if (distanceKm >= 50) {
+    return {
+      title: 'Short cool-down walk',
+      body: 'Unclip, walk the lot once, then pack the bike. Legs thank you on the drive home.',
+    }
+  }
+  return {
+    title: 'Easy unclip',
+    body: 'Short loop — still stand and walk a minute before hopping in the car.',
   }
 }

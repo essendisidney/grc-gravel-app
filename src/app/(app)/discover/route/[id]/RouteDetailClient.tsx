@@ -25,6 +25,7 @@ import CattleCrossingTip from '@/components/discover/CattleCrossingTip'
 import BlindCornerTip from '@/components/discover/BlindCornerTip'
 import WashoutTip from '@/components/discover/WashoutTip'
 import SoftSandTip from '@/components/discover/SoftSandTip'
+import CattleGridTip from '@/components/discover/CattleGridTip'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
@@ -153,6 +154,7 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
         <BlindCornerTip routeId={route.id} />
         <WashoutTip routeId={route.id} />
         <SoftSandTip routeId={route.id} />
+        <CattleGridTip routeId={route.id} />
 
         <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
