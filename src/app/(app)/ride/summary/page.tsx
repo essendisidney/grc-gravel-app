@@ -25,6 +25,7 @@ import DustRinseTip from '@/components/ride/DustRinseTip'
 import ChainLubeTip from '@/components/ride/ChainLubeTip'
 import SaddleBagTip from '@/components/ride/SaddleBagTip'
 import BrakePadTip from '@/components/ride/BrakePadTip'
+import KitWashTip from '@/components/ride/KitWashTip'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -170,6 +171,8 @@ function SummaryInner() {
       <SaddleBagTip distanceKm={distanceKm} feel={feel} />
 
       <BrakePadTip distanceKm={distanceKm} />
+
+      <KitWashTip distanceKm={distanceKm} />
 
       <ThanksCaptain
         rideId={rideId}

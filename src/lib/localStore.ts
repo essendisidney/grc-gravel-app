@@ -863,6 +863,8 @@ export function clearDemoCaches() {
     'grc-bottles-fill',
     'grc-gloves-check',
     'grc-pump-check',
+    'grc-multitool-check',
+    'grc-id-card-check',
   ]
   keys.forEach(k => {
     try {
@@ -2221,5 +2223,74 @@ export function getBrakePadTip(distanceKm = 60) {
   return {
     title: 'Brake wipe',
     body: 'Dust on rotors = squeal. Wipe pads/rotors after Magadi-style gravel before the next ride.',
+  }
+}
+
+const MULTITOOL_KEY = 'grc-multitool-check'
+const ID_CARD_KEY = 'grc-id-card-check'
+
+export function getMultiToolPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(MULTITOOL_KEY, {})[rideId] === true
+}
+
+export function setMultiToolPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(MULTITOOL_KEY, {})
+  all[rideId] = on
+  writeJson(MULTITOOL_KEY, all)
+  return on
+}
+
+export function getIdCardPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(ID_CARD_KEY, {})[rideId] === true
+}
+
+export function setIdCardPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(ID_CARD_KEY, {})
+  all[rideId] = on
+  writeJson(ID_CARD_KEY, all)
+  return on
+}
+
+export function getDescentCautionTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Soft hands on the drop',
+      body: 'Corrugations after Kona Baridi — brake early, wide vision, don’t lock the front on loose gravel.',
+    },
+    'ngong-ridge': {
+      title: 'Ridge descent discipline',
+      body: 'Blind corners and goats. Call “rider back” and leave space — no hero lines.',
+    },
+    'kona-baridi': {
+      title: 'Shop-road rollers',
+      body: 'Fast rollers into town traffic. Feather brakes before the stalls appear.',
+    },
+    'kiserian-classic': {
+      title: 'Market approach',
+      body: 'Descend into town single file. Expect bodas cutting across the verge.',
+    },
+    'hells-gate-loop': {
+      title: 'Park gravel drops',
+      body: 'Steep park sections get sandy — stay seated, light rear brake, eyes up.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Descent caution',
+      body: 'Loose gravel rewards patience. Brake before the corner, look through it, trust the pack order.',
+    }
+  )
+}
+
+export function getKitWashTip(distanceKm = 60) {
+  if (distanceKm >= 70) {
+    return {
+      title: 'Rinse the kit tonight',
+      body: 'Magadi dust embeds in jersey fabric — cold rinse + hang dry so tomorrow’s kit doesn’t smell like the corridor.',
+    }
+  }
+  return {
+    title: 'Shake out the kit',
+    body: 'Turn the jersey inside out, shake the dust, and air it before the hamper. Pads last longer that way.',
   }
 }
