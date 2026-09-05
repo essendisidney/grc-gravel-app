@@ -865,6 +865,8 @@ export function clearDemoCaches() {
     'grc-pump-check',
     'grc-multitool-check',
     'grc-id-card-check',
+    'grc-first-aid-check',
+    'grc-cleat-check',
   ]
   keys.forEach(k => {
     try {
@@ -2292,5 +2294,80 @@ export function getKitWashTip(distanceKm = 60) {
   return {
     title: 'Shake out the kit',
     body: 'Turn the jersey inside out, shake the dust, and air it before the hamper. Pads last longer that way.',
+  }
+}
+
+const FIRST_AID_KEY = 'grc-first-aid-check'
+const CLEAT_KEY = 'grc-cleat-check'
+
+export function getFirstAidPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(FIRST_AID_KEY, {})[rideId] === true
+}
+
+export function setFirstAidPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(FIRST_AID_KEY, {})
+  all[rideId] = on
+  writeJson(FIRST_AID_KEY, all)
+  return on
+}
+
+export function getCleatsChecked(rideId: string) {
+  return readJson<Record<string, boolean>>(CLEAT_KEY, {})[rideId] === true
+}
+
+export function setCleatsChecked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(CLEAT_KEY, {})
+  all[rideId] = on
+  writeJson(CLEAT_KEY, all)
+  return on
+}
+
+export function getChaiStopEtaTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string; eta: string }> = {
+    'magadi-loop': {
+      title: 'Kona Baridi chai',
+      eta: '~1h 40m',
+      body: 'Typical Cruiser ETA to the chai stop on Magadi — fill bottles and soft pedal after.',
+    },
+    'ngong-ridge': {
+      title: 'Forest-edge break',
+      eta: '~55m',
+      body: 'Short ridge loop — quick sip stop near the crest before the drop.',
+    },
+    'kona-baridi': {
+      title: 'Shop wall stop',
+      eta: '~1h 10m',
+      body: 'Plan the chai break at the shop — count heads before rolling again.',
+    },
+    'kiserian-classic': {
+      title: 'Market soda stop',
+      eta: '~45m',
+      body: 'Quick soda at the market edge if the pack wants shade.',
+    },
+    'hells-gate-loop': {
+      title: 'Park picnic pull-off',
+      eta: '~1h 20m',
+      body: 'Mid-loop shade stop — keep snacks wildlife-safe.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Fuel stop window',
+      eta: '~1h',
+      body: 'Ask the captain for the planned chai / soda stop before roll-out.',
+    }
+  )
+}
+
+export function getShoeCleanTip(distanceKm = 60) {
+  if (distanceKm >= 70) {
+    return {
+      title: 'Knock the cleats clean',
+      body: 'Magadi grit jams cleats — tap soles, brush the mechanism, and check bolt torque before next Saturday.',
+    }
+  }
+  return {
+    title: 'Wipe the soles',
+    body: 'Dust in cleats = noisy clip-in. A quick brush tonight keeps engagement crisp.',
   }
 }
