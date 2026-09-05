@@ -867,6 +867,8 @@ export function clearDemoCaches() {
     'grc-id-card-check',
     'grc-first-aid-check',
     'grc-cleat-check',
+    'grc-salt-tabs',
+    'grc-whistle-check',
   ]
   keys.forEach(k => {
     try {
@@ -2369,5 +2371,80 @@ export function getShoeCleanTip(distanceKm = 60) {
   return {
     title: 'Wipe the soles',
     body: 'Dust in cleats = noisy clip-in. A quick brush tonight keeps engagement crisp.',
+  }
+}
+
+const SALT_KEY = 'grc-salt-tabs'
+const WHISTLE_KEY = 'grc-whistle-check'
+
+export function getSaltTabsPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(SALT_KEY, {})[rideId] === true
+}
+
+export function setSaltTabsPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(SALT_KEY, {})
+  all[rideId] = on
+  writeJson(SALT_KEY, all)
+  return on
+}
+
+export function getWhistlePacked(rideId: string) {
+  return readJson<Record<string, boolean>>(WHISTLE_KEY, {})[rideId] === true
+}
+
+export function setWhistlePacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(WHISTLE_KEY, {})
+  all[rideId] = on
+  writeJson(WHISTLE_KEY, all)
+  return on
+}
+
+export function getCattleCrossingTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Livestock on the corridor',
+      body: 'Cattle and goats drift across Magadi gravel — soft brake, no sudden horns, give herders space.',
+    },
+    'ngong-ridge': {
+      title: 'Goats on the ridge',
+      body: 'Expect flocks near the crest. Soft pedal and call “stock” to the pack behind.',
+    },
+    'kona-baridi': {
+      title: 'Herd traffic',
+      body: 'Morning drives near the chai road — yield early, don’t cut between animals.',
+    },
+    'kiserian-classic': {
+      title: 'Village livestock',
+      body: 'Dogs and cows near homesteads. Soft pace until you’re clear of the boma.',
+    },
+    'hells-gate-loop': {
+      title: 'Park wildlife first',
+      body: 'Buffalo / zebra have right of way. Stop, wait, then roll — never force a gap.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Share the track',
+      body: 'Kenyan gravel means livestock. Soft hands, early calls, zero aggression toward animals or herders.',
+    }
+  )
+}
+
+export function getSleepRecoveryTip(distanceKm = 60, feel?: number | null) {
+  if (feel === 1 || feel === 2 || distanceKm >= 80) {
+    return {
+      title: 'Early night tonight',
+      body: 'Hard Magadi day — hydrate, eat, lights out early. Skip the late WhatsApp scroll if you can.',
+    }
+  }
+  if (distanceKm >= 50) {
+    return {
+      title: 'Protect sleep',
+      body: 'Corridor rides tax recovery. Aim for 7–8 hours so next Saturday’s legs show up.',
+    }
+  }
+  return {
+    title: 'Easy evening',
+    body: 'Short loop still counts — stretch, water, normal bedtime. Consistency beats hero weeks.',
   }
 }
