@@ -24,6 +24,7 @@ import FinishLineChecklist from '@/components/ride/FinishLineChecklist'
 import DustRinseTip from '@/components/ride/DustRinseTip'
 import ChainLubeTip from '@/components/ride/ChainLubeTip'
 import SaddleBagTip from '@/components/ride/SaddleBagTip'
+import BrakePadTip from '@/components/ride/BrakePadTip'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -167,6 +168,8 @@ function SummaryInner() {
       <ChainLubeTip distanceKm={distanceKm} />
 
       <SaddleBagTip distanceKm={distanceKm} feel={feel} />
+
+      <BrakePadTip distanceKm={distanceKm} />
 
       <ThanksCaptain
         rideId={rideId}

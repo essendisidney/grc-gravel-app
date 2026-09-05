@@ -17,6 +17,7 @@ import SpareTubeCheck from '@/components/rides/SpareTubeCheck'
 import BuddyCheckConfirm from '@/components/rides/BuddyCheckConfirm'
 import SnackPackCheck from '@/components/rides/SnackPackCheck'
 import BottlesFillCheck from '@/components/rides/BottlesFillCheck'
+import PumpCheck from '@/components/rides/PumpCheck'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, isRideSaved, isRolloutReady, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -248,6 +249,8 @@ export default function RideDetailClient({
       {(isRegistered || isWaitlisted) && <SnackPackCheck rideId={rideId} />}
 
       {(isRegistered || isWaitlisted) && <BottlesFillCheck rideId={rideId} />}
+
+      {(isRegistered || isWaitlisted) && <PumpCheck rideId={rideId} />}
 
       {(isRegistered || isWaitlisted) && <TireReminder />}
 

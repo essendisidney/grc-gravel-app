@@ -18,6 +18,7 @@ import SurfaceMixBar from '@/components/discover/SurfaceMixBar'
 import GateParkingTip from '@/components/discover/GateParkingTip'
 import PhotoSpotTip from '@/components/discover/PhotoSpotTip'
 import MatatuCautionTip from '@/components/discover/MatatuCautionTip'
+import RegroupRuleTip from '@/components/discover/RegroupRuleTip'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
@@ -139,6 +140,7 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
         <GateParkingTip routeId={route.id} />
         <PhotoSpotTip routeId={route.id} />
         <MatatuCautionTip routeId={route.id} />
+        <RegroupRuleTip routeId={route.id} />
 
         <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>

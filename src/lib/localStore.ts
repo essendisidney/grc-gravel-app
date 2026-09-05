@@ -861,6 +861,8 @@ export function clearDemoCaches() {
     'grc-snack-pack',
     'grc-helmet-check',
     'grc-bottles-fill',
+    'grc-gloves-check',
+    'grc-pump-check',
   ]
   keys.forEach(k => {
     try {
@@ -2150,5 +2152,74 @@ export function getSaddleBagTip(distanceKm = 60, feel?: number | null) {
   return {
     title: 'Easy cool-down',
     body: 'Unclip, walk 2 minutes, hydrate — small habits beat next-day stiffness.',
+  }
+}
+
+const GLOVES_KEY = 'grc-gloves-check'
+const PUMP_KEY = 'grc-pump-check'
+
+export function getGlovesReady(rideId: string) {
+  return readJson<Record<string, boolean>>(GLOVES_KEY, {})[rideId] === true
+}
+
+export function setGlovesReady(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(GLOVES_KEY, {})
+  all[rideId] = on
+  writeJson(GLOVES_KEY, all)
+  return on
+}
+
+export function getPumpPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(PUMP_KEY, {})[rideId] === true
+}
+
+export function setPumpPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(PUMP_KEY, {})
+  all[rideId] = on
+  writeJson(PUMP_KEY, all)
+  return on
+}
+
+export function getRegroupRuleTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Wait at every regroup',
+      body: 'No one left behind on Magadi — soft pedal at Kona Baridi and the flats until the captain rolls.',
+    },
+    'ngong-ridge': {
+      title: 'Crest and hold',
+      body: 'Stop just past the ridge crest, not on the blind side. Call “clear” before descending.',
+    },
+    'kona-baridi': {
+      title: 'Chai stop regroup',
+      body: 'Full pack count before leaving the shop. Captains call the next segment.',
+    },
+    'kiserian-classic': {
+      title: 'Town exit hold',
+      body: 'Regroup once clear of market traffic — then open the rollers together.',
+    },
+    'hells-gate-loop': {
+      title: 'Gate-to-gate count',
+      body: 'Headcount at park entry and exit. Don’t skip the captain’s whistle.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Club regroup rule',
+      body: 'Stay soft until the last rider and the captain say go. Gaps are fine; abandonments aren’t.',
+    }
+  )
+}
+
+export function getBrakePadTip(distanceKm = 60) {
+  if (distanceKm >= 70) {
+    return {
+      title: 'Check pad bite',
+      body: 'Long dusty descents glaze pads — a quick wipe of the rotors tonight keeps tomorrow’s braking honest.',
+    }
+  }
+  return {
+    title: 'Brake wipe',
+    body: 'Dust on rotors = squeal. Wipe pads/rotors after Magadi-style gravel before the next ride.',
   }
 }
