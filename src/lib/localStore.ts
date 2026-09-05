@@ -873,6 +873,8 @@ export function clearDemoCaches() {
     'grc-spoke-key',
     'grc-sun-sleeves',
     'grc-cable-ties',
+    'grc-arm-warmers',
+    'grc-valve-cores',
   ]
   keys.forEach(k => {
     try {
@@ -2600,5 +2602,80 @@ export function getProteinTip(distanceKm = 60, feel?: number | null) {
   return {
     title: 'Normal meal is fine',
     body: 'Short loop — eat something balanced when you’re home. No need to overthink it.',
+  }
+}
+
+const ARM_WARMERS_KEY = 'grc-arm-warmers'
+const VALVE_CORES_KEY = 'grc-valve-cores'
+
+export function getArmWarmersPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(ARM_WARMERS_KEY, {})[rideId] === true
+}
+
+export function setArmWarmersPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(ARM_WARMERS_KEY, {})
+  all[rideId] = on
+  writeJson(ARM_WARMERS_KEY, all)
+  return on
+}
+
+export function getValveCoresPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(VALVE_CORES_KEY, {})[rideId] === true
+}
+
+export function setValveCoresPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(VALVE_CORES_KEY, {})
+  all[rideId] = on
+  writeJson(VALVE_CORES_KEY, all)
+  return on
+}
+
+export function getSoftSandTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Soft sand patches',
+      body: 'Stay light on the front through Magadi sand ribbons — higher cadence, don’t stab the brakes mid-patch.',
+    },
+    'ngong-ridge': {
+      title: 'Dusty soft shoulders',
+      body: 'Ridge edges get powdery — keep the packed line and call soft spots early.',
+    },
+    'kona-baridi': {
+      title: 'Verge sand',
+      body: 'Soft sand near the chai approach after dry weeks. Soft pedal, wide vision.',
+    },
+    'kiserian-classic': {
+      title: 'Loose farm tracks',
+      body: 'Sandy farm connectors after harvest — sit back a touch and keep pedaling through.',
+    },
+    'hells-gate-loop': {
+      title: 'Park sand traps',
+      body: 'Sandy park sections reward momentum. Soft hands, look through, no panic weave.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Soft sand rule',
+      body: 'Momentum over panic. Soft hands, higher cadence, and don’t stab the front brake in powder.',
+    }
+  )
+}
+
+export function getElectrolyteFollowUpTip(distanceKm = 60, feel?: number | null) {
+  if (feel === 1 || feel === 2 || distanceKm >= 80) {
+    return {
+      title: 'Salt + water tonight',
+      body: 'Hard Magadi sweat day — keep sipping with a salty snack so tomorrow doesn’t start crampy.',
+    }
+  }
+  if (distanceKm >= 50) {
+    return {
+      title: 'Rehydrate properly',
+      body: 'Corridor ride done — water plus something salty with dinner beats plain soda alone.',
+    }
+  }
+  return {
+    title: 'Normal fluids',
+    body: 'Short loop — finish your bottle at home and you’re fine.',
   }
 }
