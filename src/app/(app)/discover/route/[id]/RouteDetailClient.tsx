@@ -22,6 +22,7 @@ import RegroupRuleTip from '@/components/discover/RegroupRuleTip'
 import DescentCautionTip from '@/components/discover/DescentCautionTip'
 import ChaiStopEtaTip from '@/components/discover/ChaiStopEtaTip'
 import CattleCrossingTip from '@/components/discover/CattleCrossingTip'
+import BlindCornerTip from '@/components/discover/BlindCornerTip'
 
 export default function RouteDetailClient({ routeId }: { routeId: string }) {
   const route = useMemo(() => getRouteById(routeId), [routeId])
@@ -147,6 +148,7 @@ export default function RouteDetailClient({ routeId }: { routeId: string }) {
         <DescentCautionTip routeId={route.id} />
         <ChaiStopEtaTip routeId={route.id} />
         <CattleCrossingTip routeId={route.id} />
+        <BlindCornerTip routeId={route.id} />
 
         <div className="surface" style={{ padding: 14, marginBottom: 14 }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>

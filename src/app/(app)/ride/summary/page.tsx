@@ -28,6 +28,7 @@ import BrakePadTip from '@/components/ride/BrakePadTip'
 import KitWashTip from '@/components/ride/KitWashTip'
 import ShoeCleanTip from '@/components/ride/ShoeCleanTip'
 import SleepRecoveryTip from '@/components/ride/SleepRecoveryTip'
+import FoamRollTip from '@/components/ride/FoamRollTip'
 
 function formatElapsed(sec: number) {
   const h = Math.floor(sec / 3600)
@@ -179,6 +180,8 @@ function SummaryInner() {
       <ShoeCleanTip distanceKm={distanceKm} />
 
       <SleepRecoveryTip distanceKm={distanceKm} feel={feel} />
+
+      <FoamRollTip distanceKm={distanceKm} feel={feel} />
 
       <ThanksCaptain
         rideId={rideId}

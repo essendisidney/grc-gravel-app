@@ -40,6 +40,7 @@ import GlovesCheck from '@/components/home/GlovesCheck'
 import MultiToolCheck from '@/components/home/MultiToolCheck'
 import FirstAidCheck from '@/components/home/FirstAidCheck'
 import SaltTabsCheck from '@/components/home/SaltTabsCheck'
+import BuffCheck from '@/components/home/BuffCheck'
 import SpotsPulse from '@/components/rides/SpotsPulse'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { getFavoritePaceId, getRsvp, getRideStatus, getSession, hasWaiver, setRsvp, setWaiver, markSaturdayRidden, type RideDayStatus } from '@/lib/localStore'
@@ -296,6 +297,7 @@ export default function ClubHome({ rides }: { rides: DemoRide[] }) {
         {joined && <MultiToolCheck rideId={adventure.id} />}
         {joined && <FirstAidCheck rideId={adventure.id} />}
         {joined && <SaltTabsCheck rideId={adventure.id} />}
+        {joined && <BuffCheck rideId={adventure.id} />}
         <LeaveHomeCue startTime={adventure.start_time} />
         <ReturnTrafficTip startTime={adventure.start_time} />
         <SunriseWindow startTime={adventure.start_time} />

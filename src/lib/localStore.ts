@@ -869,6 +869,8 @@ export function clearDemoCaches() {
     'grc-cleat-check',
     'grc-salt-tabs',
     'grc-whistle-check',
+    'grc-buff-check',
+    'grc-spoke-key',
   ]
   keys.forEach(k => {
     try {
@@ -2446,5 +2448,80 @@ export function getSleepRecoveryTip(distanceKm = 60, feel?: number | null) {
   return {
     title: 'Easy evening',
     body: 'Short loop still counts — stretch, water, normal bedtime. Consistency beats hero weeks.',
+  }
+}
+
+const BUFF_KEY = 'grc-buff-check'
+const SPOKE_KEY = 'grc-spoke-key'
+
+export function getBuffPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(BUFF_KEY, {})[rideId] === true
+}
+
+export function setBuffPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(BUFF_KEY, {})
+  all[rideId] = on
+  writeJson(BUFF_KEY, all)
+  return on
+}
+
+export function getSpokeKeyPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(SPOKE_KEY, {})[rideId] === true
+}
+
+export function setSpokeKeyPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(SPOKE_KEY, {})
+  all[rideId] = on
+  writeJson(SPOKE_KEY, all)
+  return on
+}
+
+export function getBlindCornerTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Dust-blind bends',
+      body: 'Pack dust can wipe vision on Magadi corners — soft speed, leave a gap, call “slow” early.',
+    },
+    'ngong-ridge': {
+      title: 'Crest blind spots',
+      body: 'Don’t overtake over the ridge crest. Wait until you see the full descent line.',
+    },
+    'kona-baridi': {
+      title: 'Shop approach bend',
+      body: 'Tight bend into town traffic — single file, eyes up, no hero pass.',
+    },
+    'kiserian-classic': {
+      title: 'Homestead corners',
+      body: 'Kids and dogs appear late on village bends. Soft hands until the road opens.',
+    },
+    'hells-gate-loop': {
+      title: 'Park rock blinders',
+      body: 'Rock outcrops hide oncoming riders — keep right, call your line.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Blind corner rule',
+      body: 'Assume someone is coming. Soft speed, clear calls, never dive the inside on gravel.',
+    }
+  )
+}
+
+export function getFoamRollTip(distanceKm = 60, feel?: number | null) {
+  if (feel === 1 || feel === 2 || distanceKm >= 80) {
+    return {
+      title: 'Roll the legs tonight',
+      body: 'Quads + IT band after a hard Magadi — 5 quiet minutes beats tomorrow’s hobble.',
+    }
+  }
+  if (distanceKm >= 50) {
+    return {
+      title: 'Light foam roll',
+      body: 'Calves and hips after the corridor. Keep it gentle — recovery, not punishment.',
+    }
+  }
+  return {
+    title: 'Optional roll',
+    body: 'Short ride — a quick calf roll is enough if anything feels tight.',
   }
 }
