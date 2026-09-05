@@ -22,6 +22,7 @@ import IdCardCheck from '@/components/rides/IdCardCheck'
 import CleatCheck from '@/components/rides/CleatCheck'
 import WhistleCheck from '@/components/rides/WhistleCheck'
 import SpokeKeyCheck from '@/components/rides/SpokeKeyCheck'
+import CableTieCheck from '@/components/rides/CableTieCheck'
 import AddToCalendarButton from '@/components/rides/AddToCalendarButton'
 import { clearRsvp, getRollCall, getRsvp, isRideSaved, isRolloutReady, markSaturdayRidden, setRsvp, toggleSavedRide, type LocalRsvp, type RollCallRider } from '@/lib/localStore'
 import { DEMO_RIDES } from '@/lib/demo'
@@ -263,6 +264,8 @@ export default function RideDetailClient({
       {(isRegistered || isWaitlisted) && <WhistleCheck rideId={rideId} />}
 
       {(isRegistered || isWaitlisted) && <SpokeKeyCheck rideId={rideId} />}
+
+      {(isRegistered || isWaitlisted) && <CableTieCheck rideId={rideId} />}
 
       {(isRegistered || isWaitlisted) && <TireReminder />}
 

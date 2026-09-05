@@ -871,6 +871,8 @@ export function clearDemoCaches() {
     'grc-whistle-check',
     'grc-buff-check',
     'grc-spoke-key',
+    'grc-sun-sleeves',
+    'grc-cable-ties',
   ]
   keys.forEach(k => {
     try {
@@ -2523,5 +2525,80 @@ export function getFoamRollTip(distanceKm = 60, feel?: number | null) {
   return {
     title: 'Optional roll',
     body: 'Short ride — a quick calf roll is enough if anything feels tight.',
+  }
+}
+
+const SLEEVES_KEY = 'grc-sun-sleeves'
+const CABLE_TIES_KEY = 'grc-cable-ties'
+
+export function getSunSleevesPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(SLEEVES_KEY, {})[rideId] === true
+}
+
+export function setSunSleevesPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(SLEEVES_KEY, {})
+  all[rideId] = on
+  writeJson(SLEEVES_KEY, all)
+  return on
+}
+
+export function getCableTiesPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(CABLE_TIES_KEY, {})[rideId] === true
+}
+
+export function setCableTiesPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(CABLE_TIES_KEY, {})
+  all[rideId] = on
+  writeJson(CABLE_TIES_KEY, all)
+  return on
+}
+
+export function getWashoutTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Rain washouts',
+      body: 'After storms, Magadi cuts deep channels across the track — soft approach, unweight the front, don’t dive the line.',
+    },
+    'ngong-ridge': {
+      title: 'Ridge ruts',
+      body: 'Erosion lines on the crest — pick a high line and call the rut for riders behind.',
+    },
+    'kona-baridi': {
+      title: 'Shoulder washouts',
+      body: 'Verge drops near the chai road after rain. Stay on packed gravel when you can.',
+    },
+    'kiserian-classic': {
+      title: 'Gully crossings',
+      body: 'Seasonal gullies after showers — slow in, pedals level, eyes through.',
+    },
+    'hells-gate-loop': {
+      title: 'Park drainage cuts',
+      body: 'Water bars and washouts in the park — soft speed, one rider at a time on narrow cuts.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Washout awareness',
+      body: 'Kenyan gravel changes after rain. Soft speed into dips and never assume yesterday’s line still exists.',
+    }
+  )
+}
+
+export function getProteinTip(distanceKm = 60, feel?: number | null) {
+  if (feel === 1 || feel === 2 || distanceKm >= 80) {
+    return {
+      title: 'Protein within the hour',
+      body: 'Hard Magadi day — eggs, milk, or a simple shake with your chai so legs rebuild overnight.',
+    }
+  }
+  if (distanceKm >= 50) {
+    return {
+      title: 'Real food + protein',
+      body: 'Corridor ride done — pair carbs with protein at the next meal, not just soda and mandazi.',
+    }
+  }
+  return {
+    title: 'Normal meal is fine',
+    body: 'Short loop — eat something balanced when you’re home. No need to overthink it.',
   }
 }
