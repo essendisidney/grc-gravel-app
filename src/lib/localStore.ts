@@ -857,6 +857,8 @@ export function clearDemoCaches() {
     'grc-cash-float',
     'grc-spare-tube',
     'grc-buddy-check',
+    'grc-lights-check',
+    'grc-snack-pack',
   ]
   keys.forEach(k => {
     try {
@@ -2007,4 +2009,73 @@ export function setBuddyChecked(rideId: string, on: boolean) {
   all[rideId] = on
   writeJson(BUDDY_CHECK_KEY, all)
   return on
+}
+
+const LIGHTS_KEY = 'grc-lights-check'
+const SNACK_KEY = 'grc-snack-pack'
+
+export function getLightsReady(rideId: string) {
+  return readJson<Record<string, boolean>>(LIGHTS_KEY, {})[rideId] === true
+}
+
+export function setLightsReady(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(LIGHTS_KEY, {})
+  all[rideId] = on
+  writeJson(LIGHTS_KEY, all)
+  return on
+}
+
+export function getSnackPacked(rideId: string) {
+  return readJson<Record<string, boolean>>(SNACK_KEY, {})[rideId] === true
+}
+
+export function setSnackPacked(rideId: string, on: boolean) {
+  const all = readJson<Record<string, boolean>>(SNACK_KEY, {})
+  all[rideId] = on
+  writeJson(SNACK_KEY, all)
+  return on
+}
+
+export function getPhotoSpotTip(routeId: string) {
+  const tips: Record<string, { title: string; body: string }> = {
+    'magadi-loop': {
+      title: 'Kona Baridi overlook',
+      body: 'Best pack shot facing the Rift — soft light ~30 min after sunrise. Stage bikes off the verge.',
+    },
+    'ngong-ridge': {
+      title: 'Ridge crest windbreak',
+      body: 'Wide shot of Nairobi behind the pack. Keep the frame clear of power lines if you can.',
+    },
+    'kona-baridi': {
+      title: 'Chai stop wall',
+      body: 'Classic GRC group photo against the shop wall after the climb.',
+    },
+    'kiserian-classic': {
+      title: 'Market road rollers',
+      body: 'Low-angle shot on the gravel rollers past the stalls — dusty gold hour.',
+    },
+    'hells-gate-loop': {
+      title: 'Cliff gate frame',
+      body: 'Ride through the rock gate for the hero still — one by one, not a pile-up.',
+    },
+  }
+  return (
+    tips[routeId] || {
+      title: 'Pack photo spot',
+      body: 'Ask the captain for the regroup shot — one clean frame beats twenty blurry ones.',
+    }
+  )
+}
+
+export function getChainLubeTip(distanceKm = 60) {
+  if (distanceKm >= 70) {
+    return {
+      title: 'Re-lube before next Saturday',
+      body: 'Long dusty day stripped the film — wipe, one drop per roller, wipe again. Dry lube for Magadi season.',
+    }
+  }
+  return {
+    title: 'Quick chain wipe',
+    body: 'Dust + chain = grind. Wipe tonight so the next roll feels quiet.',
+  }
 }
